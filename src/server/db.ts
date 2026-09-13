@@ -1,5 +1,5 @@
 import { PrismaNeon } from "@prisma/adapter-neon";
-import { neonConfig, Pool } from "@neondatabase/serverless";
+import { neonConfig } from "@neondatabase/serverless";
 import ws from "ws";
 import { env } from "~/env";
 import { Prisma, PrismaClient } from "../../generated/prisma";
@@ -33,7 +33,9 @@ const createPrismaClient = (): PrismaClient => {
     env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"];
 
   if (usesNeonServerless(url)) {
-    const adapter = new PrismaNeon(new Pool({ connectionString: url }));
+    // PrismaNeon expects PoolConfig, not an already-constructed Pool.
+    // Passing `new Pool(...)` left connectionString unset and Neon defaulted to localhost.
+    const adapter = new PrismaNeon({ connectionString: url });
     return new PrismaClient({ adapter, log });
   }
 
