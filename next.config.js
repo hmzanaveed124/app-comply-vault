@@ -7,7 +7,7 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   // Prevent Next.js from bundling pdfkit; its .afm font files must resolve at runtime
-  serverExternalPackages: ["pdfkit"],
+  serverExternalPackages: ["pdfkit", "ws", "@neondatabase/serverless"],
   typescript: {
     // Ignore type errors in generated Prisma files
     // These files are generated and have known type issues that don't affect runtime

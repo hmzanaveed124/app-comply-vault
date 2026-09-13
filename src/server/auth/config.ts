@@ -115,6 +115,10 @@ export const authConfig = {
   providers,
   // Use PrismaAdapter for OAuth providers, but credentials provider needs JWT strategy
   adapter: PrismaAdapter(db),
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/signin",
+  },
   session: {
     // Use JWT strategy to support credentials provider
     strategy: "jwt",
@@ -179,11 +183,16 @@ export const authConfig = {
     signIn: async ({ user, account }) => {
       // For OAuth providers (Google, etc.), mark email verified for returning users.
       // New users do not exist yet when signIn runs; createUser handles verification.
+      // Never throw here: Auth.js maps uncaught errors to AccessDenied.
       if (account?.provider !== "credentials" && user.email) {
-        await db.user.updateMany({
-          where: { email: user.email },
-          data: { emailVerified: new Date() },
-        });
+        try {
+          await db.user.updateMany({
+            where: { email: user.email },
+            data: { emailVerified: new Date() },
+          });
+        } catch (error) {
+          console.error("[auth] Failed to mark email verified during sign-in", error);
+        }
       }
       return true;
     },

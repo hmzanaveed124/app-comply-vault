@@ -1,6 +1,14 @@
-import { PrismaNeonHttp } from "@prisma/adapter-neon";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { neonConfig, Pool } from "@neondatabase/serverless";
+import ws from "ws";
 import { env } from "~/env";
 import { Prisma, PrismaClient } from "../../generated/prisma";
+
+// Neon HTTP mode cannot start transactions. Auth.js sign-in (and other Prisma
+// writes) need them, which produced AccessDenied on /api/auth/callback/google.
+// The WebSocket adapter supports transactions and still works behind corporate TLS.
+neonConfig.webSocketConstructor = ws;
+neonConfig.pipelineConnect = false;
 
 function resolveDatabaseUrl(): string {
   const url =
@@ -24,12 +32,8 @@ const createPrismaClient = (): PrismaClient => {
   const log: Prisma.LogLevel[] =
     env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"];
 
-  // Neon HTTP driver works behind corporate TLS interception; Prisma TCP engine does not.
   if (usesNeonServerless(url)) {
-    const adapter = new PrismaNeonHttp(url, {
-      arrayMode: false,
-      fullResults: true,
-    });
+    const adapter = new PrismaNeon(new Pool({ connectionString: url }));
     return new PrismaClient({ adapter, log });
   }
 
