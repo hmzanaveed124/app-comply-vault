@@ -1515,6 +1515,7 @@ model StackAssessmentLead {
   firmName                 String?
   role                     String?
   detailedReviewRequested  Boolean         @default(true)
+  evidenceReviewRequestedAt DateTime?
   emailSentAt              DateTime?
   createdAt                DateTime        @default(now())
   updatedAt                DateTime        @updatedAt

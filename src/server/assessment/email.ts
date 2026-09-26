@@ -65,7 +65,7 @@ export async function sendDetailedStackReviewEmail(
 }
 
 export async function sendStackAssessmentLeadNotification(
-  input: LeadEmailInput,
+  input: LeadEmailInput & { evidenceReviewRequested?: boolean },
 ): Promise<{ success: boolean }> {
   const notificationEmail =
     process.env.ASSESSMENT_NOTIFICATION_EMAIL ||
@@ -79,7 +79,7 @@ export async function sendStackAssessmentLeadNotification(
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; line-height: 1.6;">
-      <h2>New Stack Assessment Lead</h2>
+      <h2>${input.evidenceReviewRequested ? "Paid evidence review requested" : "New Stack Assessment Lead"}</h2>
       <div style="background:#f3f4f6;padding:16px;border-radius:8px;">
         <p><strong>Email:</strong> ${escapeHtml(input.email)}</p>
         ${input.firmName ? `<p><strong>Firm:</strong> ${escapeHtml(input.firmName)}</p>` : ""}
@@ -105,7 +105,7 @@ export async function sendStackAssessmentLeadNotification(
     const result = await resend.emails.send({
       from,
       to: notificationEmail,
-      subject: `Stack Assessment Lead: ${input.email}`,
+      subject: `${input.evidenceReviewRequested ? "Evidence Review Request" : "Stack Assessment Lead"}: ${input.email}`,
       html,
     });
     if (result.error) {
