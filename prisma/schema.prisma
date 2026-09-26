@@ -1458,3 +1458,67 @@ model Lead {
   @@index([email])
   @@index([createdAt])
 }
+
+// ============================================
+// Marketing: RIA Compliance Stack Assessment
+// Anonymous funnel analytics + optional lead capture (PII separated)
+// ============================================
+
+/// Persisted statuses only. "Abandoned" is derived at read time from
+/// STARTED/IN_PROGRESS + lastActivityAt (see funnel.ts) — never written.
+enum StackAssessmentStatus {
+  STARTED
+  IN_PROGRESS
+  COMPLETED
+  LEAD_CAPTURED
+}
+
+model StackAssessment {
+  id              String                @id @default(cuid())
+  /// SHA-256 of the opaque access token returned once at create time
+  accessTokenHash String
+  status          StackAssessmentStatus @default(STARTED)
+  currentStep     Int                   @default(0)
+  answers         Json                  @default("{}")
+  score           Int?
+  /// Structured CRM-ready snapshot: headline, area statuses, gaps, profile labels
+  resultSummary   Json?
+  startedAt       DateTime              @default(now())
+  completedAt     DateTime?
+  lastActivityAt  DateTime              @default(now())
+
+  /// First-party attribution only (no fingerprinting)
+  landingPath     String?
+  referrer        String?
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  utmContent      String?
+  utmTerm         String?
+
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  lead            StackAssessmentLead?
+
+  @@index([status, startedAt])
+  @@index([lastActivityAt])
+  @@index([utmSource])
+  @@index([completedAt])
+}
+
+model StackAssessmentLead {
+  id                       String          @id @default(cuid())
+  assessmentId             String          @unique
+  assessment               StackAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  email                    String
+  firmName                 String?
+  role                     String?
+  detailedReviewRequested  Boolean         @default(true)
+  emailSentAt              DateTime?
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
+}

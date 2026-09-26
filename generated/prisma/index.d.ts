@@ -232,6 +232,16 @@ export type EmailTriageItem = $Result.DefaultSelection<Prisma.$EmailTriageItemPa
  * 
  */
 export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
+/**
+ * Model StackAssessment
+ * 
+ */
+export type StackAssessment = $Result.DefaultSelection<Prisma.$StackAssessmentPayload>
+/**
+ * Model StackAssessmentLead
+ * 
+ */
+export type StackAssessmentLead = $Result.DefaultSelection<Prisma.$StackAssessmentLeadPayload>
 
 /**
  * Enums
@@ -742,6 +752,16 @@ export const ClientActivityType: {
 
 export type ClientActivityType = (typeof ClientActivityType)[keyof typeof ClientActivityType]
 
+
+export const StackAssessmentStatus: {
+  STARTED: 'STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  LEAD_CAPTURED: 'LEAD_CAPTURED'
+};
+
+export type StackAssessmentStatus = (typeof StackAssessmentStatus)[keyof typeof StackAssessmentStatus]
+
 }
 
 export type SupervisoryOutcome = $Enums.SupervisoryOutcome
@@ -923,6 +943,10 @@ export const HouseholdMemberRole: typeof $Enums.HouseholdMemberRole
 export type ClientActivityType = $Enums.ClientActivityType
 
 export const ClientActivityType: typeof $Enums.ClientActivityType
+
+export type StackAssessmentStatus = $Enums.StackAssessmentStatus
+
+export const StackAssessmentStatus: typeof $Enums.StackAssessmentStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1471,6 +1495,26 @@ export class PrismaClient<
     * ```
     */
   get lead(): Prisma.LeadDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stackAssessment`: Exposes CRUD operations for the **StackAssessment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StackAssessments
+    * const stackAssessments = await prisma.stackAssessment.findMany()
+    * ```
+    */
+  get stackAssessment(): Prisma.StackAssessmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stackAssessmentLead`: Exposes CRUD operations for the **StackAssessmentLead** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StackAssessmentLeads
+    * const stackAssessmentLeads = await prisma.stackAssessmentLead.findMany()
+    * ```
+    */
+  get stackAssessmentLead(): Prisma.StackAssessmentLeadDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1954,7 +1998,9 @@ export namespace Prisma {
     MailboxConnection: 'MailboxConnection',
     IngestJob: 'IngestJob',
     EmailTriageItem: 'EmailTriageItem',
-    Lead: 'Lead'
+    Lead: 'Lead',
+    StackAssessment: 'StackAssessment',
+    StackAssessmentLead: 'StackAssessmentLead'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1973,7 +2019,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "workspace" | "candidateResponsePack" | "indexCoverageManifest" | "parkedIngest" | "userWorkspace" | "meeting" | "version" | "recordSeal" | "flag" | "resolutionRecord" | "evidenceClassification" | "actionItem" | "evidenceLink" | "verification" | "auditEvent" | "account" | "session" | "user" | "verificationToken" | "invitation" | "integrationCredential" | "integrationConfig" | "integrationSyncLog" | "firmProfile" | "disclosureCategory" | "suppressionLogEntry" | "firmProfileVersion" | "client" | "clientHousehold" | "clientHouseholdMember" | "clientActivity" | "emailAlias" | "evidenceItem" | "evidenceTag" | "evidenceEmbedding" | "communicationThread" | "supervisorySamplingConfig" | "communication" | "attachment" | "mailboxConnection" | "ingestJob" | "emailTriageItem" | "lead"
+      modelProps: "workspace" | "candidateResponsePack" | "indexCoverageManifest" | "parkedIngest" | "userWorkspace" | "meeting" | "version" | "recordSeal" | "flag" | "resolutionRecord" | "evidenceClassification" | "actionItem" | "evidenceLink" | "verification" | "auditEvent" | "account" | "session" | "user" | "verificationToken" | "invitation" | "integrationCredential" | "integrationConfig" | "integrationSyncLog" | "firmProfile" | "disclosureCategory" | "suppressionLogEntry" | "firmProfileVersion" | "client" | "clientHousehold" | "clientHouseholdMember" | "clientActivity" | "emailAlias" | "evidenceItem" | "evidenceTag" | "evidenceEmbedding" | "communicationThread" | "supervisorySamplingConfig" | "communication" | "attachment" | "mailboxConnection" | "ingestJob" | "emailTriageItem" | "lead" | "stackAssessment" | "stackAssessmentLead"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -5143,6 +5189,154 @@ export namespace Prisma {
           }
         }
       }
+      StackAssessment: {
+        payload: Prisma.$StackAssessmentPayload<ExtArgs>
+        fields: Prisma.StackAssessmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StackAssessmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StackAssessmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>
+          }
+          findFirst: {
+            args: Prisma.StackAssessmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StackAssessmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>
+          }
+          findMany: {
+            args: Prisma.StackAssessmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>[]
+          }
+          create: {
+            args: Prisma.StackAssessmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>
+          }
+          createMany: {
+            args: Prisma.StackAssessmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StackAssessmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>[]
+          }
+          delete: {
+            args: Prisma.StackAssessmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>
+          }
+          update: {
+            args: Prisma.StackAssessmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.StackAssessmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StackAssessmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StackAssessmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.StackAssessmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentPayload>
+          }
+          aggregate: {
+            args: Prisma.StackAssessmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStackAssessment>
+          }
+          groupBy: {
+            args: Prisma.StackAssessmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StackAssessmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StackAssessmentCountArgs<ExtArgs>
+            result: $Utils.Optional<StackAssessmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      StackAssessmentLead: {
+        payload: Prisma.$StackAssessmentLeadPayload<ExtArgs>
+        fields: Prisma.StackAssessmentLeadFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StackAssessmentLeadFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StackAssessmentLeadFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>
+          }
+          findFirst: {
+            args: Prisma.StackAssessmentLeadFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StackAssessmentLeadFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>
+          }
+          findMany: {
+            args: Prisma.StackAssessmentLeadFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>[]
+          }
+          create: {
+            args: Prisma.StackAssessmentLeadCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>
+          }
+          createMany: {
+            args: Prisma.StackAssessmentLeadCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StackAssessmentLeadCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>[]
+          }
+          delete: {
+            args: Prisma.StackAssessmentLeadDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>
+          }
+          update: {
+            args: Prisma.StackAssessmentLeadUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>
+          }
+          deleteMany: {
+            args: Prisma.StackAssessmentLeadDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StackAssessmentLeadUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StackAssessmentLeadUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>[]
+          }
+          upsert: {
+            args: Prisma.StackAssessmentLeadUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StackAssessmentLeadPayload>
+          }
+          aggregate: {
+            args: Prisma.StackAssessmentLeadAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStackAssessmentLead>
+          }
+          groupBy: {
+            args: Prisma.StackAssessmentLeadGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StackAssessmentLeadGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StackAssessmentLeadCountArgs<ExtArgs>
+            result: $Utils.Optional<StackAssessmentLeadCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -5282,6 +5476,8 @@ export namespace Prisma {
     ingestJob?: IngestJobOmit
     emailTriageItem?: EmailTriageItemOmit
     lead?: LeadOmit
+    stackAssessment?: StackAssessmentOmit
+    stackAssessmentLead?: StackAssessmentLeadOmit
   }
 
   /* Types for Logging */
@@ -58206,6 +58402,2400 @@ export namespace Prisma {
 
 
   /**
+   * Model StackAssessment
+   */
+
+  export type AggregateStackAssessment = {
+    _count: StackAssessmentCountAggregateOutputType | null
+    _avg: StackAssessmentAvgAggregateOutputType | null
+    _sum: StackAssessmentSumAggregateOutputType | null
+    _min: StackAssessmentMinAggregateOutputType | null
+    _max: StackAssessmentMaxAggregateOutputType | null
+  }
+
+  export type StackAssessmentAvgAggregateOutputType = {
+    currentStep: number | null
+    score: number | null
+  }
+
+  export type StackAssessmentSumAggregateOutputType = {
+    currentStep: number | null
+    score: number | null
+  }
+
+  export type StackAssessmentMinAggregateOutputType = {
+    id: string | null
+    accessTokenHash: string | null
+    status: $Enums.StackAssessmentStatus | null
+    currentStep: number | null
+    score: number | null
+    startedAt: Date | null
+    completedAt: Date | null
+    lastActivityAt: Date | null
+    landingPath: string | null
+    referrer: string | null
+    utmSource: string | null
+    utmMedium: string | null
+    utmCampaign: string | null
+    utmContent: string | null
+    utmTerm: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StackAssessmentMaxAggregateOutputType = {
+    id: string | null
+    accessTokenHash: string | null
+    status: $Enums.StackAssessmentStatus | null
+    currentStep: number | null
+    score: number | null
+    startedAt: Date | null
+    completedAt: Date | null
+    lastActivityAt: Date | null
+    landingPath: string | null
+    referrer: string | null
+    utmSource: string | null
+    utmMedium: string | null
+    utmCampaign: string | null
+    utmContent: string | null
+    utmTerm: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StackAssessmentCountAggregateOutputType = {
+    id: number
+    accessTokenHash: number
+    status: number
+    currentStep: number
+    answers: number
+    score: number
+    resultSummary: number
+    startedAt: number
+    completedAt: number
+    lastActivityAt: number
+    landingPath: number
+    referrer: number
+    utmSource: number
+    utmMedium: number
+    utmCampaign: number
+    utmContent: number
+    utmTerm: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StackAssessmentAvgAggregateInputType = {
+    currentStep?: true
+    score?: true
+  }
+
+  export type StackAssessmentSumAggregateInputType = {
+    currentStep?: true
+    score?: true
+  }
+
+  export type StackAssessmentMinAggregateInputType = {
+    id?: true
+    accessTokenHash?: true
+    status?: true
+    currentStep?: true
+    score?: true
+    startedAt?: true
+    completedAt?: true
+    lastActivityAt?: true
+    landingPath?: true
+    referrer?: true
+    utmSource?: true
+    utmMedium?: true
+    utmCampaign?: true
+    utmContent?: true
+    utmTerm?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StackAssessmentMaxAggregateInputType = {
+    id?: true
+    accessTokenHash?: true
+    status?: true
+    currentStep?: true
+    score?: true
+    startedAt?: true
+    completedAt?: true
+    lastActivityAt?: true
+    landingPath?: true
+    referrer?: true
+    utmSource?: true
+    utmMedium?: true
+    utmCampaign?: true
+    utmContent?: true
+    utmTerm?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StackAssessmentCountAggregateInputType = {
+    id?: true
+    accessTokenHash?: true
+    status?: true
+    currentStep?: true
+    answers?: true
+    score?: true
+    resultSummary?: true
+    startedAt?: true
+    completedAt?: true
+    lastActivityAt?: true
+    landingPath?: true
+    referrer?: true
+    utmSource?: true
+    utmMedium?: true
+    utmCampaign?: true
+    utmContent?: true
+    utmTerm?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StackAssessmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StackAssessment to aggregate.
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessments to fetch.
+     */
+    orderBy?: StackAssessmentOrderByWithRelationInput | StackAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StackAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StackAssessments
+    **/
+    _count?: true | StackAssessmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StackAssessmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StackAssessmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StackAssessmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StackAssessmentMaxAggregateInputType
+  }
+
+  export type GetStackAssessmentAggregateType<T extends StackAssessmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateStackAssessment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStackAssessment[P]>
+      : GetScalarType<T[P], AggregateStackAssessment[P]>
+  }
+
+
+
+
+  export type StackAssessmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StackAssessmentWhereInput
+    orderBy?: StackAssessmentOrderByWithAggregationInput | StackAssessmentOrderByWithAggregationInput[]
+    by: StackAssessmentScalarFieldEnum[] | StackAssessmentScalarFieldEnum
+    having?: StackAssessmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StackAssessmentCountAggregateInputType | true
+    _avg?: StackAssessmentAvgAggregateInputType
+    _sum?: StackAssessmentSumAggregateInputType
+    _min?: StackAssessmentMinAggregateInputType
+    _max?: StackAssessmentMaxAggregateInputType
+  }
+
+  export type StackAssessmentGroupByOutputType = {
+    id: string
+    accessTokenHash: string
+    status: $Enums.StackAssessmentStatus
+    currentStep: number
+    answers: JsonValue
+    score: number | null
+    resultSummary: JsonValue | null
+    startedAt: Date
+    completedAt: Date | null
+    lastActivityAt: Date
+    landingPath: string | null
+    referrer: string | null
+    utmSource: string | null
+    utmMedium: string | null
+    utmCampaign: string | null
+    utmContent: string | null
+    utmTerm: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StackAssessmentCountAggregateOutputType | null
+    _avg: StackAssessmentAvgAggregateOutputType | null
+    _sum: StackAssessmentSumAggregateOutputType | null
+    _min: StackAssessmentMinAggregateOutputType | null
+    _max: StackAssessmentMaxAggregateOutputType | null
+  }
+
+  type GetStackAssessmentGroupByPayload<T extends StackAssessmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StackAssessmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StackAssessmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StackAssessmentGroupByOutputType[P]>
+            : GetScalarType<T[P], StackAssessmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StackAssessmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accessTokenHash?: boolean
+    status?: boolean
+    currentStep?: boolean
+    answers?: boolean
+    score?: boolean
+    resultSummary?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    lastActivityAt?: boolean
+    landingPath?: boolean
+    referrer?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lead?: boolean | StackAssessment$leadArgs<ExtArgs>
+  }, ExtArgs["result"]["stackAssessment"]>
+
+  export type StackAssessmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accessTokenHash?: boolean
+    status?: boolean
+    currentStep?: boolean
+    answers?: boolean
+    score?: boolean
+    resultSummary?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    lastActivityAt?: boolean
+    landingPath?: boolean
+    referrer?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stackAssessment"]>
+
+  export type StackAssessmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    accessTokenHash?: boolean
+    status?: boolean
+    currentStep?: boolean
+    answers?: boolean
+    score?: boolean
+    resultSummary?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    lastActivityAt?: boolean
+    landingPath?: boolean
+    referrer?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stackAssessment"]>
+
+  export type StackAssessmentSelectScalar = {
+    id?: boolean
+    accessTokenHash?: boolean
+    status?: boolean
+    currentStep?: boolean
+    answers?: boolean
+    score?: boolean
+    resultSummary?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    lastActivityAt?: boolean
+    landingPath?: boolean
+    referrer?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    utmContent?: boolean
+    utmTerm?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StackAssessmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "accessTokenHash" | "status" | "currentStep" | "answers" | "score" | "resultSummary" | "startedAt" | "completedAt" | "lastActivityAt" | "landingPath" | "referrer" | "utmSource" | "utmMedium" | "utmCampaign" | "utmContent" | "utmTerm" | "createdAt" | "updatedAt", ExtArgs["result"]["stackAssessment"]>
+  export type StackAssessmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | StackAssessment$leadArgs<ExtArgs>
+  }
+  export type StackAssessmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type StackAssessmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $StackAssessmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StackAssessment"
+    objects: {
+      lead: Prisma.$StackAssessmentLeadPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * SHA-256 of the opaque access token returned once at create time
+       */
+      accessTokenHash: string
+      status: $Enums.StackAssessmentStatus
+      currentStep: number
+      answers: Prisma.JsonValue
+      score: number | null
+      /**
+       * Structured CRM-ready snapshot: headline, area statuses, gaps, profile labels
+       */
+      resultSummary: Prisma.JsonValue | null
+      startedAt: Date
+      completedAt: Date | null
+      lastActivityAt: Date
+      /**
+       * First-party attribution only (no fingerprinting)
+       */
+      landingPath: string | null
+      referrer: string | null
+      utmSource: string | null
+      utmMedium: string | null
+      utmCampaign: string | null
+      utmContent: string | null
+      utmTerm: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["stackAssessment"]>
+    composites: {}
+  }
+
+  type StackAssessmentGetPayload<S extends boolean | null | undefined | StackAssessmentDefaultArgs> = $Result.GetResult<Prisma.$StackAssessmentPayload, S>
+
+  type StackAssessmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StackAssessmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StackAssessmentCountAggregateInputType | true
+    }
+
+  export interface StackAssessmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StackAssessment'], meta: { name: 'StackAssessment' } }
+    /**
+     * Find zero or one StackAssessment that matches the filter.
+     * @param {StackAssessmentFindUniqueArgs} args - Arguments to find a StackAssessment
+     * @example
+     * // Get one StackAssessment
+     * const stackAssessment = await prisma.stackAssessment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StackAssessmentFindUniqueArgs>(args: SelectSubset<T, StackAssessmentFindUniqueArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StackAssessment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StackAssessmentFindUniqueOrThrowArgs} args - Arguments to find a StackAssessment
+     * @example
+     * // Get one StackAssessment
+     * const stackAssessment = await prisma.stackAssessment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StackAssessmentFindUniqueOrThrowArgs>(args: SelectSubset<T, StackAssessmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StackAssessment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentFindFirstArgs} args - Arguments to find a StackAssessment
+     * @example
+     * // Get one StackAssessment
+     * const stackAssessment = await prisma.stackAssessment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StackAssessmentFindFirstArgs>(args?: SelectSubset<T, StackAssessmentFindFirstArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StackAssessment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentFindFirstOrThrowArgs} args - Arguments to find a StackAssessment
+     * @example
+     * // Get one StackAssessment
+     * const stackAssessment = await prisma.stackAssessment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StackAssessmentFindFirstOrThrowArgs>(args?: SelectSubset<T, StackAssessmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StackAssessments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StackAssessments
+     * const stackAssessments = await prisma.stackAssessment.findMany()
+     * 
+     * // Get first 10 StackAssessments
+     * const stackAssessments = await prisma.stackAssessment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stackAssessmentWithIdOnly = await prisma.stackAssessment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StackAssessmentFindManyArgs>(args?: SelectSubset<T, StackAssessmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StackAssessment.
+     * @param {StackAssessmentCreateArgs} args - Arguments to create a StackAssessment.
+     * @example
+     * // Create one StackAssessment
+     * const StackAssessment = await prisma.stackAssessment.create({
+     *   data: {
+     *     // ... data to create a StackAssessment
+     *   }
+     * })
+     * 
+     */
+    create<T extends StackAssessmentCreateArgs>(args: SelectSubset<T, StackAssessmentCreateArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StackAssessments.
+     * @param {StackAssessmentCreateManyArgs} args - Arguments to create many StackAssessments.
+     * @example
+     * // Create many StackAssessments
+     * const stackAssessment = await prisma.stackAssessment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StackAssessmentCreateManyArgs>(args?: SelectSubset<T, StackAssessmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StackAssessments and returns the data saved in the database.
+     * @param {StackAssessmentCreateManyAndReturnArgs} args - Arguments to create many StackAssessments.
+     * @example
+     * // Create many StackAssessments
+     * const stackAssessment = await prisma.stackAssessment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StackAssessments and only return the `id`
+     * const stackAssessmentWithIdOnly = await prisma.stackAssessment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StackAssessmentCreateManyAndReturnArgs>(args?: SelectSubset<T, StackAssessmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StackAssessment.
+     * @param {StackAssessmentDeleteArgs} args - Arguments to delete one StackAssessment.
+     * @example
+     * // Delete one StackAssessment
+     * const StackAssessment = await prisma.stackAssessment.delete({
+     *   where: {
+     *     // ... filter to delete one StackAssessment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StackAssessmentDeleteArgs>(args: SelectSubset<T, StackAssessmentDeleteArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StackAssessment.
+     * @param {StackAssessmentUpdateArgs} args - Arguments to update one StackAssessment.
+     * @example
+     * // Update one StackAssessment
+     * const stackAssessment = await prisma.stackAssessment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StackAssessmentUpdateArgs>(args: SelectSubset<T, StackAssessmentUpdateArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StackAssessments.
+     * @param {StackAssessmentDeleteManyArgs} args - Arguments to filter StackAssessments to delete.
+     * @example
+     * // Delete a few StackAssessments
+     * const { count } = await prisma.stackAssessment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StackAssessmentDeleteManyArgs>(args?: SelectSubset<T, StackAssessmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StackAssessments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StackAssessments
+     * const stackAssessment = await prisma.stackAssessment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StackAssessmentUpdateManyArgs>(args: SelectSubset<T, StackAssessmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StackAssessments and returns the data updated in the database.
+     * @param {StackAssessmentUpdateManyAndReturnArgs} args - Arguments to update many StackAssessments.
+     * @example
+     * // Update many StackAssessments
+     * const stackAssessment = await prisma.stackAssessment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StackAssessments and only return the `id`
+     * const stackAssessmentWithIdOnly = await prisma.stackAssessment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StackAssessmentUpdateManyAndReturnArgs>(args: SelectSubset<T, StackAssessmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StackAssessment.
+     * @param {StackAssessmentUpsertArgs} args - Arguments to update or create a StackAssessment.
+     * @example
+     * // Update or create a StackAssessment
+     * const stackAssessment = await prisma.stackAssessment.upsert({
+     *   create: {
+     *     // ... data to create a StackAssessment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StackAssessment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StackAssessmentUpsertArgs>(args: SelectSubset<T, StackAssessmentUpsertArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StackAssessments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentCountArgs} args - Arguments to filter StackAssessments to count.
+     * @example
+     * // Count the number of StackAssessments
+     * const count = await prisma.stackAssessment.count({
+     *   where: {
+     *     // ... the filter for the StackAssessments we want to count
+     *   }
+     * })
+    **/
+    count<T extends StackAssessmentCountArgs>(
+      args?: Subset<T, StackAssessmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StackAssessmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StackAssessment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StackAssessmentAggregateArgs>(args: Subset<T, StackAssessmentAggregateArgs>): Prisma.PrismaPromise<GetStackAssessmentAggregateType<T>>
+
+    /**
+     * Group by StackAssessment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StackAssessmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StackAssessmentGroupByArgs['orderBy'] }
+        : { orderBy?: StackAssessmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StackAssessmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStackAssessmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StackAssessment model
+   */
+  readonly fields: StackAssessmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StackAssessment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StackAssessmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    lead<T extends StackAssessment$leadArgs<ExtArgs> = {}>(args?: Subset<T, StackAssessment$leadArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StackAssessment model
+   */
+  interface StackAssessmentFieldRefs {
+    readonly id: FieldRef<"StackAssessment", 'String'>
+    readonly accessTokenHash: FieldRef<"StackAssessment", 'String'>
+    readonly status: FieldRef<"StackAssessment", 'StackAssessmentStatus'>
+    readonly currentStep: FieldRef<"StackAssessment", 'Int'>
+    readonly answers: FieldRef<"StackAssessment", 'Json'>
+    readonly score: FieldRef<"StackAssessment", 'Int'>
+    readonly resultSummary: FieldRef<"StackAssessment", 'Json'>
+    readonly startedAt: FieldRef<"StackAssessment", 'DateTime'>
+    readonly completedAt: FieldRef<"StackAssessment", 'DateTime'>
+    readonly lastActivityAt: FieldRef<"StackAssessment", 'DateTime'>
+    readonly landingPath: FieldRef<"StackAssessment", 'String'>
+    readonly referrer: FieldRef<"StackAssessment", 'String'>
+    readonly utmSource: FieldRef<"StackAssessment", 'String'>
+    readonly utmMedium: FieldRef<"StackAssessment", 'String'>
+    readonly utmCampaign: FieldRef<"StackAssessment", 'String'>
+    readonly utmContent: FieldRef<"StackAssessment", 'String'>
+    readonly utmTerm: FieldRef<"StackAssessment", 'String'>
+    readonly createdAt: FieldRef<"StackAssessment", 'DateTime'>
+    readonly updatedAt: FieldRef<"StackAssessment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StackAssessment findUnique
+   */
+  export type StackAssessmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessment to fetch.
+     */
+    where: StackAssessmentWhereUniqueInput
+  }
+
+  /**
+   * StackAssessment findUniqueOrThrow
+   */
+  export type StackAssessmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessment to fetch.
+     */
+    where: StackAssessmentWhereUniqueInput
+  }
+
+  /**
+   * StackAssessment findFirst
+   */
+  export type StackAssessmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessment to fetch.
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessments to fetch.
+     */
+    orderBy?: StackAssessmentOrderByWithRelationInput | StackAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StackAssessments.
+     */
+    cursor?: StackAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StackAssessments.
+     */
+    distinct?: StackAssessmentScalarFieldEnum | StackAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * StackAssessment findFirstOrThrow
+   */
+  export type StackAssessmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessment to fetch.
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessments to fetch.
+     */
+    orderBy?: StackAssessmentOrderByWithRelationInput | StackAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StackAssessments.
+     */
+    cursor?: StackAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StackAssessments.
+     */
+    distinct?: StackAssessmentScalarFieldEnum | StackAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * StackAssessment findMany
+   */
+  export type StackAssessmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessments to fetch.
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessments to fetch.
+     */
+    orderBy?: StackAssessmentOrderByWithRelationInput | StackAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StackAssessments.
+     */
+    cursor?: StackAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessments.
+     */
+    skip?: number
+    distinct?: StackAssessmentScalarFieldEnum | StackAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * StackAssessment create
+   */
+  export type StackAssessmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StackAssessment.
+     */
+    data: XOR<StackAssessmentCreateInput, StackAssessmentUncheckedCreateInput>
+  }
+
+  /**
+   * StackAssessment createMany
+   */
+  export type StackAssessmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StackAssessments.
+     */
+    data: StackAssessmentCreateManyInput | StackAssessmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StackAssessment createManyAndReturn
+   */
+  export type StackAssessmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many StackAssessments.
+     */
+    data: StackAssessmentCreateManyInput | StackAssessmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StackAssessment update
+   */
+  export type StackAssessmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StackAssessment.
+     */
+    data: XOR<StackAssessmentUpdateInput, StackAssessmentUncheckedUpdateInput>
+    /**
+     * Choose, which StackAssessment to update.
+     */
+    where: StackAssessmentWhereUniqueInput
+  }
+
+  /**
+   * StackAssessment updateMany
+   */
+  export type StackAssessmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StackAssessments.
+     */
+    data: XOR<StackAssessmentUpdateManyMutationInput, StackAssessmentUncheckedUpdateManyInput>
+    /**
+     * Filter which StackAssessments to update
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * Limit how many StackAssessments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StackAssessment updateManyAndReturn
+   */
+  export type StackAssessmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * The data used to update StackAssessments.
+     */
+    data: XOR<StackAssessmentUpdateManyMutationInput, StackAssessmentUncheckedUpdateManyInput>
+    /**
+     * Filter which StackAssessments to update
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * Limit how many StackAssessments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StackAssessment upsert
+   */
+  export type StackAssessmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StackAssessment to update in case it exists.
+     */
+    where: StackAssessmentWhereUniqueInput
+    /**
+     * In case the StackAssessment found by the `where` argument doesn't exist, create a new StackAssessment with this data.
+     */
+    create: XOR<StackAssessmentCreateInput, StackAssessmentUncheckedCreateInput>
+    /**
+     * In case the StackAssessment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StackAssessmentUpdateInput, StackAssessmentUncheckedUpdateInput>
+  }
+
+  /**
+   * StackAssessment delete
+   */
+  export type StackAssessmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter which StackAssessment to delete.
+     */
+    where: StackAssessmentWhereUniqueInput
+  }
+
+  /**
+   * StackAssessment deleteMany
+   */
+  export type StackAssessmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StackAssessments to delete
+     */
+    where?: StackAssessmentWhereInput
+    /**
+     * Limit how many StackAssessments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StackAssessment.lead
+   */
+  export type StackAssessment$leadArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    where?: StackAssessmentLeadWhereInput
+  }
+
+  /**
+   * StackAssessment without action
+   */
+  export type StackAssessmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessment
+     */
+    select?: StackAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessment
+     */
+    omit?: StackAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StackAssessmentLead
+   */
+
+  export type AggregateStackAssessmentLead = {
+    _count: StackAssessmentLeadCountAggregateOutputType | null
+    _min: StackAssessmentLeadMinAggregateOutputType | null
+    _max: StackAssessmentLeadMaxAggregateOutputType | null
+  }
+
+  export type StackAssessmentLeadMinAggregateOutputType = {
+    id: string | null
+    assessmentId: string | null
+    email: string | null
+    firmName: string | null
+    role: string | null
+    detailedReviewRequested: boolean | null
+    emailSentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StackAssessmentLeadMaxAggregateOutputType = {
+    id: string | null
+    assessmentId: string | null
+    email: string | null
+    firmName: string | null
+    role: string | null
+    detailedReviewRequested: boolean | null
+    emailSentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StackAssessmentLeadCountAggregateOutputType = {
+    id: number
+    assessmentId: number
+    email: number
+    firmName: number
+    role: number
+    detailedReviewRequested: number
+    emailSentAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StackAssessmentLeadMinAggregateInputType = {
+    id?: true
+    assessmentId?: true
+    email?: true
+    firmName?: true
+    role?: true
+    detailedReviewRequested?: true
+    emailSentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StackAssessmentLeadMaxAggregateInputType = {
+    id?: true
+    assessmentId?: true
+    email?: true
+    firmName?: true
+    role?: true
+    detailedReviewRequested?: true
+    emailSentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StackAssessmentLeadCountAggregateInputType = {
+    id?: true
+    assessmentId?: true
+    email?: true
+    firmName?: true
+    role?: true
+    detailedReviewRequested?: true
+    emailSentAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StackAssessmentLeadAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StackAssessmentLead to aggregate.
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessmentLeads to fetch.
+     */
+    orderBy?: StackAssessmentLeadOrderByWithRelationInput | StackAssessmentLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StackAssessmentLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessmentLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessmentLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StackAssessmentLeads
+    **/
+    _count?: true | StackAssessmentLeadCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StackAssessmentLeadMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StackAssessmentLeadMaxAggregateInputType
+  }
+
+  export type GetStackAssessmentLeadAggregateType<T extends StackAssessmentLeadAggregateArgs> = {
+        [P in keyof T & keyof AggregateStackAssessmentLead]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStackAssessmentLead[P]>
+      : GetScalarType<T[P], AggregateStackAssessmentLead[P]>
+  }
+
+
+
+
+  export type StackAssessmentLeadGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StackAssessmentLeadWhereInput
+    orderBy?: StackAssessmentLeadOrderByWithAggregationInput | StackAssessmentLeadOrderByWithAggregationInput[]
+    by: StackAssessmentLeadScalarFieldEnum[] | StackAssessmentLeadScalarFieldEnum
+    having?: StackAssessmentLeadScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StackAssessmentLeadCountAggregateInputType | true
+    _min?: StackAssessmentLeadMinAggregateInputType
+    _max?: StackAssessmentLeadMaxAggregateInputType
+  }
+
+  export type StackAssessmentLeadGroupByOutputType = {
+    id: string
+    assessmentId: string
+    email: string
+    firmName: string | null
+    role: string | null
+    detailedReviewRequested: boolean
+    emailSentAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StackAssessmentLeadCountAggregateOutputType | null
+    _min: StackAssessmentLeadMinAggregateOutputType | null
+    _max: StackAssessmentLeadMaxAggregateOutputType | null
+  }
+
+  type GetStackAssessmentLeadGroupByPayload<T extends StackAssessmentLeadGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StackAssessmentLeadGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StackAssessmentLeadGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StackAssessmentLeadGroupByOutputType[P]>
+            : GetScalarType<T[P], StackAssessmentLeadGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StackAssessmentLeadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    assessmentId?: boolean
+    email?: boolean
+    firmName?: boolean
+    role?: boolean
+    detailedReviewRequested?: boolean
+    emailSentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assessment?: boolean | StackAssessmentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stackAssessmentLead"]>
+
+  export type StackAssessmentLeadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    assessmentId?: boolean
+    email?: boolean
+    firmName?: boolean
+    role?: boolean
+    detailedReviewRequested?: boolean
+    emailSentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assessment?: boolean | StackAssessmentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stackAssessmentLead"]>
+
+  export type StackAssessmentLeadSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    assessmentId?: boolean
+    email?: boolean
+    firmName?: boolean
+    role?: boolean
+    detailedReviewRequested?: boolean
+    emailSentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assessment?: boolean | StackAssessmentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stackAssessmentLead"]>
+
+  export type StackAssessmentLeadSelectScalar = {
+    id?: boolean
+    assessmentId?: boolean
+    email?: boolean
+    firmName?: boolean
+    role?: boolean
+    detailedReviewRequested?: boolean
+    emailSentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StackAssessmentLeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "assessmentId" | "email" | "firmName" | "role" | "detailedReviewRequested" | "emailSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["stackAssessmentLead"]>
+  export type StackAssessmentLeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assessment?: boolean | StackAssessmentDefaultArgs<ExtArgs>
+  }
+  export type StackAssessmentLeadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assessment?: boolean | StackAssessmentDefaultArgs<ExtArgs>
+  }
+  export type StackAssessmentLeadIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assessment?: boolean | StackAssessmentDefaultArgs<ExtArgs>
+  }
+
+  export type $StackAssessmentLeadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StackAssessmentLead"
+    objects: {
+      assessment: Prisma.$StackAssessmentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      assessmentId: string
+      email: string
+      firmName: string | null
+      role: string | null
+      detailedReviewRequested: boolean
+      emailSentAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["stackAssessmentLead"]>
+    composites: {}
+  }
+
+  type StackAssessmentLeadGetPayload<S extends boolean | null | undefined | StackAssessmentLeadDefaultArgs> = $Result.GetResult<Prisma.$StackAssessmentLeadPayload, S>
+
+  type StackAssessmentLeadCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StackAssessmentLeadFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StackAssessmentLeadCountAggregateInputType | true
+    }
+
+  export interface StackAssessmentLeadDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StackAssessmentLead'], meta: { name: 'StackAssessmentLead' } }
+    /**
+     * Find zero or one StackAssessmentLead that matches the filter.
+     * @param {StackAssessmentLeadFindUniqueArgs} args - Arguments to find a StackAssessmentLead
+     * @example
+     * // Get one StackAssessmentLead
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StackAssessmentLeadFindUniqueArgs>(args: SelectSubset<T, StackAssessmentLeadFindUniqueArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StackAssessmentLead that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StackAssessmentLeadFindUniqueOrThrowArgs} args - Arguments to find a StackAssessmentLead
+     * @example
+     * // Get one StackAssessmentLead
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StackAssessmentLeadFindUniqueOrThrowArgs>(args: SelectSubset<T, StackAssessmentLeadFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StackAssessmentLead that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadFindFirstArgs} args - Arguments to find a StackAssessmentLead
+     * @example
+     * // Get one StackAssessmentLead
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StackAssessmentLeadFindFirstArgs>(args?: SelectSubset<T, StackAssessmentLeadFindFirstArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StackAssessmentLead that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadFindFirstOrThrowArgs} args - Arguments to find a StackAssessmentLead
+     * @example
+     * // Get one StackAssessmentLead
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StackAssessmentLeadFindFirstOrThrowArgs>(args?: SelectSubset<T, StackAssessmentLeadFindFirstOrThrowArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StackAssessmentLeads that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StackAssessmentLeads
+     * const stackAssessmentLeads = await prisma.stackAssessmentLead.findMany()
+     * 
+     * // Get first 10 StackAssessmentLeads
+     * const stackAssessmentLeads = await prisma.stackAssessmentLead.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stackAssessmentLeadWithIdOnly = await prisma.stackAssessmentLead.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StackAssessmentLeadFindManyArgs>(args?: SelectSubset<T, StackAssessmentLeadFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StackAssessmentLead.
+     * @param {StackAssessmentLeadCreateArgs} args - Arguments to create a StackAssessmentLead.
+     * @example
+     * // Create one StackAssessmentLead
+     * const StackAssessmentLead = await prisma.stackAssessmentLead.create({
+     *   data: {
+     *     // ... data to create a StackAssessmentLead
+     *   }
+     * })
+     * 
+     */
+    create<T extends StackAssessmentLeadCreateArgs>(args: SelectSubset<T, StackAssessmentLeadCreateArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StackAssessmentLeads.
+     * @param {StackAssessmentLeadCreateManyArgs} args - Arguments to create many StackAssessmentLeads.
+     * @example
+     * // Create many StackAssessmentLeads
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StackAssessmentLeadCreateManyArgs>(args?: SelectSubset<T, StackAssessmentLeadCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StackAssessmentLeads and returns the data saved in the database.
+     * @param {StackAssessmentLeadCreateManyAndReturnArgs} args - Arguments to create many StackAssessmentLeads.
+     * @example
+     * // Create many StackAssessmentLeads
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StackAssessmentLeads and only return the `id`
+     * const stackAssessmentLeadWithIdOnly = await prisma.stackAssessmentLead.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StackAssessmentLeadCreateManyAndReturnArgs>(args?: SelectSubset<T, StackAssessmentLeadCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StackAssessmentLead.
+     * @param {StackAssessmentLeadDeleteArgs} args - Arguments to delete one StackAssessmentLead.
+     * @example
+     * // Delete one StackAssessmentLead
+     * const StackAssessmentLead = await prisma.stackAssessmentLead.delete({
+     *   where: {
+     *     // ... filter to delete one StackAssessmentLead
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StackAssessmentLeadDeleteArgs>(args: SelectSubset<T, StackAssessmentLeadDeleteArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StackAssessmentLead.
+     * @param {StackAssessmentLeadUpdateArgs} args - Arguments to update one StackAssessmentLead.
+     * @example
+     * // Update one StackAssessmentLead
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StackAssessmentLeadUpdateArgs>(args: SelectSubset<T, StackAssessmentLeadUpdateArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StackAssessmentLeads.
+     * @param {StackAssessmentLeadDeleteManyArgs} args - Arguments to filter StackAssessmentLeads to delete.
+     * @example
+     * // Delete a few StackAssessmentLeads
+     * const { count } = await prisma.stackAssessmentLead.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StackAssessmentLeadDeleteManyArgs>(args?: SelectSubset<T, StackAssessmentLeadDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StackAssessmentLeads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StackAssessmentLeads
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StackAssessmentLeadUpdateManyArgs>(args: SelectSubset<T, StackAssessmentLeadUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StackAssessmentLeads and returns the data updated in the database.
+     * @param {StackAssessmentLeadUpdateManyAndReturnArgs} args - Arguments to update many StackAssessmentLeads.
+     * @example
+     * // Update many StackAssessmentLeads
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StackAssessmentLeads and only return the `id`
+     * const stackAssessmentLeadWithIdOnly = await prisma.stackAssessmentLead.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StackAssessmentLeadUpdateManyAndReturnArgs>(args: SelectSubset<T, StackAssessmentLeadUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StackAssessmentLead.
+     * @param {StackAssessmentLeadUpsertArgs} args - Arguments to update or create a StackAssessmentLead.
+     * @example
+     * // Update or create a StackAssessmentLead
+     * const stackAssessmentLead = await prisma.stackAssessmentLead.upsert({
+     *   create: {
+     *     // ... data to create a StackAssessmentLead
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StackAssessmentLead we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StackAssessmentLeadUpsertArgs>(args: SelectSubset<T, StackAssessmentLeadUpsertArgs<ExtArgs>>): Prisma__StackAssessmentLeadClient<$Result.GetResult<Prisma.$StackAssessmentLeadPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StackAssessmentLeads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadCountArgs} args - Arguments to filter StackAssessmentLeads to count.
+     * @example
+     * // Count the number of StackAssessmentLeads
+     * const count = await prisma.stackAssessmentLead.count({
+     *   where: {
+     *     // ... the filter for the StackAssessmentLeads we want to count
+     *   }
+     * })
+    **/
+    count<T extends StackAssessmentLeadCountArgs>(
+      args?: Subset<T, StackAssessmentLeadCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StackAssessmentLeadCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StackAssessmentLead.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StackAssessmentLeadAggregateArgs>(args: Subset<T, StackAssessmentLeadAggregateArgs>): Prisma.PrismaPromise<GetStackAssessmentLeadAggregateType<T>>
+
+    /**
+     * Group by StackAssessmentLead.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StackAssessmentLeadGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StackAssessmentLeadGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StackAssessmentLeadGroupByArgs['orderBy'] }
+        : { orderBy?: StackAssessmentLeadGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StackAssessmentLeadGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStackAssessmentLeadGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StackAssessmentLead model
+   */
+  readonly fields: StackAssessmentLeadFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StackAssessmentLead.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StackAssessmentLeadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    assessment<T extends StackAssessmentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StackAssessmentDefaultArgs<ExtArgs>>): Prisma__StackAssessmentClient<$Result.GetResult<Prisma.$StackAssessmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StackAssessmentLead model
+   */
+  interface StackAssessmentLeadFieldRefs {
+    readonly id: FieldRef<"StackAssessmentLead", 'String'>
+    readonly assessmentId: FieldRef<"StackAssessmentLead", 'String'>
+    readonly email: FieldRef<"StackAssessmentLead", 'String'>
+    readonly firmName: FieldRef<"StackAssessmentLead", 'String'>
+    readonly role: FieldRef<"StackAssessmentLead", 'String'>
+    readonly detailedReviewRequested: FieldRef<"StackAssessmentLead", 'Boolean'>
+    readonly emailSentAt: FieldRef<"StackAssessmentLead", 'DateTime'>
+    readonly createdAt: FieldRef<"StackAssessmentLead", 'DateTime'>
+    readonly updatedAt: FieldRef<"StackAssessmentLead", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StackAssessmentLead findUnique
+   */
+  export type StackAssessmentLeadFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessmentLead to fetch.
+     */
+    where: StackAssessmentLeadWhereUniqueInput
+  }
+
+  /**
+   * StackAssessmentLead findUniqueOrThrow
+   */
+  export type StackAssessmentLeadFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessmentLead to fetch.
+     */
+    where: StackAssessmentLeadWhereUniqueInput
+  }
+
+  /**
+   * StackAssessmentLead findFirst
+   */
+  export type StackAssessmentLeadFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessmentLead to fetch.
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessmentLeads to fetch.
+     */
+    orderBy?: StackAssessmentLeadOrderByWithRelationInput | StackAssessmentLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StackAssessmentLeads.
+     */
+    cursor?: StackAssessmentLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessmentLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessmentLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StackAssessmentLeads.
+     */
+    distinct?: StackAssessmentLeadScalarFieldEnum | StackAssessmentLeadScalarFieldEnum[]
+  }
+
+  /**
+   * StackAssessmentLead findFirstOrThrow
+   */
+  export type StackAssessmentLeadFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessmentLead to fetch.
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessmentLeads to fetch.
+     */
+    orderBy?: StackAssessmentLeadOrderByWithRelationInput | StackAssessmentLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StackAssessmentLeads.
+     */
+    cursor?: StackAssessmentLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessmentLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessmentLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StackAssessmentLeads.
+     */
+    distinct?: StackAssessmentLeadScalarFieldEnum | StackAssessmentLeadScalarFieldEnum[]
+  }
+
+  /**
+   * StackAssessmentLead findMany
+   */
+  export type StackAssessmentLeadFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * Filter, which StackAssessmentLeads to fetch.
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StackAssessmentLeads to fetch.
+     */
+    orderBy?: StackAssessmentLeadOrderByWithRelationInput | StackAssessmentLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StackAssessmentLeads.
+     */
+    cursor?: StackAssessmentLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StackAssessmentLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StackAssessmentLeads.
+     */
+    skip?: number
+    distinct?: StackAssessmentLeadScalarFieldEnum | StackAssessmentLeadScalarFieldEnum[]
+  }
+
+  /**
+   * StackAssessmentLead create
+   */
+  export type StackAssessmentLeadCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StackAssessmentLead.
+     */
+    data: XOR<StackAssessmentLeadCreateInput, StackAssessmentLeadUncheckedCreateInput>
+  }
+
+  /**
+   * StackAssessmentLead createMany
+   */
+  export type StackAssessmentLeadCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StackAssessmentLeads.
+     */
+    data: StackAssessmentLeadCreateManyInput | StackAssessmentLeadCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StackAssessmentLead createManyAndReturn
+   */
+  export type StackAssessmentLeadCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * The data used to create many StackAssessmentLeads.
+     */
+    data: StackAssessmentLeadCreateManyInput | StackAssessmentLeadCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StackAssessmentLead update
+   */
+  export type StackAssessmentLeadUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StackAssessmentLead.
+     */
+    data: XOR<StackAssessmentLeadUpdateInput, StackAssessmentLeadUncheckedUpdateInput>
+    /**
+     * Choose, which StackAssessmentLead to update.
+     */
+    where: StackAssessmentLeadWhereUniqueInput
+  }
+
+  /**
+   * StackAssessmentLead updateMany
+   */
+  export type StackAssessmentLeadUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StackAssessmentLeads.
+     */
+    data: XOR<StackAssessmentLeadUpdateManyMutationInput, StackAssessmentLeadUncheckedUpdateManyInput>
+    /**
+     * Filter which StackAssessmentLeads to update
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * Limit how many StackAssessmentLeads to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StackAssessmentLead updateManyAndReturn
+   */
+  export type StackAssessmentLeadUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * The data used to update StackAssessmentLeads.
+     */
+    data: XOR<StackAssessmentLeadUpdateManyMutationInput, StackAssessmentLeadUncheckedUpdateManyInput>
+    /**
+     * Filter which StackAssessmentLeads to update
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * Limit how many StackAssessmentLeads to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StackAssessmentLead upsert
+   */
+  export type StackAssessmentLeadUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StackAssessmentLead to update in case it exists.
+     */
+    where: StackAssessmentLeadWhereUniqueInput
+    /**
+     * In case the StackAssessmentLead found by the `where` argument doesn't exist, create a new StackAssessmentLead with this data.
+     */
+    create: XOR<StackAssessmentLeadCreateInput, StackAssessmentLeadUncheckedCreateInput>
+    /**
+     * In case the StackAssessmentLead was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StackAssessmentLeadUpdateInput, StackAssessmentLeadUncheckedUpdateInput>
+  }
+
+  /**
+   * StackAssessmentLead delete
+   */
+  export type StackAssessmentLeadDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+    /**
+     * Filter which StackAssessmentLead to delete.
+     */
+    where: StackAssessmentLeadWhereUniqueInput
+  }
+
+  /**
+   * StackAssessmentLead deleteMany
+   */
+  export type StackAssessmentLeadDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StackAssessmentLeads to delete
+     */
+    where?: StackAssessmentLeadWhereInput
+    /**
+     * Limit how many StackAssessmentLeads to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StackAssessmentLead without action
+   */
+  export type StackAssessmentLeadDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StackAssessmentLead
+     */
+    select?: StackAssessmentLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StackAssessmentLead
+     */
+    omit?: StackAssessmentLeadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StackAssessmentLeadInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -59003,6 +61593,46 @@ export namespace Prisma {
   export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
 
 
+  export const StackAssessmentScalarFieldEnum: {
+    id: 'id',
+    accessTokenHash: 'accessTokenHash',
+    status: 'status',
+    currentStep: 'currentStep',
+    answers: 'answers',
+    score: 'score',
+    resultSummary: 'resultSummary',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    lastActivityAt: 'lastActivityAt',
+    landingPath: 'landingPath',
+    referrer: 'referrer',
+    utmSource: 'utmSource',
+    utmMedium: 'utmMedium',
+    utmCampaign: 'utmCampaign',
+    utmContent: 'utmContent',
+    utmTerm: 'utmTerm',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StackAssessmentScalarFieldEnum = (typeof StackAssessmentScalarFieldEnum)[keyof typeof StackAssessmentScalarFieldEnum]
+
+
+  export const StackAssessmentLeadScalarFieldEnum: {
+    id: 'id',
+    assessmentId: 'assessmentId',
+    email: 'email',
+    firmName: 'firmName',
+    role: 'role',
+    detailedReviewRequested: 'detailedReviewRequested',
+    emailSentAt: 'emailSentAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StackAssessmentLeadScalarFieldEnum = (typeof StackAssessmentLeadScalarFieldEnum)[keyof typeof StackAssessmentLeadScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -59774,6 +62404,20 @@ export namespace Prisma {
    * Reference to a field of type 'EmailTriageStatus[]'
    */
   export type ListEnumEmailTriageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailTriageStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StackAssessmentStatus'
+   */
+  export type EnumStackAssessmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StackAssessmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'StackAssessmentStatus[]'
+   */
+  export type ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StackAssessmentStatus[]'>
     
   /**
    * Deep Input Types
@@ -63998,6 +66642,208 @@ export namespace Prisma {
     source?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     ipAddress?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
+  }
+
+  export type StackAssessmentWhereInput = {
+    AND?: StackAssessmentWhereInput | StackAssessmentWhereInput[]
+    OR?: StackAssessmentWhereInput[]
+    NOT?: StackAssessmentWhereInput | StackAssessmentWhereInput[]
+    id?: StringFilter<"StackAssessment"> | string
+    accessTokenHash?: StringFilter<"StackAssessment"> | string
+    status?: EnumStackAssessmentStatusFilter<"StackAssessment"> | $Enums.StackAssessmentStatus
+    currentStep?: IntFilter<"StackAssessment"> | number
+    answers?: JsonFilter<"StackAssessment">
+    score?: IntNullableFilter<"StackAssessment"> | number | null
+    resultSummary?: JsonNullableFilter<"StackAssessment">
+    startedAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    completedAt?: DateTimeNullableFilter<"StackAssessment"> | Date | string | null
+    lastActivityAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    landingPath?: StringNullableFilter<"StackAssessment"> | string | null
+    referrer?: StringNullableFilter<"StackAssessment"> | string | null
+    utmSource?: StringNullableFilter<"StackAssessment"> | string | null
+    utmMedium?: StringNullableFilter<"StackAssessment"> | string | null
+    utmCampaign?: StringNullableFilter<"StackAssessment"> | string | null
+    utmContent?: StringNullableFilter<"StackAssessment"> | string | null
+    utmTerm?: StringNullableFilter<"StackAssessment"> | string | null
+    createdAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    lead?: XOR<StackAssessmentLeadNullableScalarRelationFilter, StackAssessmentLeadWhereInput> | null
+  }
+
+  export type StackAssessmentOrderByWithRelationInput = {
+    id?: SortOrder
+    accessTokenHash?: SortOrder
+    status?: SortOrder
+    currentStep?: SortOrder
+    answers?: SortOrder
+    score?: SortOrderInput | SortOrder
+    resultSummary?: SortOrderInput | SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    lastActivityAt?: SortOrder
+    landingPath?: SortOrderInput | SortOrder
+    referrer?: SortOrderInput | SortOrder
+    utmSource?: SortOrderInput | SortOrder
+    utmMedium?: SortOrderInput | SortOrder
+    utmCampaign?: SortOrderInput | SortOrder
+    utmContent?: SortOrderInput | SortOrder
+    utmTerm?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lead?: StackAssessmentLeadOrderByWithRelationInput
+  }
+
+  export type StackAssessmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StackAssessmentWhereInput | StackAssessmentWhereInput[]
+    OR?: StackAssessmentWhereInput[]
+    NOT?: StackAssessmentWhereInput | StackAssessmentWhereInput[]
+    accessTokenHash?: StringFilter<"StackAssessment"> | string
+    status?: EnumStackAssessmentStatusFilter<"StackAssessment"> | $Enums.StackAssessmentStatus
+    currentStep?: IntFilter<"StackAssessment"> | number
+    answers?: JsonFilter<"StackAssessment">
+    score?: IntNullableFilter<"StackAssessment"> | number | null
+    resultSummary?: JsonNullableFilter<"StackAssessment">
+    startedAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    completedAt?: DateTimeNullableFilter<"StackAssessment"> | Date | string | null
+    lastActivityAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    landingPath?: StringNullableFilter<"StackAssessment"> | string | null
+    referrer?: StringNullableFilter<"StackAssessment"> | string | null
+    utmSource?: StringNullableFilter<"StackAssessment"> | string | null
+    utmMedium?: StringNullableFilter<"StackAssessment"> | string | null
+    utmCampaign?: StringNullableFilter<"StackAssessment"> | string | null
+    utmContent?: StringNullableFilter<"StackAssessment"> | string | null
+    utmTerm?: StringNullableFilter<"StackAssessment"> | string | null
+    createdAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"StackAssessment"> | Date | string
+    lead?: XOR<StackAssessmentLeadNullableScalarRelationFilter, StackAssessmentLeadWhereInput> | null
+  }, "id">
+
+  export type StackAssessmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    accessTokenHash?: SortOrder
+    status?: SortOrder
+    currentStep?: SortOrder
+    answers?: SortOrder
+    score?: SortOrderInput | SortOrder
+    resultSummary?: SortOrderInput | SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    lastActivityAt?: SortOrder
+    landingPath?: SortOrderInput | SortOrder
+    referrer?: SortOrderInput | SortOrder
+    utmSource?: SortOrderInput | SortOrder
+    utmMedium?: SortOrderInput | SortOrder
+    utmCampaign?: SortOrderInput | SortOrder
+    utmContent?: SortOrderInput | SortOrder
+    utmTerm?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StackAssessmentCountOrderByAggregateInput
+    _avg?: StackAssessmentAvgOrderByAggregateInput
+    _max?: StackAssessmentMaxOrderByAggregateInput
+    _min?: StackAssessmentMinOrderByAggregateInput
+    _sum?: StackAssessmentSumOrderByAggregateInput
+  }
+
+  export type StackAssessmentScalarWhereWithAggregatesInput = {
+    AND?: StackAssessmentScalarWhereWithAggregatesInput | StackAssessmentScalarWhereWithAggregatesInput[]
+    OR?: StackAssessmentScalarWhereWithAggregatesInput[]
+    NOT?: StackAssessmentScalarWhereWithAggregatesInput | StackAssessmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StackAssessment"> | string
+    accessTokenHash?: StringWithAggregatesFilter<"StackAssessment"> | string
+    status?: EnumStackAssessmentStatusWithAggregatesFilter<"StackAssessment"> | $Enums.StackAssessmentStatus
+    currentStep?: IntWithAggregatesFilter<"StackAssessment"> | number
+    answers?: JsonWithAggregatesFilter<"StackAssessment">
+    score?: IntNullableWithAggregatesFilter<"StackAssessment"> | number | null
+    resultSummary?: JsonNullableWithAggregatesFilter<"StackAssessment">
+    startedAt?: DateTimeWithAggregatesFilter<"StackAssessment"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"StackAssessment"> | Date | string | null
+    lastActivityAt?: DateTimeWithAggregatesFilter<"StackAssessment"> | Date | string
+    landingPath?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    referrer?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    utmSource?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    utmMedium?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    utmCampaign?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    utmContent?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    utmTerm?: StringNullableWithAggregatesFilter<"StackAssessment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StackAssessment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StackAssessment"> | Date | string
+  }
+
+  export type StackAssessmentLeadWhereInput = {
+    AND?: StackAssessmentLeadWhereInput | StackAssessmentLeadWhereInput[]
+    OR?: StackAssessmentLeadWhereInput[]
+    NOT?: StackAssessmentLeadWhereInput | StackAssessmentLeadWhereInput[]
+    id?: StringFilter<"StackAssessmentLead"> | string
+    assessmentId?: StringFilter<"StackAssessmentLead"> | string
+    email?: StringFilter<"StackAssessmentLead"> | string
+    firmName?: StringNullableFilter<"StackAssessmentLead"> | string | null
+    role?: StringNullableFilter<"StackAssessmentLead"> | string | null
+    detailedReviewRequested?: BoolFilter<"StackAssessmentLead"> | boolean
+    emailSentAt?: DateTimeNullableFilter<"StackAssessmentLead"> | Date | string | null
+    createdAt?: DateTimeFilter<"StackAssessmentLead"> | Date | string
+    updatedAt?: DateTimeFilter<"StackAssessmentLead"> | Date | string
+    assessment?: XOR<StackAssessmentScalarRelationFilter, StackAssessmentWhereInput>
+  }
+
+  export type StackAssessmentLeadOrderByWithRelationInput = {
+    id?: SortOrder
+    assessmentId?: SortOrder
+    email?: SortOrder
+    firmName?: SortOrderInput | SortOrder
+    role?: SortOrderInput | SortOrder
+    detailedReviewRequested?: SortOrder
+    emailSentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assessment?: StackAssessmentOrderByWithRelationInput
+  }
+
+  export type StackAssessmentLeadWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    assessmentId?: string
+    AND?: StackAssessmentLeadWhereInput | StackAssessmentLeadWhereInput[]
+    OR?: StackAssessmentLeadWhereInput[]
+    NOT?: StackAssessmentLeadWhereInput | StackAssessmentLeadWhereInput[]
+    email?: StringFilter<"StackAssessmentLead"> | string
+    firmName?: StringNullableFilter<"StackAssessmentLead"> | string | null
+    role?: StringNullableFilter<"StackAssessmentLead"> | string | null
+    detailedReviewRequested?: BoolFilter<"StackAssessmentLead"> | boolean
+    emailSentAt?: DateTimeNullableFilter<"StackAssessmentLead"> | Date | string | null
+    createdAt?: DateTimeFilter<"StackAssessmentLead"> | Date | string
+    updatedAt?: DateTimeFilter<"StackAssessmentLead"> | Date | string
+    assessment?: XOR<StackAssessmentScalarRelationFilter, StackAssessmentWhereInput>
+  }, "id" | "assessmentId">
+
+  export type StackAssessmentLeadOrderByWithAggregationInput = {
+    id?: SortOrder
+    assessmentId?: SortOrder
+    email?: SortOrder
+    firmName?: SortOrderInput | SortOrder
+    role?: SortOrderInput | SortOrder
+    detailedReviewRequested?: SortOrder
+    emailSentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StackAssessmentLeadCountOrderByAggregateInput
+    _max?: StackAssessmentLeadMaxOrderByAggregateInput
+    _min?: StackAssessmentLeadMinOrderByAggregateInput
+  }
+
+  export type StackAssessmentLeadScalarWhereWithAggregatesInput = {
+    AND?: StackAssessmentLeadScalarWhereWithAggregatesInput | StackAssessmentLeadScalarWhereWithAggregatesInput[]
+    OR?: StackAssessmentLeadScalarWhereWithAggregatesInput[]
+    NOT?: StackAssessmentLeadScalarWhereWithAggregatesInput | StackAssessmentLeadScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StackAssessmentLead"> | string
+    assessmentId?: StringWithAggregatesFilter<"StackAssessmentLead"> | string
+    email?: StringWithAggregatesFilter<"StackAssessmentLead"> | string
+    firmName?: StringNullableWithAggregatesFilter<"StackAssessmentLead"> | string | null
+    role?: StringNullableWithAggregatesFilter<"StackAssessmentLead"> | string | null
+    detailedReviewRequested?: BoolWithAggregatesFilter<"StackAssessmentLead"> | boolean
+    emailSentAt?: DateTimeNullableWithAggregatesFilter<"StackAssessmentLead"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StackAssessmentLead"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StackAssessmentLead"> | Date | string
   }
 
   export type WorkspaceCreateInput = {
@@ -68738,6 +71584,247 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StackAssessmentCreateInput = {
+    id?: string
+    accessTokenHash: string
+    status?: $Enums.StackAssessmentStatus
+    currentStep?: number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    landingPath?: string | null
+    referrer?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lead?: StackAssessmentLeadCreateNestedOneWithoutAssessmentInput
+  }
+
+  export type StackAssessmentUncheckedCreateInput = {
+    id?: string
+    accessTokenHash: string
+    status?: $Enums.StackAssessmentStatus
+    currentStep?: number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    landingPath?: string | null
+    referrer?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lead?: StackAssessmentLeadUncheckedCreateNestedOneWithoutAssessmentInput
+  }
+
+  export type StackAssessmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accessTokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumStackAssessmentStatusFieldUpdateOperationsInput | $Enums.StackAssessmentStatus
+    currentStep?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    landingPath?: NullableStringFieldUpdateOperationsInput | string | null
+    referrer?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lead?: StackAssessmentLeadUpdateOneWithoutAssessmentNestedInput
+  }
+
+  export type StackAssessmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accessTokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumStackAssessmentStatusFieldUpdateOperationsInput | $Enums.StackAssessmentStatus
+    currentStep?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    landingPath?: NullableStringFieldUpdateOperationsInput | string | null
+    referrer?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lead?: StackAssessmentLeadUncheckedUpdateOneWithoutAssessmentNestedInput
+  }
+
+  export type StackAssessmentCreateManyInput = {
+    id?: string
+    accessTokenHash: string
+    status?: $Enums.StackAssessmentStatus
+    currentStep?: number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    landingPath?: string | null
+    referrer?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accessTokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumStackAssessmentStatusFieldUpdateOperationsInput | $Enums.StackAssessmentStatus
+    currentStep?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    landingPath?: NullableStringFieldUpdateOperationsInput | string | null
+    referrer?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accessTokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumStackAssessmentStatusFieldUpdateOperationsInput | $Enums.StackAssessmentStatus
+    currentStep?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    landingPath?: NullableStringFieldUpdateOperationsInput | string | null
+    referrer?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentLeadCreateInput = {
+    id?: string
+    email: string
+    firmName?: string | null
+    role?: string | null
+    detailedReviewRequested?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assessment: StackAssessmentCreateNestedOneWithoutLeadInput
+  }
+
+  export type StackAssessmentLeadUncheckedCreateInput = {
+    id?: string
+    assessmentId: string
+    email: string
+    firmName?: string | null
+    role?: string | null
+    detailedReviewRequested?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentLeadUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firmName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    detailedReviewRequested?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assessment?: StackAssessmentUpdateOneRequiredWithoutLeadNestedInput
+  }
+
+  export type StackAssessmentLeadUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assessmentId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firmName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    detailedReviewRequested?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentLeadCreateManyInput = {
+    id?: string
+    assessmentId: string
+    email: string
+    firmName?: string | null
+    role?: string | null
+    detailedReviewRequested?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentLeadUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firmName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    detailedReviewRequested?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentLeadUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assessmentId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firmName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    detailedReviewRequested?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -72477,6 +75564,141 @@ export namespace Prisma {
     source?: SortOrder
     ipAddress?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumStackAssessmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StackAssessmentStatus | EnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStackAssessmentStatusFilter<$PrismaModel> | $Enums.StackAssessmentStatus
+  }
+
+  export type StackAssessmentLeadNullableScalarRelationFilter = {
+    is?: StackAssessmentLeadWhereInput | null
+    isNot?: StackAssessmentLeadWhereInput | null
+  }
+
+  export type StackAssessmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    accessTokenHash?: SortOrder
+    status?: SortOrder
+    currentStep?: SortOrder
+    answers?: SortOrder
+    score?: SortOrder
+    resultSummary?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    lastActivityAt?: SortOrder
+    landingPath?: SortOrder
+    referrer?: SortOrder
+    utmSource?: SortOrder
+    utmMedium?: SortOrder
+    utmCampaign?: SortOrder
+    utmContent?: SortOrder
+    utmTerm?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StackAssessmentAvgOrderByAggregateInput = {
+    currentStep?: SortOrder
+    score?: SortOrder
+  }
+
+  export type StackAssessmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    accessTokenHash?: SortOrder
+    status?: SortOrder
+    currentStep?: SortOrder
+    score?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    lastActivityAt?: SortOrder
+    landingPath?: SortOrder
+    referrer?: SortOrder
+    utmSource?: SortOrder
+    utmMedium?: SortOrder
+    utmCampaign?: SortOrder
+    utmContent?: SortOrder
+    utmTerm?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StackAssessmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    accessTokenHash?: SortOrder
+    status?: SortOrder
+    currentStep?: SortOrder
+    score?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    lastActivityAt?: SortOrder
+    landingPath?: SortOrder
+    referrer?: SortOrder
+    utmSource?: SortOrder
+    utmMedium?: SortOrder
+    utmCampaign?: SortOrder
+    utmContent?: SortOrder
+    utmTerm?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StackAssessmentSumOrderByAggregateInput = {
+    currentStep?: SortOrder
+    score?: SortOrder
+  }
+
+  export type EnumStackAssessmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StackAssessmentStatus | EnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStackAssessmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.StackAssessmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStackAssessmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumStackAssessmentStatusFilter<$PrismaModel>
+  }
+
+  export type StackAssessmentScalarRelationFilter = {
+    is?: StackAssessmentWhereInput
+    isNot?: StackAssessmentWhereInput
+  }
+
+  export type StackAssessmentLeadCountOrderByAggregateInput = {
+    id?: SortOrder
+    assessmentId?: SortOrder
+    email?: SortOrder
+    firmName?: SortOrder
+    role?: SortOrder
+    detailedReviewRequested?: SortOrder
+    emailSentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StackAssessmentLeadMaxOrderByAggregateInput = {
+    id?: SortOrder
+    assessmentId?: SortOrder
+    email?: SortOrder
+    firmName?: SortOrder
+    role?: SortOrder
+    detailedReviewRequested?: SortOrder
+    emailSentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StackAssessmentLeadMinOrderByAggregateInput = {
+    id?: SortOrder
+    assessmentId?: SortOrder
+    email?: SortOrder
+    firmName?: SortOrder
+    role?: SortOrder
+    detailedReviewRequested?: SortOrder
+    emailSentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserWorkspaceCreateNestedManyWithoutWorkspaceInput = {
@@ -76407,6 +79629,56 @@ export namespace Prisma {
     update?: XOR<XOR<WorkspaceUpdateToOneWithWhereWithoutEmailTriageItemsInput, WorkspaceUpdateWithoutEmailTriageItemsInput>, WorkspaceUncheckedUpdateWithoutEmailTriageItemsInput>
   }
 
+  export type StackAssessmentLeadCreateNestedOneWithoutAssessmentInput = {
+    create?: XOR<StackAssessmentLeadCreateWithoutAssessmentInput, StackAssessmentLeadUncheckedCreateWithoutAssessmentInput>
+    connectOrCreate?: StackAssessmentLeadCreateOrConnectWithoutAssessmentInput
+    connect?: StackAssessmentLeadWhereUniqueInput
+  }
+
+  export type StackAssessmentLeadUncheckedCreateNestedOneWithoutAssessmentInput = {
+    create?: XOR<StackAssessmentLeadCreateWithoutAssessmentInput, StackAssessmentLeadUncheckedCreateWithoutAssessmentInput>
+    connectOrCreate?: StackAssessmentLeadCreateOrConnectWithoutAssessmentInput
+    connect?: StackAssessmentLeadWhereUniqueInput
+  }
+
+  export type EnumStackAssessmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.StackAssessmentStatus
+  }
+
+  export type StackAssessmentLeadUpdateOneWithoutAssessmentNestedInput = {
+    create?: XOR<StackAssessmentLeadCreateWithoutAssessmentInput, StackAssessmentLeadUncheckedCreateWithoutAssessmentInput>
+    connectOrCreate?: StackAssessmentLeadCreateOrConnectWithoutAssessmentInput
+    upsert?: StackAssessmentLeadUpsertWithoutAssessmentInput
+    disconnect?: StackAssessmentLeadWhereInput | boolean
+    delete?: StackAssessmentLeadWhereInput | boolean
+    connect?: StackAssessmentLeadWhereUniqueInput
+    update?: XOR<XOR<StackAssessmentLeadUpdateToOneWithWhereWithoutAssessmentInput, StackAssessmentLeadUpdateWithoutAssessmentInput>, StackAssessmentLeadUncheckedUpdateWithoutAssessmentInput>
+  }
+
+  export type StackAssessmentLeadUncheckedUpdateOneWithoutAssessmentNestedInput = {
+    create?: XOR<StackAssessmentLeadCreateWithoutAssessmentInput, StackAssessmentLeadUncheckedCreateWithoutAssessmentInput>
+    connectOrCreate?: StackAssessmentLeadCreateOrConnectWithoutAssessmentInput
+    upsert?: StackAssessmentLeadUpsertWithoutAssessmentInput
+    disconnect?: StackAssessmentLeadWhereInput | boolean
+    delete?: StackAssessmentLeadWhereInput | boolean
+    connect?: StackAssessmentLeadWhereUniqueInput
+    update?: XOR<XOR<StackAssessmentLeadUpdateToOneWithWhereWithoutAssessmentInput, StackAssessmentLeadUpdateWithoutAssessmentInput>, StackAssessmentLeadUncheckedUpdateWithoutAssessmentInput>
+  }
+
+  export type StackAssessmentCreateNestedOneWithoutLeadInput = {
+    create?: XOR<StackAssessmentCreateWithoutLeadInput, StackAssessmentUncheckedCreateWithoutLeadInput>
+    connectOrCreate?: StackAssessmentCreateOrConnectWithoutLeadInput
+    connect?: StackAssessmentWhereUniqueInput
+  }
+
+  export type StackAssessmentUpdateOneRequiredWithoutLeadNestedInput = {
+    create?: XOR<StackAssessmentCreateWithoutLeadInput, StackAssessmentUncheckedCreateWithoutLeadInput>
+    connectOrCreate?: StackAssessmentCreateOrConnectWithoutLeadInput
+    upsert?: StackAssessmentUpsertWithoutLeadInput
+    connect?: StackAssessmentWhereUniqueInput
+    update?: XOR<XOR<StackAssessmentUpdateToOneWithWhereWithoutLeadInput, StackAssessmentUpdateWithoutLeadInput>, StackAssessmentUncheckedUpdateWithoutLeadInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -77511,6 +80783,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEmailTriageStatusFilter<$PrismaModel>
     _max?: NestedEnumEmailTriageStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumStackAssessmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StackAssessmentStatus | EnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStackAssessmentStatusFilter<$PrismaModel> | $Enums.StackAssessmentStatus
+  }
+
+  export type NestedEnumStackAssessmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StackAssessmentStatus | EnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StackAssessmentStatus[] | ListEnumStackAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStackAssessmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.StackAssessmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStackAssessmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumStackAssessmentStatusFilter<$PrismaModel>
   }
 
   export type UserWorkspaceCreateWithoutWorkspaceInput = {
@@ -93303,6 +96592,170 @@ export namespace Prisma {
     candidateResponsePacks?: CandidateResponsePackUncheckedUpdateManyWithoutWorkspaceNestedInput
     indexCoverageManifests?: IndexCoverageManifestUncheckedUpdateManyWithoutWorkspaceNestedInput
     supervisorySamplingConfig?: SupervisorySamplingConfigUncheckedUpdateOneWithoutWorkspaceNestedInput
+  }
+
+  export type StackAssessmentLeadCreateWithoutAssessmentInput = {
+    id?: string
+    email: string
+    firmName?: string | null
+    role?: string | null
+    detailedReviewRequested?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentLeadUncheckedCreateWithoutAssessmentInput = {
+    id?: string
+    email: string
+    firmName?: string | null
+    role?: string | null
+    detailedReviewRequested?: boolean
+    emailSentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentLeadCreateOrConnectWithoutAssessmentInput = {
+    where: StackAssessmentLeadWhereUniqueInput
+    create: XOR<StackAssessmentLeadCreateWithoutAssessmentInput, StackAssessmentLeadUncheckedCreateWithoutAssessmentInput>
+  }
+
+  export type StackAssessmentLeadUpsertWithoutAssessmentInput = {
+    update: XOR<StackAssessmentLeadUpdateWithoutAssessmentInput, StackAssessmentLeadUncheckedUpdateWithoutAssessmentInput>
+    create: XOR<StackAssessmentLeadCreateWithoutAssessmentInput, StackAssessmentLeadUncheckedCreateWithoutAssessmentInput>
+    where?: StackAssessmentLeadWhereInput
+  }
+
+  export type StackAssessmentLeadUpdateToOneWithWhereWithoutAssessmentInput = {
+    where?: StackAssessmentLeadWhereInput
+    data: XOR<StackAssessmentLeadUpdateWithoutAssessmentInput, StackAssessmentLeadUncheckedUpdateWithoutAssessmentInput>
+  }
+
+  export type StackAssessmentLeadUpdateWithoutAssessmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firmName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    detailedReviewRequested?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentLeadUncheckedUpdateWithoutAssessmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firmName?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    detailedReviewRequested?: BoolFieldUpdateOperationsInput | boolean
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentCreateWithoutLeadInput = {
+    id?: string
+    accessTokenHash: string
+    status?: $Enums.StackAssessmentStatus
+    currentStep?: number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    landingPath?: string | null
+    referrer?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentUncheckedCreateWithoutLeadInput = {
+    id?: string
+    accessTokenHash: string
+    status?: $Enums.StackAssessmentStatus
+    currentStep?: number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: Date | string
+    completedAt?: Date | string | null
+    lastActivityAt?: Date | string
+    landingPath?: string | null
+    referrer?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    utmContent?: string | null
+    utmTerm?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StackAssessmentCreateOrConnectWithoutLeadInput = {
+    where: StackAssessmentWhereUniqueInput
+    create: XOR<StackAssessmentCreateWithoutLeadInput, StackAssessmentUncheckedCreateWithoutLeadInput>
+  }
+
+  export type StackAssessmentUpsertWithoutLeadInput = {
+    update: XOR<StackAssessmentUpdateWithoutLeadInput, StackAssessmentUncheckedUpdateWithoutLeadInput>
+    create: XOR<StackAssessmentCreateWithoutLeadInput, StackAssessmentUncheckedCreateWithoutLeadInput>
+    where?: StackAssessmentWhereInput
+  }
+
+  export type StackAssessmentUpdateToOneWithWhereWithoutLeadInput = {
+    where?: StackAssessmentWhereInput
+    data: XOR<StackAssessmentUpdateWithoutLeadInput, StackAssessmentUncheckedUpdateWithoutLeadInput>
+  }
+
+  export type StackAssessmentUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accessTokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumStackAssessmentStatusFieldUpdateOperationsInput | $Enums.StackAssessmentStatus
+    currentStep?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    landingPath?: NullableStringFieldUpdateOperationsInput | string | null
+    referrer?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StackAssessmentUncheckedUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accessTokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumStackAssessmentStatusFieldUpdateOperationsInput | $Enums.StackAssessmentStatus
+    currentStep?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    resultSummary?: NullableJsonNullValueInput | InputJsonValue
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    landingPath?: NullableStringFieldUpdateOperationsInput | string | null
+    referrer?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    utmContent?: NullableStringFieldUpdateOperationsInput | string | null
+    utmTerm?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserWorkspaceCreateManyWorkspaceInput = {
