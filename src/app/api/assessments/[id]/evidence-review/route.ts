@@ -54,7 +54,7 @@ export async function POST(request: Request, context: RouteContext): Promise<Res
     });
 
     if (firstRequest) {
-      void sendStackAssessmentLeadNotification({
+      await sendStackAssessmentLeadNotification({
         email, firmName: firmName ?? undefined, role: role ?? undefined,
         assessmentId: id, answers, result: summary, evidenceReviewRequested: true,
         attribution: { utmSource: assessment.utmSource, utmMedium: assessment.utmMedium, utmCampaign: assessment.utmCampaign },
