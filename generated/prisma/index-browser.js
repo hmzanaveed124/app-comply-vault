@@ -776,6 +776,41 @@ exports.Prisma.LeadScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.StackAssessmentScalarFieldEnum = {
+  id: 'id',
+  accessTokenHash: 'accessTokenHash',
+  status: 'status',
+  currentStep: 'currentStep',
+  answers: 'answers',
+  score: 'score',
+  resultSummary: 'resultSummary',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  lastActivityAt: 'lastActivityAt',
+  abandonedAt: 'abandonedAt',
+  landingPath: 'landingPath',
+  referrer: 'referrer',
+  utmSource: 'utmSource',
+  utmMedium: 'utmMedium',
+  utmCampaign: 'utmCampaign',
+  utmContent: 'utmContent',
+  utmTerm: 'utmTerm',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StackAssessmentLeadScalarFieldEnum = {
+  id: 'id',
+  assessmentId: 'assessmentId',
+  email: 'email',
+  firmName: 'firmName',
+  role: 'role',
+  detailedReviewRequested: 'detailedReviewRequested',
+  emailSentAt: 'emailSentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1176,6 +1211,14 @@ exports.EmailTriageStatus = exports.$Enums.EmailTriageStatus = {
   IRRELEVANT: 'IRRELEVANT'
 };
 
+exports.StackAssessmentStatus = exports.$Enums.StackAssessmentStatus = {
+  STARTED: 'STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  LEAD_CAPTURED: 'LEAD_CAPTURED',
+  ABANDONED: 'ABANDONED'
+};
+
 exports.Prisma.ModelName = {
   Workspace: 'Workspace',
   CandidateResponsePack: 'CandidateResponsePack',
@@ -1219,7 +1262,9 @@ exports.Prisma.ModelName = {
   MailboxConnection: 'MailboxConnection',
   IngestJob: 'IngestJob',
   EmailTriageItem: 'EmailTriageItem',
-  Lead: 'Lead'
+  Lead: 'Lead',
+  StackAssessment: 'StackAssessment',
+  StackAssessmentLead: 'StackAssessmentLead'
 };
 
 /**
