@@ -47,6 +47,7 @@ import {
   PATCH as patchAssessment,
 } from "../../app/api/assessments/[id]/route";
 import { POST as captureLead } from "../../app/api/assessments/[id]/lead/route";
+import { POST as requestEvidenceReview } from "../../app/api/assessments/[id]/evidence-review/route";
 import { isAllowedPublicAssessmentPayload } from "./public-response";
 import { emptyAnswers } from "./scoring";
 
@@ -291,5 +292,39 @@ describe("assessment route handlers", () => {
 
     expect(response.status).toBe(200);
     expect(upsertLead).toHaveBeenCalled();
+  });
+
+  it("records a paid evidence review request without sending the free answer-based report", async () => {
+    const token = generateAccessToken();
+    findUnique.mockResolvedValue({
+      id: "assess_paid",
+      accessTokenHash: hashAccessToken(token),
+      status: "COMPLETED",
+      answers: emptyAnswers(),
+      completedAt: new Date(),
+      lead: null,
+      utmSource: null,
+      utmMedium: null,
+      utmCampaign: null,
+    });
+    upsertLead.mockResolvedValue({ id: "lead_paid" });
+    update.mockResolvedValue({ id: "assess_paid", status: "LEAD_CAPTURED" });
+
+    const response = await requestEvidenceReview(
+      new Request("http://localhost/api/assessments/assess_paid/evidence-review", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-forwarded-for": "198.51.100.6" },
+        body: JSON.stringify({ accessToken: token, email: "cco@example.com" }),
+      }),
+      { params: Promise.resolve({ id: "assess_paid" }) },
+    );
+
+    expect(response.status).toBe(200);
+    expect(upsertLead).toHaveBeenCalledWith(expect.objectContaining({
+      create: expect.objectContaining({ detailedReviewRequested: false, evidenceReviewRequestedAt: expect.any(Date) }),
+    }));
+    expect(sendStackAssessmentLeadNotification).toHaveBeenCalledWith(expect.objectContaining({ evidenceReviewRequested: true }));
+    expect(sendDetailedStackReviewEmail).not.toHaveBeenCalled();
+    expect(JSON.stringify(await response.json())).not.toContain("cco@example.com");
   });
 });
