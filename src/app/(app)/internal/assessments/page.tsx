@@ -99,6 +99,7 @@ export default async function InternalAssessmentsPage({
           email: true,
           firmName: true,
           role: true,
+          evidenceReviewRequestedAt: true,
           createdAt: true,
         },
       },
@@ -117,6 +118,8 @@ export default async function InternalAssessmentsPage({
       if (row.status !== "COMPLETED" && row.status !== "LEAD_CAPTURED") return false;
     } else if (filter === "lead") {
       if (row.status !== "LEAD_CAPTURED" && !row.lead) return false;
+    } else if (filter === "evidence") {
+      if (!row.lead?.evidenceReviewRequestedAt) return false;
     } else if (filter === "incomplete") {
       if (row.status !== "STARTED" && row.status !== "IN_PROGRESS") return false;
     } else if (filter === "stale") {
@@ -212,6 +215,7 @@ export default async function InternalAssessmentsPage({
             ["all", "All"],
             ["completed", "Completed"],
             ["lead", "Lead captured"],
+            ["evidence", "Evidence review requests"],
             ["incomplete", "Incomplete"],
             ["stale", "Stale"],
           ] as const
@@ -311,6 +315,9 @@ export default async function InternalAssessmentsPage({
                           {row.lead ? (
                             <>
                               <div>{row.lead.email}</div>
+                              {row.lead.evidenceReviewRequestedAt ? (
+                                <Badge className="mt-1">Evidence review requested</Badge>
+                              ) : null}
                               <div className="text-xs text-muted-foreground">
                                 {[row.lead.firmName, row.lead.role]
                                   .filter(Boolean)
