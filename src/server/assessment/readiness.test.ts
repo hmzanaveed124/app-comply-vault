@@ -122,7 +122,8 @@ describe("production readiness: scoring + detailed email", () => {
     expect(email.text).not.toMatch(/Apollo/i);
     // Sample for human review in test output / CI logs when needed:
     // console.log(email.text)
-    expect(email.html).toContain("ComplyVaultLogo.png");
+    expect(email.html).toContain('src="https://app.complyvault.co/ComplyVaultLogo.png"');
+    expect(email.html).toContain('width="36" height="36"');
     expect(email.html).toContain('alt=""');
     expect(email.html).toContain("Your next evidence bottleneck");
     expect(email.html).toContain("Where the stack holds together");
