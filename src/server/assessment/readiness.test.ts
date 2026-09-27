@@ -122,6 +122,8 @@ describe("production readiness: scoring + detailed email", () => {
     // Sample for human review in test output / CI logs when needed:
     // console.log(email.text)
     expect(email.html).toContain('src="https://app.complyvault.co/ComplyVaultLogo.png"');
+    expect(email.html).toContain('src="https://app.complyvault.co/stack-review-email-artwork.jpg"');
+    expect(email.html.indexOf("stack-review-email-artwork.jpg")).toBeLessThan(email.html.indexOf("YOUR STACK REVIEW"));
     expect(email.html).toContain('width="36" height="36"');
     expect(email.html).toContain('alt=""');
     expect(email.html).toContain("Your next evidence bottleneck");
