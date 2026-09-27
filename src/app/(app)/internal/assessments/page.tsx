@@ -1,6 +1,6 @@
 /**
  * Internal Stack Assessments inspector
- * Auth-gated by OPS_ALLOWED_EMAILS (same as /internal/ops)
+ * Auth-gated by the assessment owner email and OPS_ALLOWED_EMAILS
  */
 
 import { auth } from "~/server/auth";
@@ -19,10 +19,13 @@ import {
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 function isOpsAllowed(email: string | null | undefined): boolean {
-  const allowed = env.OPS_ALLOWED_EMAILS;
-  if (!allowed?.trim()) return false;
-  const emails = allowed.split(",").map((e) => e.trim().toLowerCase());
-  return email ? emails.includes(email.toLowerCase()) : false;
+  if (!email) return false;
+  const normalizedEmail = email.trim().toLowerCase();
+  if (normalizedEmail === "hamza@complyvault.co") return true;
+  const emails = (env.OPS_ALLOWED_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase());
+  return emails.includes(normalizedEmail);
 }
 
 function firstParam(
@@ -82,13 +85,14 @@ export default async function InternalAssessmentsPage({
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
               Signed in as <strong>{session.user.email}</strong>. Access requires this exact
-              email in <code>OPS_ALLOWED_EMAILS</code> for the production Vercel project
-              serving app.complyvault.co. Separate multiple emails with commas, and
-              redeploy the app after changing the variable.
+              email in the assessment owner allowlist or <code>OPS_ALLOWED_EMAILS</code>
+              for the production Vercel project serving app.complyvault.co.
+              Separate additional emails with commas, and redeploy the app after
+              changing the variable.
             </p>
             {!env.OPS_ALLOWED_EMAILS?.trim() ? (
               <p className="mt-2 text-sm text-destructive">
-                No allowed emails are configured in this deployment.
+                No additional allowed emails are configured in this deployment.
               </p>
             ) : null}
           </CardContent>
@@ -166,7 +170,7 @@ export default async function InternalAssessmentsPage({
       <h1 className="mb-2 text-2xl font-semibold">Stack Assessments</h1>
       <p className="mb-6 text-sm text-muted-foreground">
         Latest 200 RIA Compliance Stack Assessment sessions. Lead emails are only
-        visible here to OPS_ALLOWED_EMAILS. Stale/incomplete ("ABANDONED" in the
+        visible here to the assessment owner and OPS_ALLOWED_EMAILS. Stale/incomplete ("ABANDONED" in the
         UI) is derived from last activity (7 days default) — it is not a
         persisted database status and does not rely on browser close events.
       </p>
