@@ -80,6 +80,17 @@ export default async function InternalAssessmentsPage({
             <p className="text-muted-foreground">
               You do not have permission to view stack assessment activity.
             </p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Signed in as <strong>{session.user.email}</strong>. Access requires this exact
+              email in <code>OPS_ALLOWED_EMAILS</code> for the production Vercel project
+              serving app.complyvault.co. Separate multiple emails with commas, and
+              redeploy the app after changing the variable.
+            </p>
+            {!env.OPS_ALLOWED_EMAILS?.trim() ? (
+              <p className="mt-2 text-sm text-destructive">
+                No allowed emails are configured in this deployment.
+              </p>
+            ) : null}
           </CardContent>
         </Card>
       </div>
