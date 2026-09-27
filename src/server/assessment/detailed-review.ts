@@ -159,7 +159,20 @@ export function buildDetailedReviewEmail(input: {
     partial: result.areaDetails.filter((area) => area.status === "partial").length,
     attention: result.areaDetails.filter((area) => area.status === "gap" || area.status === "effort").length,
   };
-  const leadIssue = answers.examRetrieval === "days"
+  const portfolioScope = answers.registration === "mixed" || answers.complianceModel === "outsourced";
+  const sampleScope = portfolioScope ? "one firm in the portfolio" : "your firm";
+  const headerTitle = answers.archive === "no"
+    ? "Confirm what is retained first"
+    : answers.archive === "unsure"
+      ? "Confirm your archive coverage"
+      : result.score >= 80 && answers.examRetrieval === "minutes"
+        ? "Stress-test a strong foundation"
+        : "Your next evidence bottleneck";
+  const leadIssue = answers.archive === "no"
+    ? "You reported no communications archive. First identify which channels are used and how records are retained and retrieved; a supervisory workflow cannot repair missing source coverage."
+    : answers.archive === "unsure"
+      ? "You are unsure what the archive covers. Confirm the capture and retrieval of each material channel before treating the rest of the stack as a dependable foundation."
+      : answers.examRetrieval === "days"
     ? "You reported that retrieving a typical evidence trail can take a day or more. An examiner or internal reviewer may ask for a record before your team has reconstructed how it was handled."
     : answers.examRetrieval === "hours"
       ? "You reported that retrieving a typical evidence trail takes hours. The delay is a useful place to test which handoffs consume time."
@@ -167,23 +180,25 @@ export function buildDetailedReviewEmail(input: {
         ? "Your answers suggest that review decisions and follow-up live in more than one place. Test whether someone outside the original review can reconstruct one closed matter."
         : "Your answers suggest fast retrieval and a connected review trail. Test that impression with one real closed matter rather than relying on the system inventory alone.";
   const drill = answers.archive !== "yes"
-    ? "First confirm which communication channels are retained and whether one record can be retrieved with its original context. Do this before evaluating an additional supervisory tool."
-    : "Pick one closed client issue from the last quarter. Ask a colleague who did not handle it to locate the original record, reviewer decision, any follow-up, and proof of closure. Time the exercise and note each system opened or person contacted.";
-  const whyNow = answers.examRetrieval === "days"
+    ? `For ${sampleScope}, first confirm which communication channels are retained and whether one record can be retrieved with its original context. Do this before evaluating an additional supervisory tool.`
+    : `Pick one closed client issue from the last quarter for ${sampleScope}. Ask a colleague who did not handle it to locate the original record, reviewer decision, any follow-up, and proof of closure. Time the exercise and note each system opened or person contacted.`;
+  const whyNow = answers.archive !== "yes"
+    ? "Confirm the retention inventory this week, then test retrieval of an actual source record. Record any channel that cannot be accounted for before choosing another layer."
+    : answers.examRetrieval === "days"
     ? "A day-or-more retrieval path is already a measurable bottleneck. Run the drill this week, while the people and records are available, and set a target for the next attempt."
     : "Run the drill this week. A concrete retrieval time and a list of missing links give your team a baseline for the next review cycle.";
 
-  const internalBrief = `Our self-reported Stack Assessment returned an operational coverage indicator of ${result.score}/100. ${answers.archive === "yes" ? "We report an archive in place" : "We have not yet confirmed a complete communications archive"}; ${answers.reviewEvidence === "single" && answers.issueTracking === "workflow" ? "we report a connected supervisory decision trail" : "our review and follow-up trail may be split across systems"}; and ${answers.examRetrieval === "days" ? "typical retrieval can take a day or more" : answers.examRetrieval === "hours" ? "typical retrieval takes hours" : "we report retrieval in minutes"}. These are questionnaire responses, not verified findings. We propose testing one representative matter, preserving the source, review decision, follow-up and closure evidence, then assigning an owner to any missing handoff.`;
+  const internalBrief = `For our ${result.profile.registration.toLowerCase()} setup (${result.profile.adviserCount} advisers; ${result.profile.complianceModel.toLowerCase()} compliance), our self-reported Stack Assessment returned an operational coverage indicator of ${result.score}/100. Our stated pain is ${result.profile.biggestPain.toLowerCase()}, and our priority is ${result.profile.priority.toLowerCase()}. ${answers.archive === "yes" ? "We report an archive in place" : "We have not yet confirmed a complete communications archive"}; ${answers.reviewEvidence === "single" && answers.issueTracking === "workflow" ? "we report a connected supervisory decision trail" : "our review and follow-up trail may be split across systems"}; and ${answers.examRetrieval === "days" ? "typical retrieval can take a day or more" : answers.examRetrieval === "hours" ? "typical retrieval takes hours" : "we report retrieval in minutes"}. These are questionnaire responses, not verified findings. We propose testing one representative matter for ${sampleScope}, preserving the source, review decision, follow-up and closure evidence, then assigning an owner to any missing handoff.`;
 
   const proofChecks = [
     {
       name: "Source coverage",
       signal: answers.archive === "yes"
-        ? answers.meetings === "yes" ? "Archive and routine meeting capture reported" : "Archive reported; meeting capture may be inconsistent"
+        ? answers.meetings === "yes" ? "Archive and routine meeting capture reported" : answers.meetings === "sometimes" ? "Archive reported; meeting capture is inconsistent" : "Archive reported; meeting evidence is largely manual"
         : "Archive coverage unconfirmed or absent",
       request: answers.archive === "yes"
-        ? "A source record and archive retrieval, plus a recent meeting sample if meetings are in scope."
-        : "Channel inventory, retention owner, and one retrieval from each material channel.",
+        ? `A source record and archive retrieval for ${sampleScope}, plus a recent meeting sample if meetings are in scope.`
+        : `Channel inventory, retention owner, and one retrieval from each material channel for ${sampleScope}.`,
     },
     {
       name: "Review decision",
@@ -211,7 +226,7 @@ export function buildDetailedReviewEmail(input: {
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f2f5f3;"><tr><td align="center" style="padding:24px 12px;">
     <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e0e9e4;">
       <tr><td style="background:#103f34;padding:19px 28px;"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle;"><img src="${LOGO_URL}" width="36" height="36" alt="" style="display:block;border:0;width:36px;height:36px;"></td><td style="vertical-align:middle;padding-left:10px;color:#ffffff;font-size:21px;font-weight:bold;letter-spacing:-.4px;">ComplyVault</td></tr></table></td></tr>
-      <tr><td style="padding:29px 28px 12px;"><div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;color:#16856b;">YOUR STACK REVIEW</div><h1 style="font-size:26px;line-height:1.2;margin:9px 0 12px;color:#103f34;">Your next evidence bottleneck</h1><p style="font-size:15px;line-height:1.5;margin:0;color:#405b53;">${escapeHtml(leadIssue)}</p></td></tr>
+      <tr><td style="padding:29px 28px 12px;"><div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;color:#16856b;">YOUR STACK REVIEW</div><h1 style="font-size:26px;line-height:1.2;margin:9px 0 12px;color:#103f34;">${escapeHtml(headerTitle)}</h1><p style="font-size:15px;line-height:1.5;margin:0;color:#405b53;">${escapeHtml(leadIssue)}</p></td></tr>
       <tr><td style="padding:16px 28px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#e9f3ef;"><tr><td style="padding:17px;width:34%;border-right:1px solid #d3e4dc;"><div style="font-size:30px;font-weight:bold;color:#103f34;">${result.score}<span style="font-size:14px;">/100</span></div><div style="font-size:11px;color:#48665d;">Operational coverage indicator</div></td><td style="padding:17px;font-size:13px;line-height:1.6;color:#234b40;"><b>${counts.covered}</b> covered &nbsp;·&nbsp; <b>${counts.partial}</b> partial &nbsp;·&nbsp; <b>${counts.attention}</b> need attention<br>Fragmentation signal: <b>${escapeHtml(result.salesContext.stackFragmentation)}</b></td></tr></table><p style="font-size:11px;line-height:1.45;color:#668076;margin:8px 0 0;">The score uses eight weighted answers. The chart below maps seven operational areas; neither is a regulatory compliance rating.</p></td></tr>
       <tr><td style="padding:8px 28px 20px;"><h2 style="font-size:17px;margin:0 0 6px;color:#103f34;">Where the stack holds together</h2><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">${chartRows}</table><p style="font-size:11px;color:#668076;margin:7px 0 0;">Chart shows answer-derived status by area, not a comparison with other firms.</p></td></tr>
       <tr><td style="padding:0 28px 22px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#e9f3ef;border-left:4px solid #16856b;"><tr><td style="padding:17px 19px;"><h2 style="font-size:16px;margin:0 0 8px;color:#103f34;">Brief for your CCO or operations meeting</h2><p style="font-size:14px;line-height:1.55;margin:0;color:#244b40;">${escapeHtml(internalBrief)}</p></td></tr></table></td></tr>
@@ -226,12 +241,14 @@ export function buildDetailedReviewEmail(input: {
     "Your detailed ComplyVault Stack Review",
     "",
     "Overall result",
+    headerTitle,
     leadIssue,
     result.headline,
     result.body,
     `Operational coverage score: ${result.score} / 100`,
     `Stack fragmentation (from answers): ${result.salesContext.stackFragmentation}`,
     `Status map: ${counts.covered} covered, ${counts.partial} partial, ${counts.attention} need attention (seven areas).`,
+    ...result.areaDetails.map((area) => `${area.label}: ${STATUS_LABEL[area.status]} - ${area.detail}`),
     "The score uses eight weighted answers; neither it nor the status map is a regulatory compliance rating.",
     "",
     "Brief for your CCO or operations meeting",
