@@ -31,7 +31,6 @@ function escapeHtml(value: string): string {
 export async function sendDetailedStackReviewEmail(
   input: LeadEmailInput,
 ): Promise<{ success: boolean; id?: string }> {
-  const from = process.env.EMAIL_FROM || "noreply@complyvault.co";
   const content = buildDetailedReviewEmail({
     answers: input.answers,
     result: input.result,
@@ -39,7 +38,8 @@ export async function sendDetailedStackReviewEmail(
   });
 
   const payload = {
-    from,
+    from: "ComplyVault <contact@complyvault.co>",
+    replyTo: "contact@complyvault.co",
     to: input.email,
     subject: content.subject,
     html: content.html,
