@@ -4,6 +4,7 @@ import type {
   AreaStatus,
   GapRecommendation,
 } from "./types";
+import { assessmentAnswersSchema } from "./types";
 
 const EMPTY_ANSWERS: AssessmentAnswers = {
   registration: "",
@@ -23,6 +24,13 @@ const EMPTY_ANSWERS: AssessmentAnswers = {
 
 export function emptyAnswers(): AssessmentAnswers {
   return { ...EMPTY_ANSWERS };
+}
+
+/** The API must enforce all four steps; clients can bypass UI step checks. */
+export function isCompleteAnswers(answers: AssessmentAnswers): boolean {
+  return assessmentAnswersSchema.safeParse(answers).success &&
+    (Object.keys(EMPTY_ANSWERS) as Array<keyof AssessmentAnswers>)
+      .every((key) => answers[key] !== "");
 }
 
 export function mergeAnswers(
