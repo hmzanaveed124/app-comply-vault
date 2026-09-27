@@ -16,7 +16,6 @@ const STATUS_LABEL: Record<AreaStatus, string> = {
 
 const REVIEW_URL = "https://www.complyvault.co/#cta";
 const LOGO_URL = "https://app.complyvault.co/ComplyVaultLogo.png";
-const ARTWORK_URL = "https://app.complyvault.co/stack-review-email-artwork.jpg";
 
 const STATUS_COLOR: Record<AreaStatus, string> = {
   covered: "#16856b",
@@ -227,7 +226,6 @@ export function buildDetailedReviewEmail(input: {
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f2f5f3;"><tr><td align="center" style="padding:24px 12px;">
     <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e0e9e4;">
       <tr><td bgcolor="#117a4b" style="background:#117a4b;padding:19px 28px;"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:middle;"><img src="${LOGO_URL}" width="36" height="36" alt="" style="display:block;border:0;width:36px;height:36px;"></td><td style="vertical-align:middle;padding-left:10px;color:#ffffff;font-size:21px;font-weight:bold;letter-spacing:-.4px;">ComplyVault</td></tr></table></td></tr>
-      <tr><td bgcolor="#117a4b" style="background:#117a4b;padding:0;"><img src="${ARTWORK_URL}" width="600" height="225" alt="" style="display:block;border:0;width:100%;max-width:600px;height:auto;"></td></tr>
       <tr><td style="padding:29px 28px 12px;"><div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;color:#16856b;">YOUR STACK REVIEW</div><h1 style="font-size:26px;line-height:1.2;margin:9px 0 12px;color:#103f34;">${escapeHtml(headerTitle)}</h1><p style="font-size:15px;line-height:1.5;margin:0;color:#405b53;">${escapeHtml(leadIssue)}</p></td></tr>
       <tr><td style="padding:16px 28px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#e9f3ef;"><tr><td style="padding:17px;width:34%;border-right:1px solid #d3e4dc;"><div style="font-size:30px;font-weight:bold;color:#103f34;">${result.score}<span style="font-size:14px;">/100</span></div><div style="font-size:11px;color:#48665d;">Operational coverage indicator</div></td><td style="padding:17px;font-size:13px;line-height:1.6;color:#234b40;"><b>${counts.covered}</b> covered &nbsp;·&nbsp; <b>${counts.partial}</b> partial &nbsp;·&nbsp; <b>${counts.attention}</b> need attention<br>Fragmentation signal: <b>${escapeHtml(result.salesContext.stackFragmentation)}</b></td></tr></table><p style="font-size:11px;line-height:1.45;color:#668076;margin:8px 0 0;">The score uses eight weighted answers. The chart below maps seven operational areas; neither is a regulatory compliance rating.</p></td></tr>
       <tr><td style="padding:8px 28px 20px;"><h2 style="font-size:17px;margin:0 0 6px;color:#103f34;">Where the stack holds together</h2><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">${chartRows}</table><p style="font-size:11px;color:#668076;margin:7px 0 0;">Chart shows answer-derived status by area, not a comparison with other firms.</p></td></tr>
