@@ -112,11 +112,10 @@ describe("production readiness: scoring + detailed email", () => {
     });
 
     expect(email.subject).toMatch(/detailed/i);
-    expect(email.text).toMatch(/Strongest coverage/i);
-    expect(email.text).toMatch(/Key gaps and friction areas/i);
-    expect(email.text).toMatch(/Duplication/i);
-    expect(email.text).toMatch(/Supervisory \/ evidence friction/i);
-    expect(email.text).toMatch(/Prioritized observations/i);
+    expect(email.text).toContain("Brief for your CCO or operations meeting");
+    expect(email.text).toContain("Evidence to put on the table");
+    expect(email.text).toContain("Ask to see: The reviewer, decision date, rationale");
+    expect(email.text).toContain("Proposed order of work");
     expect(email.text).toMatch(/not legal advice/i);
     expect(email.text).toMatch(/20-minute Stack Review/i);
     expect(email.text).not.toMatch(/Apollo/i);
@@ -127,12 +126,15 @@ describe("production readiness: scoring + detailed email", () => {
     expect(email.html).toContain('alt=""');
     expect(email.html).toContain("Your next evidence bottleneck");
     expect(email.html).toContain("Where the stack holds together");
+    expect(email.html).toContain("Brief for your CCO or operations meeting");
+    expect(email.html).toContain("Evidence to put on the table");
     expect(email.html).toContain("Run this evidence drill this week");
     expect(email.html).toContain('href="https://www.complyvault.co/#cta"');
     expect(email.html).toContain("request form; our team will follow up to schedule");
     expect(email.html).not.toContain("ABC Wealth");
     expect(email.text).toContain("The score uses eight weighted answers");
     expect(email.text).toContain("Run this evidence drill this week");
+    expect(email.text).toContain("These are questionnaire responses, not verified findings");
   });
 
   it("makes urgency and the first action depend on reported retrieval and archive", () => {
