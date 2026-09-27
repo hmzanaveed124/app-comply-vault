@@ -147,11 +147,6 @@ export function buildDetailedReviewEmail(input: {
   firmName?: string;
 }): DetailedReviewEmailContent {
   const { answers, result } = input;
-  const strong = strongestCoverage(result);
-  const gaps = keyGapAreas(result);
-  const duplication = detectDuplicationSignals(answers);
-  const observations = prioritizedObservations(answers, result);
-  const friction = supervisoryFrictionSummary(answers, result);
 
   // The displayed seven-area chart is a status map, not the eight-input score.
   const chartRows = result.areaDetails.map((area) => {
@@ -178,22 +173,39 @@ export function buildDetailedReviewEmail(input: {
     ? "A day-or-more retrieval path is already a measurable bottleneck. Run the drill this week, while the people and records are available, and set a target for the next attempt."
     : "Run the drill this week. A concrete retrieval time and a list of missing links give your team a baseline for the next review cycle.";
 
-  const strongHtml =
-    strong.length > 0
-      ? `<ul>${strong.map((item) => `<li><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(item.detail)}</li>`).join("")}</ul>`
-      : "<p>No areas scored as fully covered. The priorities below focus on foundational gaps first.</p>";
+  const internalBrief = `Our self-reported Stack Assessment returned an operational coverage indicator of ${result.score}/100. ${answers.archive === "yes" ? "We report an archive in place" : "We have not yet confirmed a complete communications archive"}; ${answers.reviewEvidence === "single" && answers.issueTracking === "workflow" ? "we report a connected supervisory decision trail" : "our review and follow-up trail may be split across systems"}; and ${answers.examRetrieval === "days" ? "typical retrieval can take a day or more" : answers.examRetrieval === "hours" ? "typical retrieval takes hours" : "we report retrieval in minutes"}. These are questionnaire responses, not verified findings. We propose testing one representative matter, preserving the source, review decision, follow-up and closure evidence, then assigning an owner to any missing handoff.`;
 
-  const gapsHtml =
-    gaps.length > 0
-      ? `<ul>${gaps.slice(0, 3).map((item) => `<li><strong>${escapeHtml(item.label)}</strong> (${escapeHtml(item.status)}) — ${escapeHtml(item.detail)}</li>`).join("")}</ul>`
-      : "<p>No partial coverage, gaps or high-friction areas were flagged from your answers.</p>";
-
-  const duplicationHtml =
-    duplication.length > 0
-      ? `<ul>${duplication.slice(0, 2).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
-      : "<p>Your answers did not indicate clear multi-system duplication in CRM, policy, evidence or issue tracking.</p>";
-
-  const observationsHtml = `<ol>${observations.slice(0, 3).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`;
+  const proofChecks = [
+    {
+      name: "Source coverage",
+      signal: answers.archive === "yes"
+        ? answers.meetings === "yes" ? "Archive and routine meeting capture reported" : "Archive reported; meeting capture may be inconsistent"
+        : "Archive coverage unconfirmed or absent",
+      request: answers.archive === "yes"
+        ? "A source record and archive retrieval, plus a recent meeting sample if meetings are in scope."
+        : "Channel inventory, retention owner, and one retrieval from each material channel.",
+    },
+    {
+      name: "Review decision",
+      signal: answers.reviewEvidence === "single" && answers.issueTracking === "workflow"
+        ? "Connected decision trail reported"
+        : "Decision evidence or issue status appears spread across places",
+      request: "The reviewer, decision date, rationale, applicable policy version, and link to the source item.",
+    },
+    {
+      name: "Closure",
+      signal: answers.issueTracking === "workflow" ? "Dedicated workflow reported" : "Follow-up may rely on an inbox, spreadsheet, or informal process",
+      request: "The action owner, due date, completed action, and evidence that closure was checked.",
+    },
+    {
+      name: "Retrieval",
+      signal: answers.examRetrieval === "days" ? "A day or more reported" : answers.examRetrieval === "hours" ? "Hours reported" : "Minutes reported",
+      request: "A timed reconstruction by someone who did not handle the matter; log systems opened and missing links.",
+    },
+  ];
+  const proofHtml = proofChecks.map((check, index) => `<tr><td style="padding:13px 0;border-top:1px solid #e3ebe6;vertical-align:top;width:31%;font-size:13px;font-weight:bold;color:#103f34;">${index + 1}. ${escapeHtml(check.name)}</td><td style="padding:13px 0;border-top:1px solid #e3ebe6;vertical-align:top;font-size:13px;line-height:1.45;color:#405b53;"><b>Reported:</b> ${escapeHtml(check.signal)}<br><b>Ask to see:</b> ${escapeHtml(check.request)}</td></tr>`).join("");
+  const actionItems = result.gaps.slice(0, 3);
+  const actionHtml = actionItems.map((item, index) => `<tr><td style="padding:11px 0;border-top:1px solid #e3ebe6;vertical-align:top;width:32px;color:#16856b;font-weight:bold;">0${index + 1}</td><td style="padding:11px 0;border-top:1px solid #e3ebe6;vertical-align:top;font-size:13px;line-height:1.45;color:#405b53;"><b style="color:#103f34;">${escapeHtml(item.title)}</b><br>${escapeHtml(item.body)}</td></tr>`).join("");
 
   const html = `<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;padding:0;background:#f2f5f3;font-family:Arial,Helvetica,sans-serif;color:#17332e;">
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f2f5f3;"><tr><td align="center" style="padding:24px 12px;">
@@ -202,8 +214,10 @@ export function buildDetailedReviewEmail(input: {
       <tr><td style="padding:29px 28px 12px;"><div style="font-size:11px;font-weight:bold;letter-spacing:1.5px;color:#16856b;">YOUR STACK REVIEW</div><h1 style="font-size:26px;line-height:1.2;margin:9px 0 12px;color:#103f34;">Your next evidence bottleneck</h1><p style="font-size:15px;line-height:1.5;margin:0;color:#405b53;">${escapeHtml(leadIssue)}</p></td></tr>
       <tr><td style="padding:16px 28px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#e9f3ef;"><tr><td style="padding:17px;width:34%;border-right:1px solid #d3e4dc;"><div style="font-size:30px;font-weight:bold;color:#103f34;">${result.score}<span style="font-size:14px;">/100</span></div><div style="font-size:11px;color:#48665d;">Operational coverage indicator</div></td><td style="padding:17px;font-size:13px;line-height:1.6;color:#234b40;"><b>${counts.covered}</b> covered &nbsp;·&nbsp; <b>${counts.partial}</b> partial &nbsp;·&nbsp; <b>${counts.attention}</b> need attention<br>Fragmentation signal: <b>${escapeHtml(result.salesContext.stackFragmentation)}</b></td></tr></table><p style="font-size:11px;line-height:1.45;color:#668076;margin:8px 0 0;">The score uses eight weighted answers. The chart below maps seven operational areas; neither is a regulatory compliance rating.</p></td></tr>
       <tr><td style="padding:8px 28px 20px;"><h2 style="font-size:17px;margin:0 0 6px;color:#103f34;">Where the stack holds together</h2><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">${chartRows}</table><p style="font-size:11px;color:#668076;margin:7px 0 0;">Chart shows answer-derived status by area, not a comparison with other firms.</p></td></tr>
-      <tr><td style="padding:0 28px 22px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#fff5ea;border-left:4px solid #d49a45;"><tr><td style="padding:17px 19px;"><h2 style="font-size:16px;margin:0 0 8px;color:#633d17;">Run this evidence drill this week</h2><p style="font-size:14px;line-height:1.5;margin:0 0 9px;color:#403b30;">${escapeHtml(drill)}</p><p style="font-size:13px;line-height:1.5;margin:0;color:#634b2b;"><b>Record:</b> minutes to reconstruct · systems searched · missing links · owner of the next fix.</p></td></tr></table></td></tr>
-      <tr><td style="padding:0 28px 17px;"><h2 style="font-size:17px;margin:0 0 8px;color:#103f34;">What your answers suggest</h2><p style="font-size:14px;line-height:1.5;margin:0 0 12px;color:#405b53;">${escapeHtml(friction)}</p><h3 style="font-size:14px;margin:0 0 6px;color:#103f34;">Strongest coverage</h3>${strongHtml}<h3 style="font-size:14px;margin:15px 0 6px;color:#103f34;">Key gaps and friction areas</h3>${gapsHtml}<h3 style="font-size:14px;margin:15px 0 6px;color:#103f34;">Duplication / split-system signals</h3>${duplicationHtml}<h3 style="font-size:14px;margin:15px 0 6px;color:#103f34;">Prioritized observations</h3>${observationsHtml}</td></tr>
+      <tr><td style="padding:0 28px 22px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#e9f3ef;border-left:4px solid #16856b;"><tr><td style="padding:17px 19px;"><h2 style="font-size:16px;margin:0 0 8px;color:#103f34;">Brief for your CCO or operations meeting</h2><p style="font-size:14px;line-height:1.55;margin:0;color:#244b40;">${escapeHtml(internalBrief)}</p></td></tr></table></td></tr>
+      <tr><td style="padding:0 28px 21px;"><h2 style="font-size:17px;margin:0 0 7px;color:#103f34;">Evidence to put on the table</h2><p style="font-size:13px;line-height:1.5;margin:0 0 6px;color:#405b53;">Use this as the agenda for a single-matter reconstruction. A reported control is only a starting point until someone can produce the underlying record.</p><table role="presentation" cellpadding="0" cellspacing="0" width="100%">${proofHtml}</table></td></tr>
+      <tr><td style="padding:0 28px 21px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#fff5ea;border-left:4px solid #d49a45;"><tr><td style="padding:17px 19px;"><h2 style="font-size:16px;margin:0 0 8px;color:#633d17;">Run this evidence drill this week</h2><p style="font-size:14px;line-height:1.5;margin:0 0 9px;color:#403b30;">${escapeHtml(drill)}</p><p style="font-size:13px;line-height:1.5;margin:0;color:#634b2b;"><b>Record:</b> retrieval time, systems searched, missing links, and whether another reviewer could follow the decision through closure. Assign one owner for each missing link.</p></td></tr></table></td></tr>
+      <tr><td style="padding:0 28px 22px;"><h2 style="font-size:17px;margin:0 0 7px;color:#103f34;">Proposed order of work</h2><p style="font-size:13px;line-height:1.5;margin:0 0 5px;color:#405b53;">At the next team check-in, assign an owner and target date to the first broken handoff. Repeat the same retrieval test after the fix; compare the elapsed time and missing evidence.</p><table role="presentation" cellpadding="0" cellspacing="0" width="100%">${actionHtml}</table></td></tr>
       <tr><td style="padding:0 28px 27px;"><p style="font-size:14px;line-height:1.5;color:#405b53;">${escapeHtml(whyNow)}</p><table role="presentation" cellpadding="0" cellspacing="0"><tr><td bgcolor="#16856b" style="padding:14px 19px;"><a href="${REVIEW_URL}" style="color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;display:inline-block;">Request a 20-minute Stack Review →</a></td></tr></table><p style="font-size:12px;color:#668076;line-height:1.4;">The link opens our request form; our team will follow up to schedule. If it does not open, email <a href="mailto:contact@complyvault.co?subject=Stack%20Review%20request" style="color:#16856b;">contact@complyvault.co</a>.</p></td></tr>
       <tr><td style="background:#f2f5f3;padding:19px 28px;color:#668076;font-size:11px;line-height:1.5;">Based only on your self-reported answers. This is an operational stack assessment, not legal advice, a regulatory examination, or a determination of compliance with SEC or state requirements.</td></tr>
     </table></td></tr></table></body></html>`;
@@ -220,31 +234,20 @@ export function buildDetailedReviewEmail(input: {
     `Status map: ${counts.covered} covered, ${counts.partial} partial, ${counts.attention} need attention (seven areas).`,
     "The score uses eight weighted answers; neither it nor the status map is a regulatory compliance rating.",
     "",
+    "Brief for your CCO or operations meeting",
+    internalBrief,
+    "",
+    "Evidence to put on the table",
+    ...proofChecks.map((check, index) => `${index + 1}. ${check.name}: Reported: ${check.signal}. Ask to see: ${check.request}`),
+    "",
     "Run this evidence drill this week",
     drill,
-    "Record minutes to reconstruct, systems searched, missing links, and owner of the next fix.",
+    "Record retrieval time, systems searched, missing links, and whether another reviewer could follow the decision through closure. Assign one owner for each missing link.",
     whyNow,
     "",
-    "Strongest coverage",
-    ...(strong.length
-      ? strong.map((item) => `- ${item.label}: ${item.detail}`)
-      : ["- No areas scored as fully covered."]),
-    "",
-    "Key gaps and friction areas",
-    ...(gaps.length
-      ? gaps.map((item) => `- ${item.label} (${item.status}): ${item.detail}`)
-      : ["- No partial coverage, gaps or high-friction areas were flagged."]),
-    "",
-    "Duplication / split-system signals",
-    ...(duplication.length ? duplication.map((item) => `- ${item}`) : [
-      "- No clear multi-system duplication signals from your answers.",
-    ]),
-    "",
-    "Supervisory / evidence friction",
-    friction,
-    "",
-    "Prioritized observations",
-    ...observations.map((item, index) => `${index + 1}. ${item}`),
+    "Proposed order of work",
+    "At the next team check-in, assign an owner and target date to the first broken handoff. Repeat the same retrieval test after the fix; compare the elapsed time and missing evidence.",
+    ...actionItems.map((item, index) => `${index + 1}. ${item.title}: ${item.body}`),
     "",
     "This is an operational stack assessment based on your self-reported answers. It is not legal advice, not a regulatory examination, and not a determination of compliance with SEC or state requirements.",
     "",
