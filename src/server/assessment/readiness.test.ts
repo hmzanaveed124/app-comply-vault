@@ -5,7 +5,7 @@ import {
   prioritizedObservations,
   strongestCoverage,
 } from "./detailed-review";
-import { buildResultSummary, emptyAnswers } from "./scoring";
+import { buildResultSummary, emptyAnswers, isCompleteAnswers } from "./scoring";
 import { summarizeFunnel, isStaleIncomplete } from "./funnel";
 import { generateAccessToken, hashAccessToken, tokensMatch } from "./token";
 import {
@@ -148,8 +148,53 @@ describe("production readiness: scoring + detailed email", () => {
       answers: withoutArchive,
       result: buildResultSummary(withoutArchive),
     });
-    expect(foundationEmail.text).toContain("First confirm which communication channels are retained");
+    expect(foundationEmail.text).toContain("first confirm which communication channels are retained");
     expect(foundationEmail.text).not.toContain("Pick one closed client issue");
+  });
+
+  it("adapts the report for strong, missing-archive, uncertain, and multi-firm cases", () => {
+    const cases = [
+      {
+        name: "strong",
+        answers: { ...realisticAnswers, archive: "yes" as const, crm: "yes" as const, meetings: "yes" as const, policyCentral: "yes" as const, commReview: "automated" as const, reviewEvidence: "single" as const, issueTracking: "workflow" as const, examRetrieval: "minutes" as const },
+        title: "Stress-test a strong foundation",
+      },
+      {
+        name: "no archive",
+        answers: { ...realisticAnswers, archive: "no" as const, examRetrieval: "days" as const },
+        title: "Confirm what is retained first",
+      },
+      {
+        name: "uncertain archive",
+        answers: { ...realisticAnswers, archive: "unsure" as const },
+        title: "Confirm your archive coverage",
+      },
+      {
+        name: "outsourced multi-firm",
+        answers: { ...realisticAnswers, registration: "mixed" as const, complianceModel: "outsourced" as const },
+        title: "Your next evidence bottleneck",
+      },
+    ];
+    for (const { name, answers, title } of cases) {
+      expect(isCompleteAnswers(answers), name).toBe(true);
+      const summary = buildResultSummary(answers);
+      const email = buildDetailedReviewEmail({ answers, result: summary });
+      expect(email.html, name).toContain(title);
+      expect(email.html, name).toContain("Evidence to put on the table");
+      expect(email.text, name).toContain("Communications archive:");
+      expect(email.text, name).toContain("Exam retrieval:");
+      expect(email.text, name).not.toContain("undefined");
+      expect(email.html, name).not.toContain("undefined");
+      if (name === "outsourced multi-firm") {
+        expect(email.text).toContain("one firm in the portfolio");
+      }
+    }
+  });
+
+  it("rejects empty and invalid answers before a result can be emailed", () => {
+    expect(isCompleteAnswers(emptyAnswers())).toBe(false);
+    expect(isCompleteAnswers({ ...realisticAnswers, priority: "" })).toBe(false);
+    expect(isCompleteAnswers({ ...realisticAnswers, archive: "invalid" as "yes" })).toBe(false);
   });
 });
 
