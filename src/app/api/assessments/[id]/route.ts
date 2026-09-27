@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import { z } from "zod";
 import { StackAssessmentStatus } from "../../../../../generated/prisma";
 import { updateAssessmentSchema } from "~/server/assessment/types";
-import { buildResultSummary, mergeAnswers } from "~/server/assessment/scoring";
+import { buildResultSummary, isCompleteAnswers, mergeAnswers } from "~/server/assessment/scoring";
 import { tokensMatch } from "~/server/assessment/token";
 import {
   checkAssessmentRateLimit,
@@ -167,7 +167,14 @@ export async function PATCH(
     let completedAt = existing.completedAt;
     let nextResultSummary: ReturnType<typeof toInputJson> | undefined;
 
-    if (validated.status === "COMPLETED") {
+    if (validated.status === "COMPLETED" ||
+        (existing.status === StackAssessmentStatus.COMPLETED && validated.answers)) {
+      if (!isCompleteAnswers(merged)) {
+        return withCors(
+          request,
+          Response.json({ success: false, error: "Complete all assessment questions" }, { status: 409 }),
+        );
+      }
       const summary = buildResultSummary(merged);
       score = summary.score;
       nextResultSummary = toInputJson(summary);

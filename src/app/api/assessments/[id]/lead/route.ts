@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import { z } from "zod";
 import { StackAssessmentStatus } from "../../../../../../generated/prisma";
 import { leadCaptureSchema } from "~/server/assessment/types";
-import { buildResultSummary } from "~/server/assessment/scoring";
+import { buildResultSummary, isCompleteAnswers } from "~/server/assessment/scoring";
 import { tokensMatch } from "~/server/assessment/token";
 import {
   checkAssessmentRateLimit,
@@ -72,13 +72,14 @@ export async function POST(
     }
 
     const answers = answersFromJson(assessment.answers);
-    const summary =
-      assessment.resultSummary &&
-      typeof assessment.resultSummary === "object" &&
-      !Array.isArray(assessment.resultSummary)
-        ? // CAST: stored JSON matches AssessmentResultSummary shape produced by buildResultSummary
-          (assessment.resultSummary as ReturnType<typeof buildResultSummary>)
-        : buildResultSummary(answers);
+    if (!isCompleteAnswers(answers)) {
+      return withCors(
+        request,
+        Response.json({ success: false, error: "Complete all assessment questions" }, { status: 409 }),
+      );
+    }
+    // Recompute from validated answers so an older stored summary cannot stale the email.
+    const summary = buildResultSummary(answers);
 
     const now = new Date();
     const email = validated.email.trim().toLowerCase();
