@@ -122,7 +122,31 @@ describe("production readiness: scoring + detailed email", () => {
     expect(email.text).not.toMatch(/Apollo/i);
     // Sample for human review in test output / CI logs when needed:
     // console.log(email.text)
-    expect(email.html).toContain("ABC Wealth");
+    expect(email.html).toContain("ComplyVaultLogo.png");
+    expect(email.html).toContain('alt=""');
+    expect(email.html).toContain("Your next evidence bottleneck");
+    expect(email.html).toContain("Where the stack holds together");
+    expect(email.html).toContain("Run this evidence drill this week");
+    expect(email.html).toContain('href="https://www.complyvault.co/#cta"');
+    expect(email.html).toContain("request form; our team will follow up to schedule");
+    expect(email.html).not.toContain("ABC Wealth");
+    expect(email.text).toContain("The score uses eight weighted answers");
+    expect(email.text).toContain("Run this evidence drill this week");
+  });
+
+  it("makes urgency and the first action depend on reported retrieval and archive", () => {
+    const slow = { ...realisticAnswers, examRetrieval: "days" as const };
+    const slowEmail = buildDetailedReviewEmail({ answers: slow, result: buildResultSummary(slow) });
+    expect(slowEmail.text).toContain("a day or more");
+    expect(slowEmail.text).toMatch(/time the exercise/i);
+
+    const withoutArchive = { ...slow, archive: "no" as const };
+    const foundationEmail = buildDetailedReviewEmail({
+      answers: withoutArchive,
+      result: buildResultSummary(withoutArchive),
+    });
+    expect(foundationEmail.text).toContain("First confirm which communication channels are retained");
+    expect(foundationEmail.text).not.toContain("Pick one closed client issue");
   });
 });
 
