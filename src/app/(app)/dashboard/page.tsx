@@ -4,10 +4,9 @@ import { redirect } from "next/navigation";
 import { buildDashboardSummary } from "~/server/dashboard/build-dashboard-summary";
 import { getSupervisionSummary } from "~/server/supervision/service";
 import { DashboardView } from "~/components/dashboard/dashboard-view";
-import { WelcomeBanner } from "./components/welcome-banner";
-import type { WorkspaceRoleKey } from "~/lib/role-config";
+import { WorkspaceJourneyPanel } from "~/components/onboarding/workspace-journey";
+import { loadWorkspaceJourney } from "~/server/onboarding/load-workspace-journey";
 import { redirectPathForMissingWorkspace } from "~/server/workspace/no-workspace-redirect";
-import { activeUserWorkspaceWhere } from "~/lib/user-workspace-filters";
 import { isDashboardRange, type DashboardRange } from "~/lib/dashboard-types";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +23,10 @@ export default async function DashboardPage({
       redirect("/auth/signin");
     }
     redirect(
-      await redirectPathForMissingWorkspace(session.user.id, session.user.email),
+      await redirectPathForMissingWorkspace(
+        session.user.id,
+        session.user.email,
+      ),
     );
   }
 
@@ -33,49 +35,32 @@ export default async function DashboardPage({
   const rawRange = (await searchParams).range;
   const range: DashboardRange = isDashboardRange(rawRange) ? rawRange : "90d";
 
-  const [summary, supervisionSummary, membership, workspace, inviteAccepted] = await Promise.all([
+  const journey = await loadWorkspaceJourney(db, session.user.id, workspaceId);
+  if (!journey)
+    redirect(
+      await redirectPathForMissingWorkspace(
+        session.user.id,
+        session.user.email,
+      ),
+    );
+  // An empty workspace needs a route to value, rather than empty charts.
+  if (journey.meetingCount === 0 && !journey.hasCorrespondence)
+    return (
+      <div className="min-h-0 bg-surface-page px-4 py-6 sm:px-6">
+        <WorkspaceJourneyPanel journey={journey} />
+      </div>
+    );
+  const [summary, supervisionSummary] = await Promise.all([
     buildDashboardSummary(db, workspaceId, range),
     getSupervisionSummary(db, workspaceId),
-    db.userWorkspace.findFirst({
-      where: {
-        userId: session.user.id,
-        workspaceId,
-        ...activeUserWorkspaceWhere,
-      },
-      select: { onboardingDismissedAt: true, role: true },
-    }),
-    db.workspace.findUnique({
-      where: { id: workspaceId },
-      select: { name: true },
-    }),
-    db.auditEvent.findFirst({
-      where: {
-        workspaceId,
-        userId: session.user.id,
-        action: "INVITE_ACCEPTED",
-      },
-      select: { id: true },
-    }),
   ]);
-
-  const showWelcomeBanner =
-    membership != null &&
-    membership.onboardingDismissedAt == null &&
-    inviteAccepted != null;
-
   return (
-    <div className="min-h-0 bg-surface-page px-6 py-6">
-      {showWelcomeBanner && workspace && membership ? (
-        <WelcomeBanner
-          workspaceId={workspaceId}
-          workspaceName={workspace.name}
-          role={membership.role as WorkspaceRoleKey}
-        />
-      ) : null}
+    <div className="min-h-0 bg-surface-page px-4 py-6 sm:px-6">
+      <WorkspaceJourneyPanel journey={journey} />
       <DashboardView
         summary={summary}
         supervisionSummary={supervisionSummary}
-        workspaceName={workspace?.name ?? "Your workspace"}
+        workspaceName={journey.workspaceName}
       />
     </div>
   );

@@ -37,7 +37,7 @@ export function DashboardView({
     <div className="mx-auto w-full max-w-[1240px] space-y-3.5 pb-10">
       <div className="mb-1 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-[650] tracking-[-0.01em] text-text-primary">Dashboard</h1>
+          <h2 className="text-[18px] font-[650] tracking-[-0.01em] text-text-primary">Workspace overview</h2>
           <p className="mt-0.5 text-[12.5px] text-text-secondary">
             {workspaceName} · Week of {weekOfLabel()}
           </p>

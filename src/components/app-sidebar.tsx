@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import {
+  Compass,
   CheckSquare,
   BriefcaseBusiness,
   FileText,
@@ -102,6 +103,7 @@ function AppSidebarPanel({
 }: AppSidebarPanelProps): React.JSX.Element {
   const isActive = (path: string): boolean => {
     if (path === "/dashboard") return pathname === "/dashboard";
+    if (path === "/clients/overview") return pathname?.startsWith("/clients/") ?? false;
     return pathname?.startsWith(path) ?? false;
   };
 
@@ -111,17 +113,19 @@ function AppSidebarPanel({
     icon: React.ComponentType<{ className?: string }>;
     badge?: number;
   }[] = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
-    { href: "/supervision", label: "Supervision", icon: Shield },
-    { href: "/priority-inbox", label: "Priority Inbox", icon: CheckSquare },
+    { href: "/dashboard", label: "Home", icon: LayoutGrid },
+    { href: "/onboarding", label: "Getting started", icon: Compass },
+    { href: "/clients/overview", label: "Clients", icon: BriefcaseBusiness },
     { href: "/interaction-log", label: "Interaction Log", icon: FileText },
+    { href: "/upload", label: "Add a meeting", icon: Upload },
     {
       href: "/review",
       label: "Review Queue",
       icon: CheckSquare,
       badge: reviewQueueCount > 0 ? reviewQueueCount : undefined,
     },
-    { href: "/upload", label: "Upload", icon: Upload },
+    { href: "/supervision", label: "Supervision", icon: Shield },
+    { href: "/priority-inbox", label: "Priority Inbox", icon: CheckSquare },
     ...(userRole === "OWNER_CCO" || userRole === "MEMBER"
       ? [{ href: "/compliance-cockpit", label: "Compliance Cockpit", icon: SlidersHorizontal }]
       : []),

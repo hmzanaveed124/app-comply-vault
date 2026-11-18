@@ -4,7 +4,10 @@ export default defineConfig({
   esbuild: { jsx: "automatic" },
   test: {
     environment: "jsdom",
-    include: ["src/theme/**/*.test.tsx"],
+    include: [
+      "src/theme/**/*.test.tsx",
+      "src/components/onboarding/**/*.test.tsx",
+    ],
     setupFiles: ["src/theme/test-setup.ts"],
   },
   resolve: { alias: { "~": path.resolve(__dirname, "./src") } },
