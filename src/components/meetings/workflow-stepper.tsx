@@ -58,7 +58,7 @@ export function WorkflowStepper({
 
   if (!showWorkflow) {
     return (
-      <div className="rounded-lg border border-[#F1EFE8] bg-[#F1EFE8]/30 px-5 py-3 text-[13px] text-[#444441]">
+      <div className="rounded-lg border border-surface-muted bg-surface-muted/30 px-5 py-3 text-[13px] text-text-primary">
         Workflow steps will appear once this meeting is ready for advisor review.
       </div>
     );
@@ -79,20 +79,20 @@ export function WorkflowStepper({
                 <div
                   className={cn(
                     "flex w-full flex-col items-center border-b-2 px-1 py-2 sm:px-2 cv-motion-step-transition",
-                    state === "done" && "border-[#0F6E56]",
-                    state === "active" && "border-[#185FA5]",
-                    state === "pending" && "border-[#E8E6DF]",
+                    state === "done" && "border-brand",
+                    state === "active" && "border-semantic-info",
+                    state === "pending" && "border-surface-border",
                   )}
                 >
                   <div
                     className={cn(
                       "mb-1 flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-medium cv-motion-step-transition",
                       state === "done" &&
-                        "bg-[#E1F5EE] text-[#0F6E56]",
+                        "bg-brand-light text-brand",
                       state === "active" &&
-                        "bg-[#E6F1FB] text-[#185FA5]",
+                        "bg-info-bg text-semantic-info",
                       state === "pending" &&
-                        "bg-[#F1EFE8] text-[#444441]/70",
+                        "bg-surface-muted text-text-primary/70",
                     )}
                   >
                     {state === "done" ? (
@@ -106,9 +106,9 @@ export function WorkflowStepper({
                   <span
                     className={cn(
                       "text-center text-[11px] font-medium leading-tight sm:text-[12px]",
-                      state === "done" && "text-[#085041]",
-                      state === "active" && "text-[#0C447C]",
-                      state === "pending" && "text-[#444441]/70",
+                      state === "done" && "text-brand",
+                      state === "active" && "text-semantic-info",
+                      state === "pending" && "text-text-primary/70",
                     )}
                   >
                     {step.label}
@@ -122,7 +122,7 @@ export function WorkflowStepper({
 
       {certifiedAt && advisorName ? (
         <div
-          className="flex items-start gap-2 rounded-lg bg-[#E1F5EE] px-3 py-2.5 text-[13px] text-[#085041]"
+          className="flex items-start gap-2 rounded-lg bg-brand-light px-3 py-2.5 text-[13px] text-brand"
           role="status"
         >
           <Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
@@ -132,7 +132,7 @@ export function WorkflowStepper({
         </div>
       ) : certifiedAt ? (
         <div
-          className="flex items-start gap-2 rounded-lg bg-[#E1F5EE] px-3 py-2.5 text-[13px] text-[#085041]"
+          className="flex items-start gap-2 rounded-lg bg-brand-light px-3 py-2.5 text-[13px] text-brand"
           role="status"
         >
           <Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />

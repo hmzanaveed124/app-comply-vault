@@ -116,7 +116,7 @@ export default function FinalizeButton({
             variant="default"
             className={
               embedInActionBar
-                ? "shrink-0 rounded-full bg-[#185FA5] px-5 text-[14px] font-medium text-white hover:bg-[#185FA5]/90"
+                ? "shrink-0 rounded-full bg-semantic-info px-5 text-[14px] font-medium text-white hover:bg-semantic-info/90"
                 : "w-full sm:w-auto"
             }
           >

@@ -54,31 +54,31 @@ export default async function FindingPage({
   return (
     <div className="min-h-0 bg-surface-page px-6 py-6">
       <div className="mx-auto flex max-w-3xl flex-col gap-4">
-        <Link href={backHref} className="text-[12.5px] font-medium text-[#177a4c] hover:underline">
+        <Link href={backHref} className="text-[12.5px] font-medium text-brand hover:underline">
           ← Priority Inbox
         </Link>
-        <h1 className="text-[22px] font-semibold text-[#141f19]">{finding.title}</h1>
-        <p className="rounded-[8px] border border-[#d8e8df] bg-[#f3faf6] px-3 py-2 text-[12.5px] text-[#2a5c40]">
+        <h1 className="text-[22px] font-semibold text-text-primary">{finding.title}</h1>
+        <p className="rounded-[8px] border border-surface-border bg-brand-light px-3 py-2 text-[12.5px] text-brand">
           ComplyVault has identified evidence requiring human supervisory review. It has not
           determined that a violation occurred.
         </p>
-        <dl className="grid gap-3 rounded-[12px] border border-[#e6e8e6] bg-white p-4 sm:grid-cols-2">
+        <dl className="grid gap-3 rounded-[12px] border border-surface-border bg-surface-card p-4 sm:grid-cols-2">
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">Firm</dt>
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">Firm</dt>
             <dd className="mt-1 text-[14px]">{finding.firmName}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">Adviser</dt>
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">Adviser</dt>
             <dd className="mt-1 text-[14px]">{finding.adviserName ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">Status</dt>
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">Status</dt>
             <dd className="mt-1 text-[14px]">
               {SUPERVISION_FILTER_LABELS.findingStatus[finding.status]}
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">
               Primary control
             </dt>
             <dd className="mt-1 text-[14px]">
@@ -90,17 +90,17 @@ export default async function FindingPage({
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">
               Policy mapping
             </dt>
             <dd className="mt-1 text-[14px]">{finding.policyMappingCode}</dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">Owner</dt>
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">Owner</dt>
             <dd className="mt-1 text-[14px]">{finding.ownerName ?? "Unassigned"}</dd>
           </div>
         </dl>
-        <p className="text-[13px] text-[#5f6b64]">
+        <p className="text-[13px] text-text-secondary">
           Full finding sections land in CV-SI-008. Queue filters and scroll position are
           preserved on return.
         </p>

@@ -61,9 +61,9 @@ export function PriorityInboxFindingsTable({
   });
 
   return (
-    <div className="overflow-hidden rounded-[12px] border border-[#e6e8e6] bg-white">
+    <div className="overflow-hidden rounded-[12px] border border-surface-border bg-surface-card">
       <div
-        className="grid grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))] gap-2 border-b border-[#eef0ee] bg-[#fafbfa] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.04em] text-[#79837d]"
+        className="grid grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))] gap-2 border-b border-surface-muted bg-surface-muted px-4 py-2 text-[11px] font-medium uppercase tracking-[0.04em] text-text-secondary"
         role="row"
       >
         <span>Finding</span>
@@ -94,8 +94,8 @@ export function PriorityInboxFindingsTable({
                 id={`finding-${finding.id}`}
                 role="row"
                 className={cn(
-                  "absolute left-0 top-0 w-full border-b border-[#eef0ee]",
-                  focused ? "bg-[#f3faf6]" : "bg-white",
+                  "absolute left-0 top-0 w-full border-b border-surface-muted",
+                  focused ? "bg-brand-light" : "bg-surface-card",
                 )}
                 style={{
                   height: `${virtualRow.size}px`,
@@ -104,36 +104,36 @@ export function PriorityInboxFindingsTable({
               >
                 <Link
                   href={finding.href}
-                  className="grid h-full grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))] gap-2 px-4 py-3 hover:bg-[#fafbfa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#177a4c]"
+                  className="grid h-full grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))] gap-2 px-4 py-3 hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-[14px] font-semibold text-[#141f19]">
+                    <p className="truncate text-[14px] font-semibold text-text-primary">
                       {finding.title}
                     </p>
-                    <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-[#5f6b64]">
+                    <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-text-secondary">
                       {finding.escalationReason}
                     </p>
-                    <p className="mt-1 text-[11px] uppercase tracking-[0.04em] text-[#79837d]">
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.04em] text-text-secondary">
                       {severityLabel(finding.severity)}
                       {finding.repeatAdviser ? " · Repeat adviser" : ""}
                     </p>
                   </div>
-                  <div className="text-[12.5px] text-[#5f6b64]">
+                  <div className="text-[12.5px] text-text-secondary">
                     <p className="truncate">{finding.firmName}</p>
-                    <p className="truncate text-[#79837d]">
+                    <p className="truncate text-text-secondary">
                       {finding.adviserName ?? "—"}
                     </p>
                   </div>
-                  <p className="truncate text-[12.5px] text-[#5f6b64]">
+                  <p className="truncate text-[12.5px] text-text-secondary">
                     {finding.clientName ?? "—"}
                   </p>
-                  <div className="text-[12px] text-[#5f6b64]">
+                  <div className="text-[12px] text-text-secondary">
                     <p>{statusLabel(finding.status)}</p>
-                    <p className="text-[#79837d]">{channelLabel(finding.channels)}</p>
+                    <p className="text-text-secondary">{channelLabel(finding.channels)}</p>
                   </div>
-                  <div className="text-[12.5px] tabular-nums text-[#5f6b64]">
+                  <div className="text-[12.5px] tabular-nums text-text-secondary">
                     <p>{formatDate(finding.dueAt)}</p>
-                    <p className="text-[#79837d]">
+                    <p className="text-text-secondary">
                       {confidenceLabel(finding.confidence)} · {finding.evidenceCount}
                     </p>
                   </div>

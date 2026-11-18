@@ -116,7 +116,7 @@ export default async function ClientOverviewPage({
             Clients
           </Link>
           <span className="mx-1.5">/</span>
-          <span className="text-[#0D2818]">{displayName}</span>
+          <span className="text-text-primary">{displayName}</span>
         </p>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-3xl font-semibold tracking-tight">{displayName}</h1>

@@ -151,14 +151,14 @@ export function M365MailClient({
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">
       <div>
-        <h1 className="text-2xl font-semibold text-[#0D2818]">Microsoft 365 Mail</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">Microsoft 365 Mail</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Controlled ingestion — selected mailboxes, folders and date ranges only.
         </p>
       </div>
 
       {!workspaceStatus.oauthConfigured && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="rounded-lg border border-warning-border bg-warning-bg p-4 text-sm text-warning-text">
           <p className="font-medium">Azure OAuth not configured on the server</p>
           <p className="mt-1">
             Set <code className="text-xs">M365_MAIL_CLIENT_ID</code> and{" "}
@@ -171,7 +171,7 @@ export function M365MailClient({
       )}
 
       {workspaceStatus.oauthConfigured && !workspaceStatus.connected && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="rounded-lg border border-warning-border bg-warning-bg p-4 text-sm text-warning-text">
           <p className="font-medium">M365 mail integration not connected</p>
           <p className="mt-1">
             Before loading folders or syncing, connect once using one of the buttons below:
@@ -190,7 +190,7 @@ export function M365MailClient({
       )}
 
       {workspaceStatus.connected && (
-        <p className="text-sm text-green-700">
+        <p className="text-sm text-success-text">
           Workspace token active
           {workspaceStatus.consentMode ? ` (${workspaceStatus.consentMode})` : ""}
           {workspaceStatus.tenantId ? ` · tenant ${workspaceStatus.tenantId}` : ""}
@@ -198,7 +198,7 @@ export function M365MailClient({
       )}
 
       <div className="flex flex-wrap gap-3">
-        <Button asChild className="bg-[#2ECC71] text-[#0D2818] hover:bg-[#27ae60]">
+        <Button asChild className="bg-brand text-text-primary hover:bg-brand">
           <a href="/api/integrations/m365-mail/connect">Connect my mailbox (delegated)</a>
         </Button>
         <Button asChild variant="outline">
@@ -213,7 +213,7 @@ export function M365MailClient({
       </div>
 
       {mailbox && (
-        <p className="text-sm text-green-700">Connected mailbox: {decodeURIComponent(mailbox)}</p>
+        <p className="text-sm text-success-text">Connected mailbox: {decodeURIComponent(mailbox)}</p>
       )}
 
       <section className="space-y-3 rounded-lg border p-4">
@@ -257,7 +257,7 @@ export function M365MailClient({
                     state={pendingButtonState(syncPending === `${c.id}-BACKFILL`)}
                     loadingText="Starting…"
                     onClick={() => void startSync(c.id, "BACKFILL")}
-                    className="bg-[#2ECC71] text-[#0D2818] hover:bg-[#27ae60]"
+                    className="bg-brand text-text-primary hover:bg-brand"
                     disabled={syncPending !== null}
                   >
                     Backfill

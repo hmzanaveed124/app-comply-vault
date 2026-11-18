@@ -237,9 +237,9 @@ export function ClientDetailClient({
             Clients
           </Link>
           <span className="mx-1.5">/</span>
-          <span className="text-[#0D2818]">{detail.name}</span>
+          <span className="text-text-primary">{detail.name}</span>
         </p>
-        <h1 className="text-2xl font-semibold text-[#0D2818]">{detail.name}</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">{detail.name}</h1>
         <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
           <Badge variant="secondary">{detail.status}</Badge>
           <span>
@@ -289,7 +289,7 @@ export function ClientDetailClient({
               </Button>
               <Button
                 size="sm"
-                className="bg-[#2ECC71] text-[#0D2818]"
+                className="bg-brand text-text-primary"
                 onClick={() => {
                   setAliasAddress("");
                   setHistoricalCount(null);
@@ -361,7 +361,7 @@ export function ClientDetailClient({
                   <TableCell>
                     <Link
                       href={`/clients/${m.clientId}`}
-                      className="font-medium text-[#177a4c] hover:underline"
+                      className="font-medium text-brand hover:underline"
                     >
                       {m.name}
                     </Link>
@@ -479,9 +479,9 @@ export function ClientDetailClient({
                     <TableCell>
                       <span className="inline-flex items-center gap-1.5 text-sm">
                         {row.direction === "OUTBOUND" ? (
-                          <ArrowUpRight className="h-3.5 w-3.5 text-[#5F5E5A]" aria-hidden />
+                          <ArrowUpRight className="h-3.5 w-3.5 text-text-secondary" aria-hidden />
                         ) : (
-                          <ArrowDownLeft className="h-3.5 w-3.5 text-[#5F5E5A]" aria-hidden />
+                          <ArrowDownLeft className="h-3.5 w-3.5 text-text-secondary" aria-hidden />
                         )}
                         {directionLabel(row.direction)}
                         {row.viaHouseholdMember && row.memberClientName ? (
@@ -496,7 +496,7 @@ export function ClientDetailClient({
                     </TableCell>
                     <TableCell className="max-w-[220px] truncate">
                       <span className="inline-flex items-center gap-1.5">
-                        <Mail className="h-3.5 w-3.5 shrink-0 text-[#5F5E5A]" aria-hidden />
+                        <Mail className="h-3.5 w-3.5 shrink-0 text-text-secondary" aria-hidden />
                         {row.title ?? "(no subject)"}
                       </span>
                     </TableCell>
@@ -516,7 +516,7 @@ export function ClientDetailClient({
                       {row.threadId ? (
                         <Link
                           href={`/communications/threads/${row.threadId}`}
-                          className="text-sm font-semibold text-[#177a4c] hover:underline"
+                          className="text-sm font-semibold text-brand hover:underline"
                         >
                           Open thread
                         </Link>
@@ -579,7 +579,7 @@ export function ClientDetailClient({
                   Cancel
                 </Button>
                 <Button
-                  className="bg-[#2ECC71] text-[#0D2818]"
+                  className="bg-brand text-text-primary"
                   disabled={!memberName.trim() || submitting}
                   onClick={() => void submitDialog()}
                 >
@@ -634,7 +634,7 @@ export function ClientDetailClient({
                   Cancel
                 </Button>
                 <Button
-                  className="bg-[#2ECC71] text-[#0D2818]"
+                  className="bg-brand text-text-primary"
                   disabled={!peerClientId || submitting}
                   onClick={() => void submitDialog()}
                 >
@@ -680,7 +680,7 @@ export function ClientDetailClient({
                   Cancel
                 </Button>
                 <Button
-                  className="bg-[#2ECC71] text-[#0D2818]"
+                  className="bg-brand text-text-primary"
                   disabled={!aliasAddress.includes("@") || submitting}
                   onClick={() => void submitDialog()}
                 >

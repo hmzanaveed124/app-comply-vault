@@ -1,4 +1,6 @@
 import "~/styles/globals.css";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ThemeProvider } from "~/theme/provider";
 
 import { type Metadata } from "next";
 import { DM_Sans } from "next/font/google";
@@ -21,10 +23,22 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${dmSans.variable}`}>
+    <html lang="en" className={`${dmSans.variable}`} suppressHydrationWarning>
+      <head>
+        <style>{"@layer theme, base, antd, components, utilities;"}</style>
+      </head>
       <body>
-        {children}
-        <Toaster />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{document.documentElement.classList.toggle('dark',localStorage.getItem('complyvault-theme')==='dark')}catch(e){}})()`,
+          }}
+        />
+        <AntdRegistry layer>
+          <ThemeProvider>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

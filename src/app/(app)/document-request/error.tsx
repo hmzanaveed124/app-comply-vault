@@ -15,7 +15,7 @@ export default function DocumentRequestError({
       </p>
       <button
         type="button"
-        className="mt-4 text-sm font-medium text-[#0D2818] underline"
+        className="mt-4 text-sm font-medium text-text-primary underline"
         onClick={reset}
       >
         Try again

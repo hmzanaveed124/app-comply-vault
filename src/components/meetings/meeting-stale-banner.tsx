@@ -35,7 +35,7 @@ export function MeetingStaleBanner({
       variant="default"
       role="status"
       aria-live="polite"
-      className="border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-50"
+      className="border-warning-border bg-warning-bg text-warning-text dark:border-warning-border dark:bg-semantic-warning/40 dark:text-warning-text"
     >
       <AlertTitle className="text-sm font-semibold">Meeting updated elsewhere</AlertTitle>
       <AlertDescription className="mt-1 flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">

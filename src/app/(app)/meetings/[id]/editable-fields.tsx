@@ -101,9 +101,9 @@ export default function EditableFields({
     );
     if (segmentElement) {
       segmentElement.scrollIntoView({ behavior: "smooth", block: "center" });
-      segmentElement.classList.add("bg-yellow-100");
+      segmentElement.classList.add("bg-warning-bg");
       setTimeout(() => {
-        segmentElement.classList.remove("bg-yellow-100");
+        segmentElement.classList.remove("bg-warning-bg");
       }, 2000);
     }
   };
@@ -171,7 +171,7 @@ export default function EditableFields({
       if (items.length === 0) return null;
       return (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-semibold text-text-primary mb-2">
             {label} ({items.length})
           </h3>
           <ul className="space-y-3">
@@ -185,7 +185,7 @@ export default function EditableFields({
                 data-claim-start={Math.floor(item.startTime ?? 0)}
               >
                 <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-900 flex-1">{item.text}</p>
+                  <p className="text-sm text-text-primary flex-1">{item.text}</p>
                   {item.startTime !== undefined && (
                     <Button
                       variant="link"
@@ -213,7 +213,7 @@ export default function EditableFields({
                 )}
                 {item.confidence !== undefined && (
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-secondary">
                       Confidence: {(item.confidence * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -230,7 +230,7 @@ export default function EditableFields({
     return (
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-gray-700">
+          <h3 className="text-sm font-semibold text-text-primary">
             {label} ({items.length})
           </h3>
           {!isReadOnly && (
@@ -390,7 +390,7 @@ export default function EditableFields({
                 </div>
               ) : (
                 <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-900 flex-1">{item.text}</p>
+                  <p className="text-sm text-text-primary flex-1">{item.text}</p>
                   <div className="flex items-center gap-2 ml-2">
                     {item.startTime !== undefined && (
                       <Button
@@ -450,7 +450,7 @@ export default function EditableFields({
               )}
               {item.confidence !== undefined && (
                 <div className="mt-1 flex items-center gap-2">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-text-secondary">
                     Confidence: {(item.confidence * 100).toFixed(0)}%
                   </span>
                 </div>
@@ -474,7 +474,7 @@ export default function EditableFields({
       {/* Topics */}
       {extraction.topics && extraction.topics.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">Topics</h3>
+          <h3 className="text-sm font-semibold text-text-primary mb-2">Topics</h3>
           <ul className="space-y-3">
             {extraction.topics.map((topic, idx) => {
               const title = getTopicTitle(topic);
@@ -482,9 +482,9 @@ export default function EditableFields({
               const showDesc = description && title !== description;
               return (
                 <li key={idx} className="text-sm">
-                  <span className="font-medium text-gray-900">{title}</span>
+                  <span className="font-medium text-text-primary">{title}</span>
                   {showDesc && (
-                    <p className="text-gray-600 mt-0.5 ml-0">{description}</p>
+                    <p className="text-text-secondary mt-0.5 ml-0">{description}</p>
                   )}
                 </li>
               );
@@ -498,7 +498,7 @@ export default function EditableFields({
         "recommendations",
         extraction.recommendations || [],
         "Recommendations",
-        "border-green-500"
+        "border-success-border"
       )}
 
       {/* Disclosures */}
@@ -506,7 +506,7 @@ export default function EditableFields({
         "disclosures",
         extraction.disclosures || [],
         "Disclosures",
-        "border-orange-500"
+        "border-warning-border"
       )}
 
       {/* Decisions */}
@@ -522,7 +522,7 @@ export default function EditableFields({
         "followUps",
         extraction.followUps || [],
         "Follow-ups",
-        "border-blue-500"
+        "border-info-border"
       )}
 
       {(!extraction.topics || extraction.topics.length === 0) &&
@@ -567,11 +567,11 @@ function SoftGapPrompts({ extraction }: { extraction: ExtractionData | null | un
   const firstRecommendation = recommendations[0];
 
   return (
-    <Alert variant="default" className="mt-6 border-amber-500 bg-amber-50 dark:bg-amber-950/20">
+    <Alert variant="default" className="mt-6 border-warning-border bg-warning-bg dark:bg-semantic-warning/20">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
           <svg
-            className="h-5 w-5 text-amber-600 dark:text-amber-500"
+            className="h-5 w-5 text-warning-text dark:text-warning-text"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -587,10 +587,10 @@ function SoftGapPrompts({ extraction }: { extraction: ExtractionData | null | un
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-100 mb-1">
+              <h4 className="text-sm font-semibold text-warning-text dark:text-warning-text mb-1">
                 Soft Gap Prompt
               </h4>
-              <AlertDescription className="text-amber-800 dark:text-amber-200">
+              <AlertDescription className="text-warning-text dark:text-warning-text">
                 <div className="space-y-2">
                   <p>
                     <strong>{recommendations.length}</strong> recommendation{recommendations.length > 1 ? "s" : ""} detected, but{" "}
@@ -600,11 +600,11 @@ function SoftGapPrompts({ extraction }: { extraction: ExtractionData | null | un
                     Please confirm if risk was discussed or add disclosure if needed.
                   </p>
                   {firstRecommendation && (
-                    <div className="mt-2 p-2 bg-amber-100 dark:bg-amber-900/30 rounded text-xs">
+                    <div className="mt-2 p-2 bg-warning-bg dark:bg-semantic-warning/30 rounded text-xs">
                       <div className="font-medium mb-1">
                         First recommendation at {formatTime(firstRecommendation.startTime)}
                       </div>
-                      <div className="text-amber-700 dark:text-amber-300 line-clamp-2">
+                      <div className="text-warning-text dark:text-warning-text line-clamp-2">
                         "{firstRecommendation.text}"
                       </div>
                     </div>
@@ -616,7 +616,7 @@ function SoftGapPrompts({ extraction }: { extraction: ExtractionData | null | un
               variant="ghost"
               size="sm"
               onClick={() => setDismissedPrompts(new Set([...dismissedPrompts, "no-disclosures"]))}
-              className="ml-2 h-auto p-1 text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100"
+              className="ml-2 h-auto p-1 text-warning-text hover:text-warning-text dark:text-warning-text dark:hover:text-warning-text"
               aria-label="Dismiss prompt"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

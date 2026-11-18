@@ -39,7 +39,7 @@ export default async function CandidatePackPage({
           gaps, then approve — attestation is written to the audit log.
         </p>
         {letterTitle ? (
-          <p className="mt-2 text-sm text-[#0D2818]">
+          <p className="mt-2 text-sm text-text-primary">
             From inbound letter: {letterTitle}
           </p>
         ) : null}

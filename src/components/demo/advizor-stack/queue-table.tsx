@@ -17,7 +17,7 @@ import { DEMO_BASE_PATH, type QueueItem } from "./demo-data";
 function SeverityBadge({ severity }: { severity: QueueItem["severity"] }) {
   if (severity === "high") {
     return (
-      <Badge className="border-amber-200 bg-amber-100 text-amber-800">
+      <Badge className="border-warning-border bg-warning-bg text-warning-text">
         High
       </Badge>
     );
@@ -34,7 +34,7 @@ function SyncStatus({ status }: { status: QueueItem["syncStatus"] }) {
     <span
       className={cn(
         "text-[11px]",
-        status === "pending" ? "text-amber-700" : "text-text-muted",
+        status === "pending" ? "text-warning-text" : "text-text-muted",
       )}
     >
       {status === "pending" ? "pending" : "synced"}
@@ -78,7 +78,7 @@ export function QueueTable({ items }: { items: QueueItem[] }) {
               <TableCell className="align-top text-text-muted">
                 {item.topRelationship ? (
                   <Star
-                    className="h-4 w-4 fill-amber-400 text-amber-400"
+                    className="h-4 w-4 fill-amber-400 text-warning-text"
                     aria-label="Top relationship"
                   />
                 ) : (

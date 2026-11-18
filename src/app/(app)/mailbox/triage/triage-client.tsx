@@ -161,7 +161,7 @@ export function TriageClient({ workspaceId }: TriageClientProps): React.JSX.Elem
     <div className="mx-auto max-w-3xl space-y-10 p-6">
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-[#0D2818]">Participant triage</h1>
+          <h1 className="text-2xl font-semibold text-text-primary">Participant triage</h1>
           <p className="text-sm text-muted-foreground">
             Unmatched email addresses from ingested threads.
           </p>
@@ -204,7 +204,7 @@ export function TriageClient({ workspaceId }: TriageClientProps): React.JSX.Elem
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-[#2ECC71] text-[#0D2818]"
+                    className="bg-brand text-text-primary"
                     onClick={() => {
                       setSelectedClientId("");
                       setConfirmItem(item);
@@ -221,7 +221,7 @@ export function TriageClient({ workspaceId }: TriageClientProps): React.JSX.Elem
 
       <section className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-[#0D2818]">Needs attribution</h2>
+          <h2 className="text-xl font-semibold text-text-primary">Needs attribution</h2>
           <p className="text-sm text-muted-foreground">
             Meetings without a confirmed client link, or with a low-confidence name match.
           </p>
@@ -249,7 +249,7 @@ export function TriageClient({ workspaceId }: TriageClientProps): React.JSX.Elem
                 </div>
                 <Button
                   size="sm"
-                  className="bg-[#2ECC71] text-[#0D2818]"
+                  className="bg-brand text-text-primary"
                   onClick={() => {
                     setSelectedClientId("");
                     setConfirmMeeting(m);
@@ -320,7 +320,7 @@ export function TriageClient({ workspaceId }: TriageClientProps): React.JSX.Elem
               Cancel
             </Button>
             <Button
-              className="bg-[#2ECC71] text-[#0D2818]"
+              className="bg-brand text-text-primary"
               disabled={!selectedClientId || submitting || !confirmItem || clientsLoading}
               onClick={() => {
                 if (!confirmItem || !selectedClientId) return;
@@ -390,7 +390,7 @@ export function TriageClient({ workspaceId }: TriageClientProps): React.JSX.Elem
               Cancel
             </Button>
             <Button
-              className="bg-[#2ECC71] text-[#0D2818]"
+              className="bg-brand text-text-primary"
               disabled={!selectedClientId || submitting || !confirmMeeting || clientsLoading}
               onClick={() => {
                 if (!confirmMeeting || !selectedClientId) return;

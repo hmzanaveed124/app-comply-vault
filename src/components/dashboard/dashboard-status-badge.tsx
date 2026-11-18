@@ -6,28 +6,28 @@ const STYLES: Record<
   { bg: string; border: string; text: string; dot: string }
 > = {
   review: {
-    bg: "#FFF7ED",
+    bg: "var(--cv-warning-bg)",
     border: "rgba(249, 115, 22, 0.12)",
-    text: "#C2410C",
-    dot: "#F97316",
+    text: "var(--cv-warning-text)",
+    dot: "var(--cv-semantic-orange)",
   },
   flagged: {
-    bg: "#FEF2F2",
+    bg: "var(--cv-danger-bg)",
     border: "rgba(239, 68, 68, 0.12)",
-    text: "#B91C1C",
-    dot: "#EF4444",
+    text: "var(--cv-danger-text)",
+    dot: "var(--cv-semantic-danger)",
   },
   finalized: {
-    bg: "#E8F5EE",
+    bg: "var(--cv-brand-light)",
     border: "rgba(17, 122, 75, 0.12)",
-    text: "#0D5C38",
-    dot: "#117A4B",
+    text: "var(--cv-brand-dark)",
+    dot: "var(--cv-brand)",
   },
   draft: {
-    bg: "#F8FAFC",
+    bg: "var(--cv-surface-muted)",
     border: "rgba(148, 163, 184, 0.12)",
-    text: "#64748B",
-    dot: "#94A3B8",
+    text: "var(--cv-text-secondary)",
+    dot: "var(--cv-text-muted)",
   },
 };
 

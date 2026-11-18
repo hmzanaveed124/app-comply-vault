@@ -13,9 +13,9 @@ import type { ComplianceItem, ComplianceItemCapability } from "~/server/evidence
 
 const severityClassName: Record<ComplianceItem["severity"], string> = {
   critical: "border-destructive/30 bg-destructive/10 text-destructive",
-  high: "border-orange-700/30 bg-orange-50 text-orange-800",
-  medium: "border-amber-700/30 bg-amber-50 text-amber-800",
-  low: "border-green-700/30 bg-green-50 text-green-800",
+  high: "border-warning-border/30 bg-warning-bg text-warning-text",
+  medium: "border-warning-border/30 bg-warning-bg text-warning-text",
+  low: "border-success-border/30 bg-success-bg text-success-text",
 };
 
 const capabilityLabels: Partial<Record<ComplianceItemCapability, string>> = {

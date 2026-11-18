@@ -16,7 +16,7 @@ function AppShellInner({
 }: AppShellProps): React.JSX.Element {
   const { collapsed } = useSidebar();
   // Both literal classes are present so Tailwind can statically detect them.
-  const pad = collapsed ? "lg:pl-[76px]" : "lg:pl-[244px]";
+  const pad = collapsed ? "lg:pl-[var(--cv-sidebar-collapsed-width)]" : "lg:pl-[var(--cv-sidebar-width)]";
 
   return (
     <>
@@ -26,7 +26,7 @@ function AppShellInner({
       </div>
       <main
         className={cn(
-          "min-h-screen pt-14 transition-[padding] duration-200 ease-out",
+          "min-h-screen pt-[var(--cv-header-height)] transition-[padding] duration-200 ease-out",
           pad,
         )}
       >

@@ -2,9 +2,9 @@ import { X } from "lucide-react";
 import { getRiskFlagVariant } from "~/lib/risk-flags";
 
 const VARIANT_CLASSES = {
-  regulatory: "bg-[#FEE2E2] text-[#991B1B]",
-  amber: "bg-[#FEF3C7] text-[#B45309]",
-  info: "bg-[#EFF6FF] text-[#1D4ED8]",
+  regulatory: "bg-danger-bg text-semantic-danger",
+  amber: "bg-warning-bg text-semantic-warning",
+  info: "bg-info-bg text-semantic-info",
 } as const;
 
 type RiskFlagChipsProps = {

@@ -312,14 +312,14 @@ export default async function MeetingDetailPage({
         />
 
         {meeting.supersedeReason && (meeting.supersededById || meeting.supersedesId) ? (
-          <div className="rounded-xl border border-[#F1EFE8] bg-[#FAFAF8] px-5 py-4 text-[13px] text-[#444441]">
-            <p className="font-medium text-[#0D2818]">Supersession reason</p>
+          <div className="rounded-xl border border-surface-muted bg-surface-muted px-5 py-4 text-[13px] text-text-primary">
+            <p className="font-medium text-text-primary">Supersession reason</p>
             <p className="mt-1 whitespace-pre-wrap">{meeting.supersedeReason}</p>
           </div>
         ) : null}
 
         {meeting.status === "ADVISOR_CERTIFIED" && isComplianceActor(session.user.role) && (
-          <div className="rounded-xl border border-[#E6F1FB] bg-[#E6F1FB]/35 px-5 py-4 text-[13px] text-[#0C447C]">
+          <div className="rounded-xl border border-info-bg bg-info-bg/35 px-5 py-4 text-[13px] text-semantic-info">
             Awaiting compliance review — {flagsAwaitingTriage} flag{flagsAwaitingTriage === 1 ? "" : "s"}{" "}
             require triage
           </div>

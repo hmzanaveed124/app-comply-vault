@@ -14,8 +14,8 @@ export function MarketingShell({
   title?: string;
 }): React.ReactElement {
   return (
-    <div className="min-h-screen bg-[#0A1F14] text-white">
-      <header className="border-b border-white/10">
+    <div className="min-h-screen bg-surface-strong text-white">
+      <header className="border-b border-surface-card/10">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <Link href="/" className="flex items-center gap-2 text-sm font-medium">
             <span className="relative h-7 w-7">
@@ -49,7 +49,7 @@ export function MarketingShell({
         ) : null}
         {children}
       </main>
-      <footer className="border-t border-white/10 py-8">
+      <footer className="border-t border-surface-card/10 py-8">
         <div className="mx-auto flex max-w-3xl flex-wrap gap-4 px-4 text-sm text-white/50 sm:px-6">
           <Link href="/trust" className="hover:text-white/80">
             Trust

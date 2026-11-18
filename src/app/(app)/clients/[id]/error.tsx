@@ -14,7 +14,7 @@ export default function ClientDetailError({
       <button
         type="button"
         onClick={reset}
-        className="mt-4 text-sm text-[#2ECC71] hover:underline"
+        className="mt-4 text-sm text-brand hover:underline"
       >
         Try again
       </button>

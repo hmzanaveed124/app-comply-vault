@@ -1,47 +1,43 @@
-/** Hex colours for charts / inline styles (Recharts, SVG). Mirrors `globals.css` tokens. */
+/** Chart colours reference the central theme; SVG and Recharts inherit CSS variables. */
 export const dashboardColors = {
-  brand: "#117A4B",
-  brandLight: "#E8F5EE",
-  brandMid: "#1A9B5F",
-  brandDark: "#0D5C38",
-  semanticDanger: "#EF4444",
-  semanticWarning: "#D97706",
-  semanticOrange: "#F97316",
-  semanticCritical: "#DC2626",
-  textMuted: "#94A3B8",
-  barTrack: "#F1F5F9",
-  /**
-   * Dashboard v2 palette — matches the approved dashboard mock. Kept distinct from
-   * the brand tokens above so the redesigned surfaces render exactly as designed.
-   */
-  forest: "#12382a",
-  forest2: "#1c4a37",
-  accent: "#177a4c",
-  accentSoft: "#e9f4ee",
-  amber: "#b26a12",
-  amber2: "#e0a53f",
-  amberSoft: "#fdf4e6",
-  red: "#c13a2a",
-  redSoft: "#fcedeb",
-  slate: "#6b7c86",
-  slate2: "#8fa1ab",
-  track: "#eff1ef",
-  inkStrong: "#141f19",
-  ink2: "#3f4b45",
-  ink3: "#79837d",
+  brand: "var(--cv-brand)",
+  brandLight: "var(--cv-brand-light)",
+  brandMid: "var(--cv-brand-mid)",
+  brandDark: "var(--cv-brand-dark)",
+  semanticDanger: "var(--cv-semantic-danger)",
+  semanticWarning: "var(--cv-semantic-warning)",
+  semanticOrange: "var(--cv-semantic-orange)",
+  semanticCritical: "var(--cv-semantic-critical)",
+  textMuted: "var(--cv-text-muted)",
+  barTrack: "var(--cv-surface-muted)",
+  forest: "var(--cv-brand-dark)",
+  forest2: "var(--cv-brand-dark)",
+  accent: "var(--cv-brand)",
+  accentSoft: "var(--cv-brand-light)",
+  amber: "var(--cv-semantic-warning)",
+  amber2: "var(--cv-warning-highlight)",
+  amberSoft: "var(--cv-warning-bg)",
+  red: "var(--cv-semantic-danger)",
+  redSoft: "var(--cv-danger-bg)",
+  slate: "var(--cv-text-secondary)",
+  slate2: "var(--cv-text-muted)",
+  track: "var(--cv-surface-muted)",
+  inkStrong: "var(--cv-text-primary)",
+  ink2: "var(--cv-text-primary)",
+  ink3: "var(--cv-text-secondary)",
   meetingTypes: {
-    "Annual Review": "#117A4B",
-    "Portfolio Review": "#3B82F6",
-    "Quarterly Check-in": "#F97316",
-    Onboarding: "#8B5CF6",
-    Other: "#94A3B8",
+    "Annual Review": "var(--cv-brand)",
+    "Portfolio Review": "var(--cv-semantic-info)",
+    "Quarterly Check-in": "var(--cv-semantic-orange)",
+    Onboarding: "var(--cv-chart-aux)",
+    Other: "var(--cv-text-muted)",
   } as Record<string, string>,
   flagCategories: {
-    Suitability: "#EF4444",
-    Documentation: "#F97316",
-    Disclosure: "#D97706",
-    "Risk Tolerance": "#8B5CF6",
-    "Fee Discussion": "#94A3B8",
+    Suitability: "var(--cv-semantic-danger)",
+    Documentation: "var(--cv-semantic-orange)",
+    Disclosure: "var(--cv-semantic-warning)",
+    "Risk Tolerance": "var(--cv-chart-aux)",
+    "Fee Discussion": "var(--cv-text-muted)",
   } as Record<string, string>,
 } as const;
 
@@ -51,9 +47,13 @@ export function meetingTypeColor(label: string): string {
   );
   if (key) return dashboardColors.meetingTypes[key]!;
   const lower = label.toLowerCase();
-  if (lower.includes("annual")) return dashboardColors.meetingTypes["Annual Review"]!;
-  if (lower.includes("portfolio")) return dashboardColors.meetingTypes["Portfolio Review"]!;
-  if (lower.includes("quarter")) return dashboardColors.meetingTypes["Quarterly Check-in"]!;
-  if (lower.includes("onboard")) return dashboardColors.meetingTypes.Onboarding!;
+  if (lower.includes("annual"))
+    return dashboardColors.meetingTypes["Annual Review"]!;
+  if (lower.includes("portfolio"))
+    return dashboardColors.meetingTypes["Portfolio Review"]!;
+  if (lower.includes("quarter"))
+    return dashboardColors.meetingTypes["Quarterly Check-in"]!;
+  if (lower.includes("onboard"))
+    return dashboardColors.meetingTypes.Onboarding!;
   return dashboardColors.meetingTypes.Other!;
 }

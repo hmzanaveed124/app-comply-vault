@@ -34,9 +34,9 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
     if (segmentElement) {
       segmentElement.scrollIntoView({ behavior: "smooth", block: "center" });
       // Highlight the segment temporarily
-      segmentElement.classList.add("bg-yellow-100");
+      segmentElement.classList.add("bg-warning-bg");
       setTimeout(() => {
-        segmentElement.classList.remove("bg-yellow-100");
+        segmentElement.classList.remove("bg-warning-bg");
       }, 2000);
     }
   };
@@ -77,7 +77,7 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
       {/* Topics */}
       {extraction.topics && extraction.topics.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">Topics</h3>
+          <h3 className="text-sm font-semibold text-text-primary mb-2">Topics</h3>
           <ul className="space-y-3">
             {extraction.topics.map((topic, idx) => {
               const title = getTopicTitle(topic);
@@ -85,9 +85,9 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
               const showDesc = description && title !== description;
               return (
                 <li key={idx} className="text-sm">
-                  <span className="font-medium text-gray-900">{title}</span>
+                  <span className="font-medium text-text-primary">{title}</span>
                   {showDesc && (
-                    <p className="text-gray-600 mt-0.5 ml-0">{description}</p>
+                    <p className="text-text-secondary mt-0.5 ml-0">{description}</p>
                   )}
                 </li>
               );
@@ -99,7 +99,7 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
       {/* Recommendations */}
       {extraction.recommendations && extraction.recommendations.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-semibold text-text-primary mb-2">
             Recommendations ({extraction.recommendations.length})
           </h3>
           <ul className="space-y-3">
@@ -108,12 +108,12 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
               return (
               <li
                 key={idx}
-                className="border-l-2 border-green-500 pl-3"
+                className="border-l-2 border-success-border pl-3"
                 data-claim-field="recommendations"
                 data-claim-start={Math.floor(rec.startTime ?? 0)}
               >
                 <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-900 flex-1">{rec.text}</p>
+                  <p className="text-sm text-text-primary flex-1">{rec.text}</p>
                   <Button
                     variant="link"
                     size="sm"
@@ -139,7 +139,7 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
                 )}
                 {rec.confidence !== undefined && (
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-secondary">
                       Confidence: {(rec.confidence * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -154,14 +154,14 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
       {/* Disclosures */}
       {extraction.disclosures && extraction.disclosures.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-semibold text-text-primary mb-2">
             Disclosures ({extraction.disclosures.length})
           </h3>
           <ul className="space-y-3">
             {extraction.disclosures.map((dis, idx) => (
-              <li key={idx} className="border-l-2 border-orange-500 pl-3">
+              <li key={idx} className="border-l-2 border-warning-border pl-3">
                 <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-900 flex-1">{dis.text}</p>
+                  <p className="text-sm text-text-primary flex-1">{dis.text}</p>
                   <Button
                     variant="link"
                     size="sm"
@@ -173,7 +173,7 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
                 </div>
                 {dis.confidence !== undefined && (
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-secondary">
                       Confidence: {(dis.confidence * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -187,14 +187,14 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
       {/* Decisions */}
       {extraction.decisions && extraction.decisions.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-semibold text-text-primary mb-2">
             Decisions ({extraction.decisions.length})
           </h3>
           <ul className="space-y-3">
             {extraction.decisions.map((dec, idx) => (
               <li key={idx} className="border-l-2 border-purple-500 pl-3">
                 <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-900 flex-1">{dec.text}</p>
+                  <p className="text-sm text-text-primary flex-1">{dec.text}</p>
                   <Button
                     variant="link"
                     size="sm"
@@ -206,7 +206,7 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
                 </div>
                 {dec.confidence !== undefined && (
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-secondary">
                       Confidence: {(dec.confidence * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -220,14 +220,14 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
       {/* Follow-ups */}
       {extraction.followUps && extraction.followUps.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-semibold text-text-primary mb-2">
             Follow-ups ({extraction.followUps.length})
           </h3>
           <ul className="space-y-3">
             {extraction.followUps.map((fu, idx) => (
-              <li key={idx} className="border-l-2 border-blue-500 pl-3">
+              <li key={idx} className="border-l-2 border-info-border pl-3">
                 <div className="flex items-start justify-between">
-                  <p className="text-sm text-gray-900 flex-1">{fu.text}</p>
+                  <p className="text-sm text-text-primary flex-1">{fu.text}</p>
                   <Button
                     variant="link"
                     size="sm"
@@ -239,7 +239,7 @@ export default function ExtractedFields({ extraction, flags }: ExtractedFieldsPr
                 </div>
                 {fu.confidence !== undefined && (
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-text-secondary">
                       Confidence: {(fu.confidence * 100).toFixed(0)}%
                     </span>
                   </div>

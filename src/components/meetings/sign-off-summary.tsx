@@ -18,21 +18,21 @@ function roleStyles(role: SignOffSummaryRow["role"]): {
   switch (role) {
     case "advisor":
       return {
-        iconWrap: "bg-[#E1F5EE] text-[#085041]",
-        icon: "text-[#085041]",
-        subtitle: "text-[#085041]",
+        iconWrap: "bg-brand-light text-brand",
+        icon: "text-brand",
+        subtitle: "text-brand",
       };
     case "cm":
       return {
-        iconWrap: "bg-[#E6F1FB] text-[#0C447C]",
-        icon: "text-[#0C447C]",
-        subtitle: "text-[#0C447C]",
+        iconWrap: "bg-info-bg text-semantic-info",
+        icon: "text-semantic-info",
+        subtitle: "text-semantic-info",
       };
     case "cco":
       return {
-        iconWrap: "bg-[#FAEEDA] text-[#633806]",
-        icon: "text-[#633806]",
-        subtitle: "text-[#633806]",
+        iconWrap: "bg-warning-bg text-semantic-warning",
+        icon: "text-semantic-warning",
+        subtitle: "text-semantic-warning",
       };
   }
 }
@@ -68,7 +68,7 @@ function SignOffRowView({ row }: { row: SignOffSummaryRow }): React.ReactElement
         <div className="flex flex-wrap items-start justify-between gap-2">
           <p className="text-[14px] font-medium leading-snug text-foreground">{row.name}</p>
           <span
-            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E1F5EE] text-[#0F6E56]"
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-light text-brand"
             aria-hidden
           >
             <Check className="h-3 w-3" strokeWidth={2.5} />

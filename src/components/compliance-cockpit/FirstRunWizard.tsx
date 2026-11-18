@@ -369,21 +369,21 @@ export function FirstRunWizard({
 
           {showManualFallback ? (
             <div
-              className="mt-4 rounded-xl border border-amber-200 bg-amber-50/60 p-5"
+              className="mt-4 rounded-xl border border-warning-border bg-warning-bg/60 p-5"
               role="status"
             >
               <div className="flex items-start gap-3">
                 <AlertCircle
-                  className="mt-0.5 h-5 w-5 shrink-0 text-amber-700"
+                  className="mt-0.5 h-5 w-5 shrink-0 text-warning-text"
                   aria-hidden
                 />
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-medium text-amber-900">
+                  <h3 className="text-sm font-medium text-warning-text">
                     {iapdLookup === 'not_found'
                       ? 'No matching firm found in SEC IAPD'
                       : "Couldn't reach SEC IAPD"}
                   </h3>
-                  <p className="mt-0.5 text-[12px] text-amber-800">
+                  <p className="mt-0.5 text-[12px] text-warning-text">
                     You can still continue by entering the basics manually.
                   </p>
                 </div>
@@ -392,7 +392,7 @@ export function FirstRunWizard({
                 <div className="sm:col-span-2">
                   <Label
                     htmlFor="cco-manual"
-                    className="text-[12px] text-amber-900"
+                    className="text-[12px] text-warning-text"
                   >
                     CCO name <span className="text-semantic-danger">*</span>
                   </Label>
@@ -409,7 +409,7 @@ export function FirstRunWizard({
                       }
                     }}
                     aria-invalid={!!fieldErrors.ccoName}
-                    className="mt-1 bg-white"
+                    className="mt-1 bg-surface-card"
                   />
                   {fieldErrors.ccoName ? (
                     <FieldError message={fieldErrors.ccoName} />
@@ -418,7 +418,7 @@ export function FirstRunWizard({
                 <div>
                   <Label
                     htmlFor="adv-manual"
-                    className="text-[12px] text-amber-900"
+                    className="text-[12px] text-warning-text"
                   >
                     ADV filing date
                   </Label>
@@ -427,13 +427,13 @@ export function FirstRunWizard({
                     type="date"
                     value={advFilingDate}
                     onChange={(e) => setAdvFilingDate(e.target.value)}
-                    className="mt-1 bg-white"
+                    className="mt-1 bg-surface-card"
                   />
                 </div>
                 <div>
                   <Label
                     htmlFor="aum-manual"
-                    className="text-[12px] text-amber-900"
+                    className="text-[12px] text-warning-text"
                   >
                     AUM (USD)
                   </Label>
@@ -442,7 +442,7 @@ export function FirstRunWizard({
                     value={aumUsd}
                     onChange={(e) => setAumUsd(e.target.value)}
                     placeholder="e.g. 42909330"
-                    className="mt-1 bg-white"
+                    className="mt-1 bg-surface-card"
                   />
                 </div>
               </div>

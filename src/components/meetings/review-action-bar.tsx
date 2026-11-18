@@ -159,7 +159,7 @@ export function ReviewActionBar({
         <Button
           type="button"
           className={cn(
-            "shrink-0 rounded-full bg-[#185FA5] px-5 text-[14px] font-medium text-white hover:bg-[#185FA5]/90 disabled:pointer-events-none disabled:opacity-45",
+            "shrink-0 rounded-full bg-semantic-info px-5 text-[14px] font-medium text-white hover:bg-semantic-info/90 disabled:pointer-events-none disabled:opacity-45",
             pulseComplete && "cv-motion-pulse-once",
           )}
           disabled={loading !== null || !allTriaged}
@@ -196,7 +196,7 @@ export function ReviewActionBar({
         </p>
         <Button
           type="button"
-          className="shrink-0 rounded-full bg-[#185FA5] px-5 text-[14px] font-medium text-white hover:bg-[#185FA5]/90 disabled:pointer-events-none disabled:opacity-45"
+          className="shrink-0 rounded-full bg-semantic-info px-5 text-[14px] font-medium text-white hover:bg-semantic-info/90 disabled:pointer-events-none disabled:opacity-45"
           disabled={loading !== null || pendingEscalations}
           aria-busy={loading === "cco"}
           onClick={() =>

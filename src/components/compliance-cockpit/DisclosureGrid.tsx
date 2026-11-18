@@ -40,7 +40,7 @@ export function DisclosureGrid({
         {neverSuppressNames.map((name) => (
           <span
             key={name}
-            className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium"
+            className="rounded-full bg-surface-card/20 px-2 py-0.5 text-[10px] font-medium"
           >
             {name}
           </span>

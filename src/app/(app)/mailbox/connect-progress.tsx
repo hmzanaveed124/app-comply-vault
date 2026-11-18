@@ -34,7 +34,7 @@ export function ConnectProgress({
   const currentIndex = CONNECT_PROGRESS_STAGES.indexOf(currentStage);
   return (
     <div className="space-y-2" aria-label="Mailbox connection progress">
-      <p className="text-sm font-medium text-[#0D2818]">
+      <p className="text-sm font-medium text-text-primary">
         Zero setup — connect to first evidence
       </p>
       <p className="text-xs text-muted-foreground">

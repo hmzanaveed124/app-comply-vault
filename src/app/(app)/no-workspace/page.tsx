@@ -27,14 +27,14 @@ export default async function NoWorkspacePage(): Promise<React.ReactElement> {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 text-center">
-        <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
+      <div className="w-full max-w-md rounded-xl border border-surface-border bg-surface-card p-8 text-center">
+        <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-surface-muted">
           <svg
             width="20"
             height="20"
             viewBox="0 0 20 20"
             fill="none"
-            stroke="#9ca3af"
+            stroke="var(--cv-text-muted)"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -44,9 +44,9 @@ export default async function NoWorkspacePage(): Promise<React.ReactElement> {
           </svg>
         </div>
 
-        <h1 className="mb-2 text-lg font-semibold text-gray-900">No active workspace</h1>
+        <h1 className="mb-2 text-lg font-semibold text-text-primary">No active workspace</h1>
 
-        <p className="mb-6 text-sm leading-relaxed text-gray-500">
+        <p className="mb-6 text-sm leading-relaxed text-text-secondary">
           {workspaceName
             ? `You're no longer a member of ${workspaceName}. If you believe this is an error, contact the workspace administrator.`
             : "You don't currently belong to any workspace. If you were recently removed, contact the workspace administrator."}
@@ -55,13 +55,13 @@ export default async function NoWorkspacePage(): Promise<React.ReactElement> {
         <div className="flex flex-col gap-3">
           <Link
             href="/workspaces/new"
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="w-full rounded-lg border border-surface-border bg-surface-card px-4 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-muted"
           >
             Create your own workspace
           </Link>
         </div>
 
-        <p className="mt-4 text-xs text-gray-400">
+        <p className="mt-4 text-xs text-text-muted">
           If you&apos;ve been re-invited, check your email for a new invitation link.
         </p>
       </div>

@@ -42,7 +42,7 @@ export function ZeroSetupReveal({
           </Badge>
           <h2
             id="zero-setup-heading"
-            className="mt-2 text-lg font-semibold tracking-tight text-[#0D2818]"
+            className="mt-2 text-lg font-semibold tracking-tight text-text-primary"
           >
             {copy.heading}
           </h2>
@@ -55,7 +55,7 @@ export function ZeroSetupReveal({
             </p>
           )}
         </div>
-        <Button asChild className="bg-[#0D2818] hover:bg-[#0D2818]/90">
+        <Button asChild className="bg-surface-strong hover:bg-surface-strong/90">
           <Link href="/needs-attention">
             {copy.cta}
             <ArrowRight className="ml-2 h-4 w-4" />

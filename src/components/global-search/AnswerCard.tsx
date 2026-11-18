@@ -150,7 +150,7 @@ export function AnswerCard({
 
         {state.kind === "honest-miss" && (
           <div className="space-y-2">
-            <Badge variant="outline" className="border-amber-300 bg-amber-50 font-normal text-amber-950">
+            <Badge variant="outline" className="border-warning-border bg-warning-bg font-normal text-warning-text">
               Will not answer
               {state.missReason ? ` · ${state.missReason.replace(/_/g, " ")}` : ""}
             </Badge>

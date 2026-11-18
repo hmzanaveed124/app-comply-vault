@@ -78,7 +78,7 @@ export function DemoSidebar() {
                 {item.label}
               </span>
               {item.badge !== undefined ? (
-                <span className="rounded-lg bg-amber-500/90 px-1.5 py-px text-[11px] font-medium text-amber-950">
+                <span className="rounded-lg bg-semantic-warning/90 px-1.5 py-px text-[11px] font-medium text-warning-text">
                   {item.badge}
                 </span>
               ) : null}

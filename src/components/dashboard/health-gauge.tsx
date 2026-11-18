@@ -15,24 +15,24 @@ function thresholdFor(
 ): { arc: string; bg: string; badge: string; label: string } {
   if (s <= 39) {
     return {
-      arc: "#DC2626",
-      bg: "#FEE2E2",
-      badge: "#FEE2E2",
+      arc: "var(--cv-semantic-danger)",
+      bg: "var(--cv-danger-bg)",
+      badge: "var(--cv-danger-bg)",
       label: "Critical",
     };
   }
   if (s <= 69) {
     return {
-      arc: "#D97706",
-      bg: "#FEF3C7",
-      badge: "#FEF3C7",
+      arc: "var(--cv-semantic-warning)",
+      bg: "var(--cv-warning-bg)",
+      badge: "var(--cv-warning-bg)",
       label: "Needs Attention",
     };
   }
   return {
-    arc: "#117A4B",
-    bg: "#E8F5EE",
-    badge: "#E8F5EE",
+    arc: "var(--cv-brand)",
+    bg: "var(--cv-brand-light)",
+    badge: "var(--cv-brand-light)",
     label: "Healthy",
   };
 }
@@ -68,7 +68,7 @@ export function HealthGauge({
     `Compliance health score ${score} out of 100, ${openFlags} open flags, ${unfinalizedCount} unfinalized meetings`;
 
   const badgeText =
-    score <= 39 ? "#991B1B" : score <= 69 ? "#92400E" : "#0D5C38";
+    score <= 39 ? "var(--cv-danger-text)" : score <= 69 ? "var(--cv-warning-text)" : "var(--cv-brand-dark)";
 
   return (
     <div
@@ -87,7 +87,7 @@ export function HealthGauge({
         <path
           d={`M ${100 - R} 100 A ${R} ${R} 0 0 1 ${100 + R} 100`}
           fill="none"
-          stroke="#F1F5F9"
+          stroke="var(--cv-surface-muted)"
           strokeWidth={STROKE}
           strokeLinecap="round"
         />

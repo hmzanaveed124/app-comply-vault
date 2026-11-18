@@ -398,7 +398,7 @@ export default function UploadPage() {
                 required
                 checked={consent}
                 onChange={(e) => setConsent(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="mt-1 h-4 w-4 rounded border-surface-border text-primary focus:ring-primary"
               />
               <Label htmlFor="consent" className="font-normal">
                 I confirm I have permission to upload and process this recording

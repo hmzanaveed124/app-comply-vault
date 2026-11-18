@@ -10,7 +10,7 @@ function MeetingStatusPill({ status }: { status: MeetingStatus | string }): Reac
     case "DRAFT":
       return (
         <span
-          className={cn(common, "bg-[#FAEEDA] text-[#633806]")}
+          className={cn(common, "bg-warning-bg text-semantic-warning")}
           aria-label="Status: draft ready"
         >
           Draft ready
@@ -19,7 +19,7 @@ function MeetingStatusPill({ status }: { status: MeetingStatus | string }): Reac
     case "ADVISOR_CERTIFIED":
       return (
         <span
-          className={cn(common, "bg-[#E1F5EE] text-[#085041]")}
+          className={cn(common, "bg-brand-light text-brand")}
           aria-label="Status: advisor certified"
         >
           <CheckCircle2 className="h-3 w-3" aria-hidden />
@@ -29,7 +29,7 @@ function MeetingStatusPill({ status }: { status: MeetingStatus | string }): Reac
     case "CM_REVIEWED":
       return (
         <span
-          className={cn(common, "bg-[#E6F1FB] text-[#0C447C]")}
+          className={cn(common, "bg-info-bg text-semantic-info")}
           aria-label="Status: CM reviewed"
         >
           CM reviewed
@@ -38,7 +38,7 @@ function MeetingStatusPill({ status }: { status: MeetingStatus | string }): Reac
     case "CCO_SIGNED_OFF":
       return (
         <span
-          className={cn(common, "bg-[#E1F5EE] text-[#085041]")}
+          className={cn(common, "bg-brand-light text-brand")}
           aria-label="Status: CCO signed off"
         >
           <CheckCircle2 className="h-3 w-3" aria-hidden />
@@ -48,7 +48,7 @@ function MeetingStatusPill({ status }: { status: MeetingStatus | string }): Reac
     case "FINALIZED":
       return (
         <span
-          className={cn(common, "bg-[#F1EFE8] text-[#444441]")}
+          className={cn(common, "bg-surface-muted text-text-primary")}
           aria-label="Status: finalized"
         >
           <Lock className="h-3 w-3" aria-hidden />

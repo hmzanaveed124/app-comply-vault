@@ -15,7 +15,7 @@ export function CommunicationsClient({
     <div className="mx-auto max-w-5xl space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[#0D2818]">Communications</h1>
+          <h1 className="text-2xl font-semibold text-text-primary">Communications</h1>
           <p className="text-sm text-muted-foreground">Email threads ingested from M365</p>
         </div>
         <div className="flex items-center gap-4">
@@ -27,13 +27,13 @@ export function CommunicationsClient({
           ) : null}
           <Link
             href="/integrations/m365-mail"
-            className="text-sm text-[#2ECC71] hover:underline"
+            className="text-sm text-brand hover:underline"
           >
             Manage M365
           </Link>
           <Link
             href="/integrations/gmail-mail"
-            className="text-sm text-[#2ECC71] hover:underline"
+            className="text-sm text-brand hover:underline"
           >
             Manage Gmail
           </Link>

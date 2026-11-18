@@ -325,9 +325,9 @@ export default function FlagsPanel({
       const segmentElement = document.querySelector(`[data-timestamp="${Math.floor(startTime)}"]`);
       if (segmentElement) {
         segmentElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        segmentElement.classList.add("bg-yellow-100");
+        segmentElement.classList.add("bg-warning-bg");
         setTimeout(() => {
-          segmentElement.classList.remove("bg-yellow-100");
+          segmentElement.classList.remove("bg-warning-bg");
         }, 2000);
       }
     }
