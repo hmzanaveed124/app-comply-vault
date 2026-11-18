@@ -121,7 +121,7 @@ export function PendingInvitations({
     });
 
   const statusClass = (status: PendingInvitation["status"]): string => {
-    if (status === "PENDING") return "text-emerald-700";
+    if (status === "PENDING") return "text-success-text";
     return "text-muted-foreground";
   };
 

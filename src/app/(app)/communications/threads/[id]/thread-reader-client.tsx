@@ -83,7 +83,7 @@ export function ThreadReaderClient({
           <Link href="/communications" className="text-sm text-muted-foreground hover:underline">
             ← Communications
           </Link>
-          <h1 className="mt-2 text-2xl font-semibold text-[#0D2818]">
+          <h1 className="mt-2 text-2xl font-semibold text-text-primary">
             {thread.subject ?? "(no subject)"}
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -99,7 +99,7 @@ export function ThreadReaderClient({
           ))}
           <Button
             size="sm"
-            className="bg-[#2ECC71] text-[#0D2818]"
+            className="bg-brand text-text-primary"
             onClick={() => void exportThread()}
           >
             Export ZIP

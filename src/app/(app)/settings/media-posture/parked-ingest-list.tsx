@@ -66,7 +66,7 @@ export function ParkedIngestList({
   if (items.length === 0) return null;
 
   return (
-    <Card className="border-amber-300">
+    <Card className="border-warning-border">
       <CardHeader>
         <CardTitle>
           Parked recordings ({items.length})

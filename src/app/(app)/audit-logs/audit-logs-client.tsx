@@ -62,16 +62,16 @@ interface AuditLogsClientProps {
 const getActionPillClass = (action: string) => {
   switch (action) {
     case "VIEW":
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-surface-muted text-text-primary border-surface-border";
     case "EDIT":
     case "UPLOAD":
     case "REMEDIATION_START":
-      return "bg-blue-100 text-blue-700 border-blue-200";
+      return "bg-info-bg text-info-text border-info-border";
     case "REMEDIATION_UPDATE":
       return "bg-indigo-100 text-indigo-700 border-indigo-200";
     case "TASK_UPDATE":
     case "INVITE_RESENT":
-      return "bg-amber-100 text-amber-800 border-amber-200";
+      return "bg-warning-bg text-warning-text border-warning-border";
     case "EVIDENCE_ADD":
     case "WORKSPACE_CREATED":
       return "bg-teal-100 text-teal-800 border-teal-200";
@@ -80,15 +80,15 @@ const getActionPillClass = (action: string) => {
     case "INVITE_ACCEPTED":
     case "FINALIZE":
     case "VERIFICATION":
-      return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      return "bg-success-bg text-success-text border-success-border";
     case "EXPORT":
       return "bg-purple-100 text-purple-700 border-purple-200";
     case "DELETE":
     case "OVERRIDE":
     case "MEMBER_REMOVED":
-      return "bg-red-100 text-red-700 border-red-200";
+      return "bg-danger-bg text-danger-text border-danger-border";
     default:
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-surface-muted text-text-primary border-surface-border";
   }
 };
 

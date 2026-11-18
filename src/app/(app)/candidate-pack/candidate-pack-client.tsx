@@ -55,15 +55,15 @@ async function requestJson<T>(
 function statusChipClass(status: CoverageAnswerability): string {
   switch (status) {
     case "answerable":
-      return "border-emerald-300 bg-emerald-50 text-emerald-900";
+      return "border-success-border bg-success-bg text-success-text";
     case "partially_answerable":
-      return "border-amber-300 bg-amber-50 text-amber-950";
+      return "border-warning-border bg-warning-bg text-warning-text";
     case "missing":
       return "border-rose-300 bg-rose-50 text-rose-950";
     case "data_source_unavailable":
-      return "border-amber-400 bg-amber-100 text-amber-950";
+      return "border-warning-border bg-warning-bg text-warning-text";
     case "excluded_by_request":
-      return "border-slate-300 bg-slate-100 text-slate-700";
+      return "border-surface-border bg-surface-muted text-text-primary";
     case "requires_manual_confirmation":
       return "border-brand/40 bg-brand/10 text-brand";
     default:
@@ -133,13 +133,13 @@ function CoverageItemCard({
     <div
       className={`rounded-lg border p-3 ${
         item.status === "excluded_by_request"
-          ? "border-slate-200 bg-slate-50"
+          ? "border-surface-border bg-surface-muted"
           : item.status === "data_source_unavailable"
-            ? "border-amber-200 bg-amber-50/60"
+            ? "border-warning-border bg-warning-bg/60"
             : item.label === "Coverage gap" && emphasizeGaps
-              ? "border-amber-400 bg-amber-50 ring-2 ring-amber-200"
+              ? "border-warning-border bg-warning-bg ring-2 ring-amber-200"
               : isGap && emphasizeGaps
-                ? "border-amber-200 bg-amber-50/40"
+                ? "border-warning-border bg-warning-bg/40"
                 : ""
       }`}
     >
@@ -153,7 +153,7 @@ function CoverageItemCard({
       </div>
       <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
       {item.missingPeriods && item.missingPeriods.length > 0 ? (
-        <ul className="mt-2 space-y-1 text-xs text-amber-950">
+        <ul className="mt-2 space-y-1 text-xs text-warning-text">
           {item.missingPeriods.map((period) => (
             <li key={`${period.from}-${period.to}`} className="font-mono">
               {period.from} → {period.to}
@@ -501,7 +501,7 @@ export function CandidatePackClient({
                   <div className="md:col-span-2 space-y-2 border-t pt-4">
                     <div className="flex flex-wrap gap-2">
                       <StatefulButton
-                        className="bg-[#0D2818] hover:bg-[#0D2818]/90"
+                        className="bg-surface-strong hover:bg-surface-strong/90"
                         onClick={() => void confirmScope()}
                         state={pendingButtonState(pending === "confirm")}
                         loadingText="Confirming…"
@@ -629,7 +629,7 @@ export function CandidatePackClient({
       {pack?.coverageStatement ? (
         <div ref={coverageRef}>
           <Card
-            className={landOnGaps ? "border-amber-400 shadow-md" : undefined}
+            className={landOnGaps ? "border-warning-border shadow-md" : undefined}
           >
             <CardHeader>
               <CardTitle>Coverage and gaps</CardTitle>
@@ -661,7 +661,7 @@ export function CandidatePackClient({
                   <>
                     {gapItems.length > 0 ? (
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-amber-900">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-warning-text">
                           What it could not find
                         </p>
                         {gapItems.map((item) => (
@@ -706,7 +706,7 @@ export function CandidatePackClient({
               {pack.status === "GENERATED" ? (
                 <div className="flex flex-wrap items-center gap-3 border-t pt-4">
                   <Button
-                    className="bg-[#0D2818] hover:bg-[#0D2818]/90"
+                    className="bg-surface-strong hover:bg-surface-strong/90"
                     onClick={openAttestation}
                     disabled={includedCounts.total === 0}
                   >
@@ -813,7 +813,7 @@ export function CandidatePackClient({
               Cancel
             </Button>
             <StatefulButton
-              className="bg-[#0D2818] hover:bg-[#0D2818]/90"
+              className="bg-surface-strong hover:bg-surface-strong/90"
               disabled={!allAcked || pending === "approve"}
               state={pendingButtonState(pending === "approve")}
               loadingText="Writing attestation…"

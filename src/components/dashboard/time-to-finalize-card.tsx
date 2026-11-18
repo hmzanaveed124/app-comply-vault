@@ -16,19 +16,19 @@ export function TimeToFinalizeCard({ strip, avgDays }: TimeToFinalizeCardProps):
     <DashboardCard title="Time to Finalize" link={{ href: "/audit-packs", label: "By meeting" }}>
       <Metric value={displayAvg} unit={`days avg · target ≤ ${strip.targetDays}d`} />
       <div className="relative mt-3 h-[42px]">
-        <div className="absolute left-0 right-0 top-[19px] h-0.5 rounded-[1px] bg-[#eff1ef]" />
+        <div className="absolute left-0 right-0 top-[19px] h-0.5 rounded-[1px] bg-surface-muted" />
         <div
-          className="absolute top-[7px] h-[26px] w-[1.5px] bg-[#141f19] opacity-40"
+          className="absolute top-[7px] h-[26px] w-[1.5px] bg-text-primary opacity-40"
           style={{ left: `${targetLeft}%` }}
         />
         <div
-          className="absolute top-[34px] -translate-x-1/2 text-[10px] text-[#79837d]"
+          className="absolute top-[34px] -translate-x-1/2 text-[10px] text-text-secondary"
           style={{ left: `${targetLeft}%` }}
         >
           {strip.targetDays}d
         </div>
         {strip.points.length === 0 ? (
-          <div className="absolute left-1/2 top-[6px] -translate-x-1/2 text-[11px] text-[#79837d]">
+          <div className="absolute left-1/2 top-[6px] -translate-x-1/2 text-[11px] text-text-secondary">
             No finalized meetings yet
           </div>
         ) : (
@@ -36,15 +36,15 @@ export function TimeToFinalizeCard({ strip, avgDays }: TimeToFinalizeCardProps):
             <div
               key={`${p.meetingId}-${i}`}
               title={`${p.clientName} · ${p.days}d`}
-              className="absolute top-[15px] h-[9px] w-[9px] rounded-full border-2 border-white shadow-[0_0_0_1px_#d5d9d5]"
+              className="absolute top-[15px] h-[9px] w-[9px] rounded-full border-2 border-surface-card shadow-[0_0_0_1px_var(--cv-surface-border)]"
               style={{
                 left: `${clampPct((p.days / max) * 100)}%`,
-                background: p.late ? "#c13a2a" : "#3f4b45",
+                background: p.late ? "var(--cv-semantic-danger)" : "var(--cv-text-primary)",
               }}
             />
           ))
         )}
-        <div className="absolute top-[34px] right-0 text-[10px] tabular-nums text-[#79837d]">
+        <div className="absolute top-[34px] right-0 text-[10px] tabular-nums text-text-secondary">
           {strip.maxDays}d
         </div>
       </div>

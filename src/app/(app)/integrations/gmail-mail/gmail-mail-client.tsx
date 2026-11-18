@@ -167,7 +167,7 @@ export function GmailMailClient({
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">
       <div>
-        <h1 className="text-2xl font-semibold text-[#0D2818]">
+        <h1 className="text-2xl font-semibold text-text-primary">
           {release1 ? "Connect mailbox" : "Gmail"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -203,7 +203,7 @@ export function GmailMailClient({
       )}
 
       {!workspaceStatus.oauthConfigured && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="rounded-lg border border-warning-border bg-warning-bg p-4 text-sm text-warning-text">
           <p className="font-medium">Google OAuth not configured on the server</p>
           <p className="mt-1">
             Set <code className="text-xs">GMAIL_MAIL_CLIENT_ID</code> and{" "}
@@ -215,7 +215,7 @@ export function GmailMailClient({
       )}
 
       {workspaceStatus.oauthConfigured && !workspaceStatus.connected && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="rounded-lg border border-warning-border bg-warning-bg p-4 text-sm text-warning-text">
           <p className="font-medium">Gmail integration not connected</p>
           <p className="mt-1">
             Click <strong>Connect my mailbox</strong> below and sign in with Google to grant
@@ -225,11 +225,11 @@ export function GmailMailClient({
       )}
 
       {workspaceStatus.connected && (
-        <p className="text-sm text-green-700">Workspace Gmail token active (delegated)</p>
+        <p className="text-sm text-success-text">Workspace Gmail token active (delegated)</p>
       )}
 
       <div className="flex flex-wrap gap-3">
-        <Button asChild className="bg-[#2ECC71] text-[#0D2818] hover:bg-[#27ae60]">
+        <Button asChild className="bg-brand text-text-primary hover:bg-brand">
           <a href="/api/integrations/gmail-mail/connect">Connect my mailbox</a>
         </Button>
         <Button asChild variant="ghost">
@@ -241,7 +241,7 @@ export function GmailMailClient({
       </div>
 
       {mailbox && (
-        <p className="text-sm text-green-700">
+        <p className="text-sm text-success-text">
           Connected mailbox: {displayMailboxAddress(decodeURIComponent(mailbox))}
         </p>
       )}
@@ -266,7 +266,7 @@ export function GmailMailClient({
                     <p className="text-xs text-destructive">{c.lastErrorMessage}</p>
                   )}
                   {c.scopeFolders.length === 0 && (
-                    <p className="mt-2 rounded-md border border-amber-300 bg-amber-50 px-2 py-1.5 text-xs text-amber-900">
+                    <p className="mt-2 rounded-md border border-warning-border bg-warning-bg px-2 py-1.5 text-xs text-warning-text">
                       No labels selected yet — threads won&apos;t sync until you scope
                       the mailbox. Click <strong>Labels</strong>, choose at least one
                       label, <strong>Save scope</strong>, then run <strong>Backfill</strong>.
@@ -282,7 +282,7 @@ export function GmailMailClient({
                     state={pendingButtonState(syncPending === `${c.id}-BACKFILL`)}
                     loadingText="Starting…"
                     onClick={() => void startSync(c.id, "BACKFILL")}
-                    className="bg-[#2ECC71] text-[#0D2818] hover:bg-[#27ae60]"
+                    className="bg-brand text-text-primary hover:bg-brand"
                     disabled={syncPending !== null}
                   >
                     Backfill

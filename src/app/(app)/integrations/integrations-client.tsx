@@ -54,10 +54,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  CONNECTED: "bg-green-100 text-green-800",
-  WARNING_RETRYING: "bg-amber-100 text-amber-800",
-  ERROR_ACTION_REQUIRED: "bg-red-100 text-red-800",
-  NOT_CONNECTED: "bg-gray-100 text-gray-600",
+  CONNECTED: "bg-success-bg text-success-text",
+  WARNING_RETRYING: "bg-warning-bg text-warning-text",
+  ERROR_ACTION_REQUIRED: "bg-danger-bg text-danger-text",
+  NOT_CONNECTED: "bg-surface-muted text-text-secondary",
 };
 
 type Integration = {
@@ -252,11 +252,11 @@ export function IntegrationsClient({
       </div>
 
       {zoomConnected && zoomEmail && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 flex items-start gap-3">
-          <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-success-border bg-success-bg p-4 flex items-start gap-3">
+          <CheckCircle2 className="h-5 w-5 text-success-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-green-800">Zoom connected successfully</p>
-            <p className="text-sm text-green-700 mt-1">
+            <p className="font-medium text-success-text">Zoom connected successfully</p>
+            <p className="text-sm text-success-text mt-1">
               Your Zoom account ({zoomEmail}) is now connected. Meeting recordings will automatically sync to ComplyVault.
             </p>
           </div>
@@ -264,11 +264,11 @@ export function IntegrationsClient({
       )}
 
       {teamsConnected && teamsEmail && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 flex items-start gap-3">
-          <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-success-border bg-success-bg p-4 flex items-start gap-3">
+          <CheckCircle2 className="h-5 w-5 text-success-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-green-800">Microsoft Teams connected successfully</p>
-            <p className="text-sm text-green-700 mt-1">
+            <p className="font-medium text-success-text">Microsoft Teams connected successfully</p>
+            <p className="text-sm text-success-text mt-1">
               Your Teams account ({teamsEmail}) is now connected. Meeting recordings will automatically sync to ComplyVault.
             </p>
           </div>
@@ -276,11 +276,11 @@ export function IntegrationsClient({
       )}
 
       {teamsError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-danger-border bg-danger-bg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-danger-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-red-800">Teams connection failed</p>
-            <p className="text-sm text-red-700 mt-1">
+            <p className="font-medium text-danger-text">Teams connection failed</p>
+            <p className="text-sm text-danger-text mt-1">
               {teamsErrorDescription ?? "Please try again."}
             </p>
           </div>
@@ -288,11 +288,11 @@ export function IntegrationsClient({
       )}
 
       {zoomError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-danger-border bg-danger-bg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-danger-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-red-800">Zoom connection failed</p>
-            <p className="text-sm text-red-700 mt-1">
+            <p className="font-medium text-danger-text">Zoom connection failed</p>
+            <p className="text-sm text-danger-text mt-1">
               {zoomErrorDescription || zoomError === "access_denied"
                 ? "You denied access or cancelled the connection."
                 : zoomError === "invalid_callback"
@@ -304,11 +304,11 @@ export function IntegrationsClient({
       )}
 
       {sharepointConnected && sharepointEmail && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 flex items-start gap-3">
-          <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-success-border bg-success-bg p-4 flex items-start gap-3">
+          <CheckCircle2 className="h-5 w-5 text-success-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-green-800">SharePoint / OneDrive connected</p>
-            <p className="text-sm text-green-700 mt-1">
+            <p className="font-medium text-success-text">SharePoint / OneDrive connected</p>
+            <p className="text-sm text-success-text mt-1">
               {sharepointEmail} — finalized audit packs can be filed automatically under your root folder
               (see below).
             </p>
@@ -317,11 +317,11 @@ export function IntegrationsClient({
       )}
 
       {sharepointError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-danger-border bg-danger-bg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-danger-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-red-800">SharePoint connection failed</p>
-            <p className="text-sm text-red-700 mt-1">
+            <p className="font-medium text-danger-text">SharePoint connection failed</p>
+            <p className="text-sm text-danger-text mt-1">
               {sharepointErrorDescription ?? "Please try again. Ensure the Azure app has Files.ReadWrite.All and Sites.ReadWrite.All (delegated) with admin consent."}
             </p>
           </div>
@@ -329,11 +329,11 @@ export function IntegrationsClient({
       )}
 
       {zohoCrmConnected && zohoCrmAccount && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 flex items-start gap-3">
-          <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-success-border bg-success-bg p-4 flex items-start gap-3">
+          <CheckCircle2 className="h-5 w-5 text-success-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-green-800">Zoho CRM connected</p>
-            <p className="text-sm text-green-700 mt-1">
+            <p className="font-medium text-success-text">Zoho CRM connected</p>
+            <p className="text-sm text-success-text mt-1">
               {zohoCrmAccount} — notes sync when a meeting reaches draft-ready (match Contact by client name
               or set Contact ID on the meeting).
             </p>
@@ -342,11 +342,11 @@ export function IntegrationsClient({
       )}
 
       {zohoCrmError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+        <div className="rounded-lg border border-danger-border bg-danger-bg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-danger-text shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-red-800">Zoho CRM connection failed</p>
-            <p className="text-sm text-red-700 mt-1">
+            <p className="font-medium text-danger-text">Zoho CRM connection failed</p>
+            <p className="text-sm text-danger-text mt-1">
               {zohoCrmErrorDescription ??
                 "Check Zoho API Console redirect URI, client id/secret, and CRM scopes (Contacts read, Notes create)."}
             </p>
@@ -501,69 +501,69 @@ export function IntegrationsClient({
                       ` • Last sync: ${new Date(int.lastSyncAt).toLocaleString()}`}
                   </p>
                   {int.lastErrorMessage && (
-                    <p className="text-sm text-red-600 mt-1">{int.lastErrorMessage}</p>
+                    <p className="text-sm text-danger-text mt-1">{int.lastErrorMessage}</p>
                   )}
                   {int.provider === "ZOOM" &&
                     zoomRecordingListScopesLikelyMissing(int.oauthScopes ?? null) && (
-                      <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
+                      <div className="mt-3 rounded-md border border-warning-border bg-warning-bg p-3 text-sm text-warning-text">
                         <p className="font-medium">
                           {zoomHasBaseListUserRecordingsOnly(int.oauthScopes ?? null)
                             ? "Zoom listing scope present — elevate tier for List recordings API"
                             : "Zoom recording scopes look incomplete"}
                         </p>
-                        <p className="mt-1 text-amber-900/90">
+                        <p className="mt-1 text-warning-text/90">
                           {zoomHasBaseListUserRecordingsOnly(int.oauthScopes ?? null) ? (
                             <>
                               Zoom issued{" "}
-                              <code className="rounded bg-amber-100/80 px-1">
+                              <code className="rounded bg-warning-bg/80 px-1">
                                 cloud_recording:read:list_user_recordings
                               </code>{" "}
                               and related recording scopes, but{" "}
-                              <code className="rounded bg-amber-100/80 px-1">
+                              <code className="rounded bg-warning-bg/80 px-1">
                                 GET /users/…/recordings
                               </code>{" "}
                               often returns error 4711 until the token also includes{" "}
-                              <code className="rounded bg-amber-100/80 px-1">
+                              <code className="rounded bg-warning-bg/80 px-1">
                                 cloud_recording:read:list_user_recordings:admin
                               </code>
                               ,{" "}
-                              <code className="rounded bg-amber-100/80 px-1">
+                              <code className="rounded bg-warning-bg/80 px-1">
                                 cloud_recording:read:list_user_recordings:master
                               </code>
                               , or classic{" "}
-                              <code className="rounded bg-amber-100/80 px-1">recording:read</code>{" "}
+                              <code className="rounded bg-warning-bg/80 px-1">recording:read</code>{" "}
                               (when Zoom exposes it). Search those IDs under Add Scopes; if{" "}
-                              <code className="rounded bg-amber-100/80 px-1">:admin</code> never
+                              <code className="rounded bg-warning-bg/80 px-1">:admin</code> never
                               appears, switch this General app to{" "}
                               <strong>Admin-managed</strong> (Basic Information) or contact Zoom
                               support — user-managed apps sometimes cannot obtain{" "}
-                              <code className="rounded bg-amber-100/80 px-1">:admin</code>.
+                              <code className="rounded bg-warning-bg/80 px-1">:admin</code>.
                             </>
                           ) : (
                             <>
                               Sync may fail with error 4711 until Zoom puts{" "}
-                              <code className="rounded bg-amber-100/80 px-1">
+                              <code className="rounded bg-warning-bg/80 px-1">
                                 list_user_recordings:admin
                               </code>{" "}
                               or{" "}
-                              <code className="rounded bg-amber-100/80 px-1">
+                              <code className="rounded bg-warning-bg/80 px-1">
                                 list_user_recordings:master
                               </code>{" "}
                               (or classic{" "}
-                              <code className="rounded bg-amber-100/80 px-1">recording:read</code>)
+                              <code className="rounded bg-warning-bg/80 px-1">recording:read</code>)
                               on the access token. Match Development vs Production in the Marketplace
                               with your Vercel{" "}
-                              <code className="rounded bg-amber-100/80 px-1">ZOOM_CLIENT_ID</code>,
+                              <code className="rounded bg-warning-bg/80 px-1">ZOOM_CLIENT_ID</code>,
                               then Disconnect → Connect Zoom.
                             </>
                           )}
                         </p>
                         {int.oauthScopes != null && int.oauthScopes.length > 0 ? (
-                          <p className="mt-2 break-all font-mono text-xs text-amber-900/80">
+                          <p className="mt-2 break-all font-mono text-xs text-warning-text/80">
                             Granted scopes on token: {int.oauthScopes}
                           </p>
                         ) : (
-                          <p className="mt-2 text-xs text-amber-900/80">
+                          <p className="mt-2 text-xs text-warning-text/80">
                             No scope string stored yet — reconnect Zoom after deploying the latest app
                             version.
                           </p>
@@ -574,7 +574,7 @@ export function IntegrationsClient({
                 <div className="flex items-center gap-2">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${
-                      STATUS_STYLES[int.status] ?? "bg-gray-100 text-gray-600"
+                      STATUS_STYLES[int.status] ?? "bg-surface-muted text-text-secondary"
                     }`}
                   >
                     {STATUS_LABELS[int.status] ?? int.status.replace(/_/g, " ")}
@@ -705,7 +705,7 @@ export function IntegrationsClient({
               <div className="flex items-center gap-4">
                 <button
                   type="button"
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm text-info-text hover:underline"
                   onClick={() => toggleFailures(int.id)}
                 >
                   {expandedFailures === int.id ? "Hide" : "View"} failed syncs
@@ -713,7 +713,7 @@ export function IntegrationsClient({
                 {int.provider === "ZOHO_CRM" && (
                   <Link
                     href="/integrations/zoho"
-                    className="text-sm text-blue-600 hover:underline"
+                    className="text-sm text-info-text hover:underline"
                   >
                     View tasks &amp; meetings →
                   </Link>
@@ -730,7 +730,7 @@ export function IntegrationsClient({
                               {f.meetingId ? `Meeting ${f.meetingId.slice(0, 8)}…` : "N/A"} • {f.action} • {new Date(f.createdAt).toLocaleString()}
                             </span>
                             {f.errorMessage && (
-                              <p className="text-red-600 mt-1">{f.errorMessage}</p>
+                              <p className="text-danger-text mt-1">{f.errorMessage}</p>
                             )}
                           </li>
                         ))}

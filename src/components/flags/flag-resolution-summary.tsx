@@ -14,18 +14,18 @@ export function FlagResolutionSummary({
   const style =
     disposition === "RESOLVED"
       ? {
-          wrap: "bg-[#E1F5EE] text-[#085041]",
+          wrap: "bg-brand-light text-brand",
           icon: <Check className="h-3.5 w-3.5 shrink-0" aria-hidden />,
           label: "Resolved",
         }
       : disposition === "NOTED"
         ? {
-            wrap: "bg-[#E6F1FB] text-[#0C447C]",
+            wrap: "bg-info-bg text-semantic-info",
             icon: <FileText className="h-3.5 w-3.5 shrink-0" aria-hidden />,
             label: "Noted",
           }
         : {
-            wrap: "bg-[#FAEEDA] text-[#633806]",
+            wrap: "bg-warning-bg text-semantic-warning",
             icon: <ArrowUp className="h-3.5 w-3.5 shrink-0" aria-hidden />,
             label: "Escalated",
           };

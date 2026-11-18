@@ -64,7 +64,7 @@ export default function ReadyForCCOButton({
       >
         {isReady ? (
           <>
-            <span className="mr-2 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-white">
+            <span className="mr-2 flex h-4 w-4 items-center justify-center rounded-full bg-semantic-success text-white">
               <Check className="h-1 w-1" />
             </span>
             Marked Ready for CCO

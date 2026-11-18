@@ -26,24 +26,24 @@ export function PriorityInbox({
       <div>
         <Link
           href={supervisionHref("/supervision", { ...filters, inboxTab: undefined })}
-          className="text-[12.5px] font-medium text-[#177a4c] hover:underline"
+          className="text-[12.5px] font-medium text-brand hover:underline"
         >
           ← Command Centre
         </Link>
       </div>
 
       <header className="space-y-2">
-        <h1 className="text-[22px] font-semibold tracking-tight text-[#141f19]">
+        <h1 className="text-[22px] font-semibold tracking-tight text-text-primary">
           CCO Priority Inbox
         </h1>
-        <p className="max-w-3xl text-[14px] leading-snug text-[#5f6b64]">
+        <p className="max-w-3xl text-[14px] leading-snug text-text-secondary">
           Escalated findings requiring human judgment. ComplyVault has not determined
           that a violation occurred.
         </p>
-        <p className="text-[16px] font-semibold text-[#141f19]">
+        <p className="text-[16px] font-semibold text-text-primary">
           {inbox.header.selectivityStatement}
         </p>
-        <p className="text-[12.5px] text-[#79837d]">
+        <p className="text-[12.5px] text-text-secondary">
           {inbox.header.priorityFindings} priority findings · {inbox.header.totalProcessed}{" "}
           processed interactions
         </p>
@@ -59,8 +59,8 @@ export function PriorityInbox({
               aria-current={active ? "page" : undefined}
               className={
                 active
-                  ? "rounded-[8px] bg-[#0D2818] px-3 py-1.5 text-[13px] font-medium text-white"
-                  : "rounded-[8px] border border-[#e6e8e6] bg-white px-3 py-1.5 text-[13px] font-medium text-[#141f19] hover:border-[#cfe3d8]"
+                  ? "rounded-[8px] bg-surface-strong px-3 py-1.5 text-[13px] font-medium text-white"
+                  : "rounded-[8px] border border-surface-border bg-surface-card px-3 py-1.5 text-[13px] font-medium text-text-primary hover:border-surface-border"
               }
             >
               {SUPERVISION_FILTER_LABELS.inboxTab[tab]} ({inbox.tabCounts[tab]})
@@ -70,11 +70,11 @@ export function PriorityInbox({
       </nav>
 
       {inbox.findings.length === 0 ? (
-        <div className="rounded-[12px] border border-dashed border-[#d7dbd7] bg-white px-4 py-10 text-center">
-          <p className="text-[14px] font-medium text-[#141f19]">
+        <div className="rounded-[12px] border border-dashed border-surface-border bg-surface-card px-4 py-10 text-center">
+          <p className="text-[14px] font-medium text-text-primary">
             No findings require review in this tab
           </p>
-          <p className="mt-1 text-[13px] text-[#5f6b64]">
+          <p className="mt-1 text-[13px] text-text-secondary">
             Cleared and routine sample interactions stay out of the Priority Inbox until a
             reviewer manually escalates them.
           </p>

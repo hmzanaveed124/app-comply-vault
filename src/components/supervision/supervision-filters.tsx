@@ -27,7 +27,7 @@ function Field({
 }): React.JSX.Element {
   return (
     <div className="flex min-w-[9rem] flex-col gap-1">
-      <label htmlFor={id} className="text-[11px] font-medium uppercase tracking-[0.04em] text-[#79837d]">
+      <label htmlFor={id} className="text-[11px] font-medium uppercase tracking-[0.04em] text-text-secondary">
         {label}
       </label>
       {children}
@@ -36,7 +36,7 @@ function Field({
 }
 
 const selectClass =
-  "h-9 w-full rounded-[8px] border border-[#e6e8e6] bg-white px-2 text-[13px] text-[#141f19] outline-none focus-visible:border-[#177a4c] focus-visible:ring-2 focus-visible:ring-[#177a4c]/20";
+  "h-9 w-full rounded-[8px] border border-surface-border bg-surface-card px-2 text-[13px] text-text-primary outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/20";
 
 export function SupervisionFilters({
   filters,
@@ -48,7 +48,7 @@ export function SupervisionFilters({
     <form
       method="get"
       action={action}
-      className="rounded-[12px] border border-[#e6e8e6] bg-white p-4 shadow-[0_1px_2px_rgba(20,31,25,0.04)]"
+      className="rounded-[12px] border border-surface-border bg-surface-card p-4 shadow-[0_1px_2px_rgba(20,31,25,0.04)]"
       aria-label="Supervision filters"
     >
       <div className="flex flex-wrap items-end gap-3">
@@ -178,13 +178,13 @@ export function SupervisionFilters({
         <div className="flex gap-2 pb-0.5">
           <button
             type="submit"
-            className="h-9 rounded-[8px] bg-[#0D2818] px-3 text-[13px] font-medium text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#177a4c]"
+            className="h-9 rounded-[8px] bg-surface-strong px-3 text-[13px] font-medium text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             Apply
           </button>
           <a
             href={action}
-            className="inline-flex h-9 items-center rounded-[8px] border border-[#e6e8e6] px-3 text-[13px] font-medium text-[#141f19] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#177a4c]"
+            className="inline-flex h-9 items-center rounded-[8px] border border-surface-border px-3 text-[13px] font-medium text-text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             Clear
           </a>

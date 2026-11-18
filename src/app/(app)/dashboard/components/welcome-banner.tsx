@@ -36,7 +36,7 @@ export function WelcomeBanner({
   };
 
   return (
-    <div className="mb-6 rounded-lg border border-border bg-white p-5 shadow-sm border-l-4 border-l-brand">
+    <div className="mb-6 rounded-lg border border-border bg-surface-card p-5 shadow-sm border-l-4 border-l-brand">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-foreground">

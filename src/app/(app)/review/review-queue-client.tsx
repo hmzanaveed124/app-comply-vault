@@ -205,7 +205,7 @@ export default function ReviewQueueClient({
                             {getStatusLabel(meeting.status)}
                           </Badge>
                           {meeting.readyForCCO && (
-                            <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+                            <Badge variant="default" className="bg-semantic-success hover:bg-semantic-success">
                               Ready for CCO
                             </Badge>
                           )}

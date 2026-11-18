@@ -42,7 +42,7 @@ export function FlagCategoryBars({
               <span className="w-[80px] shrink-0 text-right text-[10px] text-text-secondary">
                 {row.category}
               </span>
-              <div className="h-[10px] min-w-0 flex-1 overflow-hidden rounded-[5px] bg-[#F1F5F9]">
+              <div className="h-[10px] min-w-0 flex-1 overflow-hidden rounded-[5px] bg-surface-muted">
                 <div
                   className="h-full rounded-[5px] transition-[width] duration-[800ms] [transition-timing-function:cubic-bezier(0.4,0,0.2,1)]"
                   style={{

@@ -9,8 +9,8 @@ const stateLabel: Record<ChainStageState, string> = {
 };
 
 const stateClassName: Record<ChainStageState, string> = {
-  complete: "border-green-700/30 bg-green-50 text-green-800",
-  pending: "border-amber-700/30 bg-amber-50 text-amber-800",
+  complete: "border-success-border/30 bg-success-bg text-success-text",
+  pending: "border-warning-border/30 bg-warning-bg text-warning-text",
   missing: "border-destructive/30 bg-destructive/10 text-destructive",
   not_applicable: "border-muted-foreground/30 bg-muted text-muted-foreground",
 };

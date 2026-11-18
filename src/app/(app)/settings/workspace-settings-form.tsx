@@ -276,7 +276,7 @@ export function WorkspaceSettingsForm({
                 type="checkbox"
                 checked={legalHold}
                 onChange={(e) => setLegalHold(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="mt-1 h-4 w-4 rounded border-surface-border text-primary focus:ring-primary"
               />
               <div className="space-y-1">
                 <Label htmlFor="legalHold" className="font-normal">

@@ -110,8 +110,8 @@ export function TriageControls({
               }}
               className={cn(
                 "inline-flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2 text-[13px] font-normal transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:flex-initial sm:px-3",
-                selected && t.id === "escalate" && "border border-[#FAC775] bg-[#FAEEDA] font-medium text-[#633806]",
-                selected && t.id !== "escalate" && "border border-[#85B7EB] bg-[#E6F1FB] font-medium text-[#0C447C]",
+                selected && t.id === "escalate" && "border border-warning-border bg-warning-bg font-medium text-semantic-warning",
+                selected && t.id !== "escalate" && "border border-info-border bg-info-bg font-medium text-semantic-info",
                 !selected && "border border-transparent text-muted-foreground hover:bg-background/80",
               )}
             >
@@ -143,9 +143,9 @@ export function TriageControls({
         onClick={() => void handleSubmit()}
         className={cn(
           "rounded-full text-[13px] font-medium",
-          tab === "resolve" && "bg-[#E1F5EE] text-[#085041] hover:bg-[#E1F5EE]/90",
-          tab === "note" && "bg-[#E6F1FB] text-[#0C447C] hover:bg-[#E6F1FB]/90",
-          tab === "escalate" && "bg-[#FAEEDA] text-[#633806] hover:bg-[#FAEEDA]/90",
+          tab === "resolve" && "bg-brand-light text-brand hover:bg-brand-light/90",
+          tab === "note" && "bg-info-bg text-semantic-info hover:bg-info-bg/90",
+          tab === "escalate" && "bg-warning-bg text-semantic-warning hover:bg-warning-bg/90",
         )}
       >
         {showSpinner && isSubmitting ? (

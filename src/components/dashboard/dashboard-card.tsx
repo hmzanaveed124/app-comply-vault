@@ -23,7 +23,7 @@ export function DashboardCard({
   return (
     <section
       className={cn(
-        "rounded-[10px] border border-[#e6e8e6] bg-white shadow-[0_1px_2px_rgba(20,31,25,0.04)]",
+        "rounded-[10px] border border-surface-border bg-surface-card shadow-[0_1px_2px_rgba(20,31,25,0.04)]",
         className,
       )}
     >
@@ -31,7 +31,7 @@ export function DashboardCard({
         <span
           className={cn(
             "font-semibold",
-            emphasized ? "text-[13.5px] text-[#141f19]" : "text-[12px] text-[#3f4b45]",
+            emphasized ? "text-[13.5px] text-text-primary" : "text-[12px] text-text-primary",
           )}
         >
           {title}
@@ -39,7 +39,7 @@ export function DashboardCard({
         {link ? (
           <Link
             href={link.href}
-            className="text-[12px] font-semibold text-[#177a4c] hover:underline"
+            className="text-[12px] font-semibold text-brand hover:underline"
           >
             {link.label}
           </Link>
@@ -59,15 +59,15 @@ type MetricProps = {
 export function Metric({ value, unit, delta }: MetricProps): React.JSX.Element {
   return (
     <div className="flex items-baseline gap-1.5">
-      <span className="text-[26px] font-[650] leading-none tracking-[-0.02em] tabular-nums text-[#141f19]">
+      <span className="text-[26px] font-[650] leading-none tracking-[-0.02em] tabular-nums text-text-primary">
         {value}
       </span>
-      {unit ? <span className="text-[12.5px] text-[#79837d]">{unit}</span> : null}
+      {unit ? <span className="text-[12.5px] text-text-secondary">{unit}</span> : null}
       {delta ? (
         <span
           className={cn(
             "ml-1 text-[11.5px] font-semibold",
-            delta.tone === "bad" ? "text-[#c13a2a]" : "text-[#177a4c]",
+            delta.tone === "bad" ? "text-semantic-danger" : "text-brand",
           )}
         >
           {delta.text}

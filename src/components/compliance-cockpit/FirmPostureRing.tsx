@@ -36,7 +36,7 @@ export function FirmPostureRing({ categories }: FirmPostureRingProps): React.JSX
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#e2e8f0"
+          stroke="var(--cv-surface-border)"
           strokeWidth={stroke}
         />
         {activePct > 0 ? (
@@ -45,7 +45,7 @@ export function FirmPostureRing({ categories }: FirmPostureRingProps): React.JSX
             cy={size / 2}
             r={r}
             fill="none"
-            stroke="#94a3b8"
+            stroke="var(--cv-text-muted)"
             strokeWidth={stroke}
             strokeDasharray={`${(activePct / 100) * c} ${c}`}
             strokeDashoffset={0}
@@ -58,7 +58,7 @@ export function FirmPostureRing({ categories }: FirmPostureRingProps): React.JSX
             cy={size / 2}
             r={r}
             fill="none"
-            stroke="#22c55e"
+            stroke="var(--cv-semantic-success)"
             strokeWidth={stroke}
             strokeDasharray={`${(suppressingPct / 100) * c} ${c}`}
             strokeDashoffset={-((activePct / 100) * c)}
@@ -71,7 +71,7 @@ export function FirmPostureRing({ categories }: FirmPostureRingProps): React.JSX
             cy={size / 2}
             r={r}
             fill="none"
-            stroke="#ef4444"
+            stroke="var(--cv-semantic-danger)"
             strokeWidth={stroke}
             strokeDasharray={`${(neverPct / 100) * c} ${c}`}
             strokeDashoffset={-(((activePct + suppressingPct) / 100) * c)}

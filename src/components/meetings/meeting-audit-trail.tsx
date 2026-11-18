@@ -43,21 +43,21 @@ function entryBorderClass(variant: MeetingAuditTrailVariant): string {
   switch (variant) {
     case "finalize":
     case "advisor":
-      return "border-[#0F6E56] text-[#0F6E56]";
+      return "border-brand text-brand";
     case "cco":
-      return "border-[#633806] text-[#633806]";
+      return "border-semantic-warning text-semantic-warning";
     case "cm":
-      return "border-[#185FA5] text-[#185FA5]";
+      return "border-semantic-info text-semantic-info";
     case "revert":
-      return "border-[#A32D2D] text-[#A32D2D]";
+      return "border-semantic-danger text-semantic-danger";
     case "flag":
-      return "border-[#5F5E5A] text-[#5F5E5A]";
+      return "border-text-secondary text-text-secondary";
     case "export":
-      return "border-[#5F5E5A] text-[#5F5E5A]";
+      return "border-text-secondary text-text-secondary";
     case "edit":
-      return "border-[#5F5E5A] text-[#5F5E5A]";
+      return "border-text-secondary text-text-secondary";
     default:
-      return "border-[#5F5E5A] text-[#5F5E5A]";
+      return "border-text-secondary text-text-secondary";
   }
 }
 

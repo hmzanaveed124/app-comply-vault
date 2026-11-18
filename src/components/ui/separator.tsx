@@ -1,28 +1,29 @@
-"use client"
-
-import * as React from "react"
-import * as SeparatorPrimitive from "@radix-ui/react-separator"
-
-import { cn } from "~/lib/utils"
-
+"use client";
+import * as React from "react";
+import { Divider } from "antd";
+import type * as Primitive from "@radix-ui/react-separator";
 function Separator({
-  className,
   orientation = "horizontal",
   decorative = true,
+  className,
+  ref,
   ...props
-}: React.ComponentProps<typeof SeparatorPrimitive.Root>) {
+}: React.ComponentProps<typeof Primitive.Root>) {
   return (
-    <SeparatorPrimitive.Root
+    <Divider
+      ref={(instance) => {
+        const el = instance?.nativeElement ?? null;
+        if (typeof ref === "function") ref(el);
+        else if (ref) ref.current = el;
+      }}
       data-slot="separator"
-      decorative={decorative}
-      orientation={orientation}
-      className={cn(
-        "bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
-        className
-      )}
+      type={orientation}
+      role={decorative ? "none" : "separator"}
+      aria-orientation={decorative ? undefined : orientation}
+      className={className}
+      style={{ margin: 0 }}
       {...props}
     />
-  )
+  );
 }
-
-export { Separator }
+export { Separator };

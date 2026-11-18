@@ -8,7 +8,7 @@ type AppRouteSkeletonProps = {
 function CardBlock({ className = "" }: { className?: string }): React.JSX.Element {
   return (
     <div
-      className={`rounded-[12px] border border-[#e6e8e6] bg-white ${className}`}
+      className={`rounded-[12px] border border-surface-border bg-surface-card ${className}`}
     />
   );
 }
@@ -29,12 +29,12 @@ export function AppRouteSkeleton({
     >
       <div className="mx-auto flex max-w-6xl animate-pulse flex-col gap-6">
         <div className="space-y-2">
-          <div className="h-8 w-72 rounded bg-[#e8ebe8]" />
-          <div className="h-4 w-full max-w-xl rounded bg-[#eef0ee]" />
+          <div className="h-8 w-72 rounded bg-surface-border" />
+          <div className="h-4 w-full max-w-xl rounded bg-surface-muted" />
         </div>
         {variant === "table" ? (
           <>
-            <div className="h-24 rounded-[12px] border border-[#e6e8e6] bg-white" />
+            <div className="h-24 rounded-[12px] border border-surface-border bg-surface-card" />
             <CardBlock className="min-h-[320px]" />
           </>
         ) : (

@@ -12,19 +12,19 @@ type ClientsHealthTableProps = {
 };
 
 function healthChip(score: number): { className: string; label: string } {
-  if (score >= 75) return { className: "bg-[#e9f4ee] text-[#177a4c]", label: "healthy" };
-  if (score >= 60) return { className: "bg-[#fdf4e6] text-[#b26a12]", label: "needs attention" };
-  return { className: "bg-[#fcedeb] text-[#c13a2a]", label: "at risk" };
+  if (score >= 75) return { className: "bg-brand-light text-brand", label: "healthy" };
+  if (score >= 60) return { className: "bg-warning-bg text-semantic-warning", label: "needs attention" };
+  return { className: "bg-danger-bg text-semantic-danger", label: "at risk" };
 }
 
 function sparkColor(score: number): string {
-  if (score >= 75) return "#177a4c";
-  if (score >= 60) return "#b26a12";
-  return "#c13a2a";
+  if (score >= 75) return "var(--cv-brand)";
+  if (score >= 60) return "var(--cv-semantic-warning)";
+  return "var(--cv-semantic-danger)";
 }
 
-const TH = "px-[18px] py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.05em] text-[#79837d] border-b border-[#e6e8e6] whitespace-nowrap";
-const TD = "px-[18px] py-[11px] border-b border-[#e6e8e6] whitespace-nowrap align-middle";
+const TH = "px-[18px] py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.05em] text-text-secondary border-b border-surface-border whitespace-nowrap";
+const TD = "px-[18px] py-[11px] border-b border-surface-border whitespace-nowrap align-middle";
 
 export function ClientsHealthTable({
   clients,
@@ -42,7 +42,7 @@ export function ClientsHealthTable({
       bodyClassName="px-0 pb-0 pt-0"
     >
       {clients.length === 0 ? (
-        <div className="px-[18px] py-10 text-center text-[12.5px] text-[#79837d]">
+        <div className="px-[18px] py-10 text-center text-[12.5px] text-text-secondary">
           No clients yet. Client health appears here once you upload meetings.
         </div>
       ) : (
@@ -74,9 +74,9 @@ export function ClientsHealthTable({
                     ? `/clients/${c.clientId}`
                     : `/clients/overview?name=${encodeURIComponent(c.clientName)}`;
                 return (
-                  <tr key={`${c.clientId ?? c.clientName}`} className="group last:[&>td]:border-b-0 hover:bg-[#f8f9f8]">
-                    <td className={`${TD} font-semibold text-[#141f19]`}>
-                      <Link href={openHref} className="hover:text-[#177a4c] hover:underline">
+                  <tr key={`${c.clientId ?? c.clientName}`} className="group last:[&>td]:border-b-0 hover:bg-surface-muted">
+                    <td className={`${TD} font-semibold text-text-primary`}>
+                      <Link href={openHref} className="hover:text-brand hover:underline">
                         {c.clientName}
                       </Link>
                     </td>
@@ -90,29 +90,29 @@ export function ClientsHealthTable({
                     </td>
                     <td className={TD}>
                       <div className="flex items-center gap-2">
-                        <div className="h-[5px] w-16 overflow-hidden rounded-[3px] bg-[#eff1ef]">
+                        <div className="h-[5px] w-16 overflow-hidden rounded-[3px] bg-surface-muted">
                           <div
-                            className="h-full rounded-[3px] bg-[#1c4a37]"
+                            className="h-full rounded-[3px] bg-brand"
                             style={{ width: `${coveragePct}%` }}
                           />
                         </div>
-                        <span className="text-[11.5px] tabular-nums text-[#3f4b45]">
+                        <span className="text-[11.5px] tabular-nums text-text-primary">
                           {c.coverageDone}/{c.coverageTotal}
                         </span>
                       </div>
                     </td>
                     <td
-                      className={`${TD} text-right font-semibold tabular-nums ${c.openFlags === 0 ? "font-normal text-[#79837d]" : "text-[#141f19]"}`}
+                      className={`${TD} text-right font-semibold tabular-nums ${c.openFlags === 0 ? "font-normal text-text-secondary" : "text-text-primary"}`}
                     >
                       {c.openFlags}
                     </td>
-                    <td className={`${TD} text-[#79837d]`}>
+                    <td className={`${TD} text-text-secondary`}>
                       {activityIso ? (
                         <span className="inline-flex items-center gap-1.5">
                           {emailIntel && c.lastActivityType === "email" ? (
-                            <Mail className="h-3.5 w-3.5 shrink-0 text-[#5F5E5A]" aria-label="Email" />
+                            <Mail className="h-3.5 w-3.5 shrink-0 text-text-secondary" aria-label="Email" />
                           ) : emailIntel && c.lastActivityType === "meeting" ? (
-                            <Video className="h-3.5 w-3.5 shrink-0 text-[#5F5E5A]" aria-label="Meeting" />
+                            <Video className="h-3.5 w-3.5 shrink-0 text-text-secondary" aria-label="Meeting" />
                           ) : null}
                           {dateFmt.format(new Date(activityIso))}
                         </span>
@@ -138,7 +138,7 @@ export function ClientsHealthTable({
                     <td className={TD}>
                       <Link
                         href={openHref}
-                        className="text-[12px] font-semibold text-[#177a4c] opacity-0 transition group-hover:opacity-100"
+                        className="text-[12px] font-semibold text-brand opacity-0 transition group-hover:opacity-100"
                       >
                         Open
                       </Link>

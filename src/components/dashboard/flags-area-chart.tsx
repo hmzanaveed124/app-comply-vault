@@ -21,12 +21,12 @@ type FlagsAreaChartProps = {
 };
 
 const tooltipStyle = {
-  backgroundColor: "#1E293B",
+  backgroundColor: "var(--cv-chart-tooltip-bg)",
   border: "none",
   borderRadius: 6,
   fontSize: 11,
   fontWeight: 600,
-  color: "#fff",
+  color: "var(--cv-chart-tooltip-text)",
   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
 };
 
@@ -123,7 +123,7 @@ export function FlagsAreaChart({
               fill="url(#openFlagsFill)"
               dot={{
                 r: 3.5,
-                fill: "#fff",
+                fill: "var(--cv-chart-tooltip-text)",
                 strokeWidth: 1.5,
                 stroke: dashboardColors.semanticDanger,
               }}

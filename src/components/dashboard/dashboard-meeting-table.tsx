@@ -16,8 +16,8 @@ type DashboardMeetingTableProps = {
 };
 
 const TH =
-  "px-[18px] py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.05em] text-[#79837d] border-b border-[#e6e8e6] whitespace-nowrap";
-const TD = "px-[18px] py-[11px] border-b border-[#e6e8e6] whitespace-nowrap align-middle";
+  "px-[18px] py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.05em] text-text-secondary border-b border-surface-border whitespace-nowrap";
+const TD = "px-[18px] py-[11px] border-b border-surface-border whitespace-nowrap align-middle";
 
 export function DashboardMeetingTable({
   totalMeetings,
@@ -69,7 +69,7 @@ export function DashboardMeetingTable({
       link={{ href: "/interaction-log", label: "View all" }}
       bodyClassName="px-0 pb-0 pt-2"
     >
-      <p className="px-[18px] pb-1 text-[11px] text-[#79837d]">
+      <p className="px-[18px] pb-1 text-[11px] text-text-secondary">
         {totalMeetings} meetings · {pendingReview} require your review
       </p>
       <div className="overflow-x-auto">
@@ -91,14 +91,14 @@ export function DashboardMeetingTable({
               return (
                 <tr
                   key={row.id}
-                  className="group cursor-pointer last:[&>td]:border-b-0 hover:bg-[#f8f9f8]"
+                  className="group cursor-pointer last:[&>td]:border-b-0 hover:bg-surface-muted"
                   tabIndex={0}
                   onClick={() => router.push(`/meetings/${row.id}`)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") router.push(`/meetings/${row.id}`);
                   }}
                 >
-                  <td className={`${TD} font-semibold text-[#141f19]`}>
+                  <td className={`${TD} font-semibold text-text-primary`}>
                     <div className="flex flex-col gap-1">
                       <span>{row.clientName}</span>
                       <SupersessionBadge
@@ -107,8 +107,8 @@ export function DashboardMeetingTable({
                       />
                     </div>
                   </td>
-                  <td className={`${TD} text-[#79837d]`}>{row.meetingType}</td>
-                  <td className={`${TD} text-[#79837d]`}>{dateFmt.format(new Date(row.date))}</td>
+                  <td className={`${TD} text-text-secondary`}>{row.meetingType}</td>
+                  <td className={`${TD} text-text-secondary`}>{dateFmt.format(new Date(row.date))}</td>
                   <td className={`${TD} text-right`}>
                     <MeetingFlagsCell flagCount={row.flagCount} />
                   </td>
@@ -122,7 +122,7 @@ export function DashboardMeetingTable({
                   <td className={TD}>
                     <Link
                       href={`/meetings/${row.id}`}
-                      className="text-[12px] font-semibold text-[#177a4c] opacity-0 transition group-hover:opacity-100"
+                      className="text-[12px] font-semibold text-brand opacity-0 transition group-hover:opacity-100"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Open

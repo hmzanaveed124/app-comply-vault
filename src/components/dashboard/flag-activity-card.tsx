@@ -50,9 +50,9 @@ export function FlagActivityCard({
         preserveAspectRatio="none"
         className="mt-3"
       >
-        <line x1="0" y1="24" x2="320" y2="24" stroke="#eff1ef" strokeWidth="1" />
-        <line x1="0" y1="52" x2="320" y2="52" stroke="#eff1ef" strokeWidth="1" />
-        <line x1="0" y1={BASELINE} x2="320" y2={BASELINE} stroke="#e6e8e6" strokeWidth="1" />
+        <line x1="0" y1="24" x2="320" y2="24" stroke="var(--cv-surface-muted)" strokeWidth="1" />
+        <line x1="0" y1="52" x2="320" y2="52" stroke="var(--cv-surface-muted)" strokeWidth="1" />
+        <line x1="0" y1={BASELINE} x2="320" y2={BASELINE} stroke="var(--cv-surface-border)" strokeWidth="1" />
         {data.map((d, i) => {
           const groupX = i * groupW + innerPad;
           const openedH = d.opened * scale;
@@ -65,7 +65,7 @@ export function FlagActivityCard({
                 width={barW}
                 height={openedH}
                 rx="2.5"
-                fill="#8fa1ab"
+                fill="var(--cv-text-muted)"
               />
               <rect
                 x={groupX + barW + gap}
@@ -73,24 +73,24 @@ export function FlagActivityCard({
                 width={barW}
                 height={resolvedH}
                 rx="2.5"
-                fill="#177a4c"
+                fill="var(--cv-brand)"
               />
             </g>
           );
         })}
       </svg>
-      <div className="mt-1 flex justify-between text-[10px] tabular-nums text-[#79837d]">
+      <div className="mt-1 flex justify-between text-[10px] tabular-nums text-text-secondary">
         {axisLabels.map((label, i) => (
           <span key={`${label}-${i}`}>{label}</span>
         ))}
       </div>
       <div className="mt-2.5 flex gap-3.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-[#3f4b45]">
-          <span className="h-2 w-2 rounded-[2px] bg-[#8fa1ab]" />
+        <div className="flex items-center gap-1.5 text-[11px] text-text-primary">
+          <span className="h-2 w-2 rounded-[2px] bg-text-secondary" />
           Opened
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-[#3f4b45]">
-          <span className="h-2 w-2 rounded-[2px] bg-[#177a4c]" />
+        <div className="flex items-center gap-1.5 text-[11px] text-text-primary">
+          <span className="h-2 w-2 rounded-[2px] bg-brand" />
           Resolved
         </div>
       </div>

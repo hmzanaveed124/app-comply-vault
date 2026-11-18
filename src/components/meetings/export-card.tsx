@@ -85,7 +85,7 @@ export function ExportCard({
         className={cn(
           "rounded-xl px-5 py-5 shadow-sm",
           isFinalized
-            ? "border-2 border-[#0F6E56] bg-card"
+            ? "border-2 border-brand bg-card"
             : "border border-border bg-card",
         )}
       >
@@ -94,8 +94,8 @@ export function ExportCard({
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium",
               isFinalized
-                ? "bg-[#E1F5EE] text-[#085041]"
-                : "bg-[#FAEEDA] text-[#633806]",
+                ? "bg-brand-light text-brand"
+                : "bg-warning-bg text-semantic-warning",
             )}
           >
             <CircleCheck className="h-3 w-3" aria-hidden />
@@ -144,7 +144,7 @@ export function ExportCard({
             className={cn(
               "rounded-md px-6 text-[14px] font-medium",
               isFinalized
-                ? "bg-[#1B4332] text-white hover:bg-[#1B4332]/90"
+                ? "bg-surface-strong text-white hover:bg-surface-strong/90"
                 : "border border-input bg-background text-foreground shadow-sm hover:bg-muted/60",
             )}
             variant={isFinalized ? "default" : "outline"}

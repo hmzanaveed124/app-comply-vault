@@ -68,30 +68,30 @@ export type FlagTriageCardFlag = {
 
 const severityBadgeClass = (severity: string): string =>
   severity === "CRITICAL"
-    ? "border-0 bg-[#FCEBEB] text-[#791F1F]"
-    : "border-0 bg-[#FAEEDA] text-[#633806]";
+    ? "border-0 bg-danger-bg text-semantic-danger"
+    : "border-0 bg-warning-bg text-semantic-warning";
 
 const typeBadgeClass = "border-0 bg-muted text-secondary-foreground";
 
 function statusBadge(flag: FlagTriageCardFlag): { className: string; label: string; icon?: React.ReactNode } {
   if (flag.status === "CLOSED" || flag.status === "CLOSED_ACCEPTED_RISK") {
     return {
-      className: "border-0 bg-[#E1F5EE] text-[#085041]",
+      className: "border-0 bg-brand-light text-brand",
       label: flag.status === "CLOSED_ACCEPTED_RISK" ? "Accepted risk" : "Resolved",
       icon: <Check className="h-3 w-3" aria-hidden />,
     };
   }
   if (flag.cmDisposition === "NOTED") {
-    return { className: "border-0 bg-[#E6F1FB] text-[#0C447C]", label: "Noted" };
+    return { className: "border-0 bg-info-bg text-semantic-info", label: "Noted" };
   }
   if (flag.cmDisposition === "ESCALATED" || flag.status === "PENDING_VERIFICATION") {
     return {
-      className: "border-0 bg-[#FAEEDA] text-[#633806]",
+      className: "border-0 bg-warning-bg text-semantic-warning",
       label: "Escalated",
       icon: <ArrowUp className="h-3 w-3" aria-hidden />,
     };
   }
-  return { className: "border-0 bg-[#FAEEDA] text-[#633806]", label: "Open" };
+  return { className: "border-0 bg-warning-bg text-semantic-warning", label: "Open" };
 }
 
 function formatTypeLabel(type: string): string {
@@ -292,13 +292,13 @@ export function FlagTriageCard({
       {flag.sourceType === "EMAIL" ? (
         <div className="mt-2 space-y-0.5">
           {flag.clientName ? (
-            <p className="text-[14px] font-semibold text-[#0D2818]">{flag.clientName}</p>
+            <p className="text-[14px] font-semibold text-text-primary">{flag.clientName}</p>
           ) : (
             <p className="text-[12px] text-muted-foreground">Client not attributed yet</p>
           )}
           {flag.sourceHref ? (
             <p className="text-[12px]">
-              <a href={flag.sourceHref} className="font-semibold text-[#177a4c] hover:underline">
+              <a href={flag.sourceHref} className="font-semibold text-brand hover:underline">
                 {flag.sourceLabel ?? "Open thread"}
               </a>
             </p>
@@ -334,7 +334,7 @@ export function FlagTriageCard({
       </div>
 
       {showEscalationCallout ? (
-        <div className="mt-3 rounded-lg border border-[#FAC775] bg-[#FAEEDA] px-3 py-2 text-[12px] text-[#633806]">
+        <div className="mt-3 rounded-lg border border-warning-border bg-warning-bg px-3 py-2 text-[12px] text-semantic-warning">
           <span className="font-medium">Escalation reason: </span>
           {flag.escalationReason}
         </div>

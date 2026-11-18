@@ -40,7 +40,7 @@ export function FirmMasthead({
   return (
     <header className="sticky top-14 z-10 border-b border-surface-border bg-surface-page/95 px-4 py-3 backdrop-blur sm:px-6">
       {needsReapproval && invalidatedApprovalAt ? (
-        <div className="mb-2 rounded-md border border-semantic-warning/40 bg-amber-50 px-3 py-2 text-[12px] text-amber-900">
+        <div className="mb-2 rounded-md border border-semantic-warning/40 bg-warning-bg px-3 py-2 text-[12px] text-warning-text">
           Profile changes since last approval — re-approval required.
         </div>
       ) : null}
@@ -59,7 +59,7 @@ export function FirmMasthead({
               {profile.riskFlags.map((flag) => (
                 <span
                   key={flag}
-                  className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800"
+                  className="rounded-full bg-warning-bg px-2 py-0.5 text-[10px] font-medium text-warning-text"
                 >
                   {flag}
                 </span>

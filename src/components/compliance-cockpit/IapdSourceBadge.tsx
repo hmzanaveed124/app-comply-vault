@@ -14,8 +14,8 @@ function formatFilingDate(date: string | null): string {
 
 export function IapdSourceBadge({ firm }: IapdSourceBadgeProps): React.JSX.Element {
   return (
-    <div className="flex flex-wrap items-center gap-1 text-[11px] text-[#6B7280]">
-      <ShieldCheck size={12} className="text-green-600" aria-hidden />
+    <div className="flex flex-wrap items-center gap-1 text-[11px] text-text-secondary">
+      <ShieldCheck size={12} className="text-success-text" aria-hidden />
       <span>Sourced from SEC IAPD</span>
       <span aria-hidden>·</span>
       <span>CRD {firm.crdNumber}</span>

@@ -1,61 +1,61 @@
-"use client"
-
-import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
-
-import { cn } from "~/lib/utils"
-
+"use client";
+import * as React from "react";
+import { Tooltip as AntTooltip } from "antd";
+import { Slot } from "@radix-ui/react-slot";
+import type * as Primitive from "@radix-ui/react-tooltip";
+const DelayContext = React.createContext(0);
 function TooltipProvider({
   delayDuration = 0,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
-  return (
-    <TooltipPrimitive.Provider
-      data-slot="tooltip-provider"
-      delayDuration={delayDuration}
-      {...props}
-    />
-  )
-}
-
-function Tooltip({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
-  return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-    </TooltipProvider>
-  )
-}
-
-function TooltipTrigger({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
-}
-
-function TooltipContent({
-  className,
-  sideOffset = 6,
   children,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: React.ComponentProps<typeof Primitive.Provider>) {
   return (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
-        sideOffset={sideOffset}
-        className={cn(
-          "bg-sidebar-text-bright text-sidebar-bg animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-2.5 py-1.5 text-xs font-semibold text-balance shadow-md",
-          className
-        )}
-        {...props}
-      >
-        {children}
-        <TooltipPrimitive.Arrow className="bg-sidebar-text-bright fill-sidebar-text-bright z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
-  )
+    <DelayContext.Provider value={delayDuration}>
+      {children}
+    </DelayContext.Provider>
+  );
 }
-
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+function Tooltip({
+  children,
+  open,
+  defaultOpen,
+  onOpenChange,
+  delayDuration,
+}: React.ComponentProps<typeof Primitive.Root>) {
+  const delay = React.useContext(DelayContext);
+  const parts = React.Children.toArray(children);
+  const content = parts.find(
+    (child) => React.isValidElement(child) && child.type === TooltipContent,
+  ) as
+    | React.ReactElement<React.ComponentProps<typeof Primitive.Content>>
+    | undefined;
+  const trigger = parts.find(
+    (child) => React.isValidElement(child) && child.type === TooltipTrigger,
+  ) as React.ReactElement | undefined;
+  const side = content?.props.side ?? "top";
+  return (
+    <AntTooltip
+      title={content?.props.children}
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      mouseEnterDelay={(delayDuration ?? delay) / 1000}
+      placement={side}
+      classNames={{ container: content?.props.className }}
+    >
+      {trigger ?? <span />}
+    </AntTooltip>
+  );
+}
+function TooltipTrigger({
+  asChild,
+  ...props
+}: React.ComponentProps<typeof Primitive.Trigger>) {
+  const Comp = asChild ? Slot : "button";
+  return <Comp type="button" data-slot="tooltip-trigger" {...props} />;
+}
+function TooltipContent(
+  _props: React.ComponentProps<typeof Primitive.Content>,
+) {
+  return null;
+}
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

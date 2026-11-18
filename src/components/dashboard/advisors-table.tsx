@@ -10,9 +10,9 @@ type AdvisorsTableProps = {
 };
 
 function loadColor(openFlags: number): string {
-  if (openFlags >= 5) return "#c13a2a";
-  if (openFlags >= 1) return "#b26a12";
-  return "#177a4c";
+  if (openFlags >= 5) return "var(--cv-semantic-danger)";
+  if (openFlags >= 1) return "var(--cv-semantic-warning)";
+  return "var(--cv-brand)";
 }
 
 function initials(name: string): string {
@@ -23,8 +23,8 @@ function initials(name: string): string {
 }
 
 const TH =
-  "px-[18px] py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.05em] text-[#79837d] border-b border-[#e6e8e6] whitespace-nowrap";
-const TD = "px-[18px] py-[11px] border-b border-[#e6e8e6] whitespace-nowrap align-middle";
+  "px-[18px] py-2.5 text-[10.5px] font-semibold uppercase tracking-[0.05em] text-text-secondary border-b border-surface-border whitespace-nowrap";
+const TD = "px-[18px] py-[11px] border-b border-surface-border whitespace-nowrap align-middle";
 
 export function AdvisorsTable({ advisors, rangeLabel }: AdvisorsTableProps): React.JSX.Element {
   const dateFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
@@ -37,7 +37,7 @@ export function AdvisorsTable({ advisors, rangeLabel }: AdvisorsTableProps): Rea
       bodyClassName="px-0 pb-0 pt-0"
     >
       {advisors.length === 0 ? (
-        <div className="px-[18px] py-10 text-center text-[12.5px] text-[#79837d]">
+        <div className="px-[18px] py-10 text-center text-[12.5px] text-text-secondary">
           No advisors yet. Invite advisors to your workspace and their certification
           activity will appear here.
         </div>
@@ -59,10 +59,10 @@ export function AdvisorsTable({ advisors, rangeLabel }: AdvisorsTableProps): Rea
               {advisors.map((a) => {
                 const spark = buildSparkline(a.trend, { width: 68, height: 18, pad: 2 });
                 return (
-                  <tr key={a.userId} className="group last:[&>td]:border-b-0 hover:bg-[#f8f9f8]">
-                    <td className={`${TD} font-semibold text-[#141f19]`}>
+                  <tr key={a.userId} className="group last:[&>td]:border-b-0 hover:bg-surface-muted">
+                    <td className={`${TD} font-semibold text-text-primary`}>
                       <span className="inline-flex items-center gap-2.5">
-                        <span className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#e9f4ee] text-[10px] font-bold text-[#177a4c]">
+                        <span className="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-light text-[10px] font-bold text-brand">
                           {initials(a.name)}
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
@@ -75,18 +75,18 @@ export function AdvisorsTable({ advisors, rangeLabel }: AdvisorsTableProps): Rea
                         {a.name}
                       </span>
                     </td>
-                    <td className={`${TD} text-right font-semibold tabular-nums text-[#141f19]`}>
+                    <td className={`${TD} text-right font-semibold tabular-nums text-text-primary`}>
                       {a.certifiedCount}
                     </td>
                     <td
-                      className={`${TD} text-right font-semibold tabular-nums ${a.openFlags === 0 ? "font-normal text-[#79837d]" : "text-[#141f19]"}`}
+                      className={`${TD} text-right font-semibold tabular-nums ${a.openFlags === 0 ? "font-normal text-text-secondary" : "text-text-primary"}`}
                     >
                       {a.openFlags}
                     </td>
-                    <td className={`${TD} text-right tabular-nums text-[#3f4b45]`}>
+                    <td className={`${TD} text-right tabular-nums text-text-primary`}>
                       {a.avgFinalizeDays === null ? "—" : `${a.avgFinalizeDays}d`}
                     </td>
-                    <td className={`${TD} text-[#79837d]`}>
+                    <td className={`${TD} text-text-secondary`}>
                       {a.lastActivity ? dateFmt.format(new Date(a.lastActivity)) : "—"}
                     </td>
                     <td className={TD}>
@@ -107,7 +107,7 @@ export function AdvisorsTable({ advisors, rangeLabel }: AdvisorsTableProps): Rea
                     <td className={TD}>
                       <Link
                         href={`/interaction-log?advisor=${encodeURIComponent(a.name)}`}
-                        className="text-[12px] font-semibold text-[#177a4c] opacity-0 transition group-hover:opacity-100"
+                        className="text-[12px] font-semibold text-brand opacity-0 transition group-hover:opacity-100"
                       >
                         Open
                       </Link>

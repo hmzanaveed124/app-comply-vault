@@ -82,7 +82,7 @@ const STATUS_LABEL: Record<FileUploadStatus, string> = {
 const STATUS_TONE: Record<FileUploadStatus, string> = {
   queued: "text-muted-foreground",
   uploading: "text-foreground",
-  success: "text-emerald-600 dark:text-emerald-400",
+  success: "text-success-text dark:text-success-text",
   error: "text-destructive",
 };
 
@@ -366,7 +366,7 @@ function FileUploadRow({
                 className={cn(
                   "h-full rounded-full",
                   status === "success"
-                    ? "bg-emerald-500"
+                    ? "bg-semantic-success"
                     : "bg-foreground",
                 )}
                 style={{

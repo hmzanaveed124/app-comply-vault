@@ -65,8 +65,8 @@ export function SupersedeMeetingButton({
   }
 
   return (
-    <div className="space-y-3 rounded-md border border-[#d4d8d4] bg-[#fafaf8] p-4">
-      <p className="text-sm text-[#444441]">
+    <div className="space-y-3 rounded-md border border-surface-border bg-surface-muted p-4">
+      <p className="text-sm text-text-primary">
         Creates a new draft meeting that carries the transcript forward. The
         sealed original stays FINALIZED with its seal and flags unchanged.
         This action is audit-logged.

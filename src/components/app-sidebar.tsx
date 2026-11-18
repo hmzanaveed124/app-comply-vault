@@ -323,7 +323,7 @@ function AppSidebarPanel({
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
-                  className="flex h-9 w-9 shrink-0 cursor-default items-center justify-center rounded-full bg-gradient-to-br from-brand to-[#2DD881] text-[11px] font-semibold text-white"
+                  className="flex h-9 w-9 shrink-0 cursor-default items-center justify-center rounded-full bg-gradient-to-br from-brand to-status-online text-[11px] font-semibold text-white"
                   tabIndex={0}
                 >
                   {initials(userName, userEmail)}
@@ -352,7 +352,7 @@ function AppSidebarPanel({
         ) : (
           <div className="p-3">
             <div className="flex items-center gap-3 rounded-lg px-1 py-2">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-[#2DD881] text-[11px] font-semibold text-white">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-status-online text-[11px] font-semibold text-white">
                 {initials(userName, userEmail)}
               </div>
               <div className="min-w-0 flex-1">
@@ -506,7 +506,7 @@ export function AppSidebar({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 hidden flex-col border-r border-sidebar-edge transition-[width] duration-200 ease-out lg:flex",
-          collapsed ? "w-[76px]" : "w-[244px]",
+          collapsed ? "w-[var(--cv-sidebar-collapsed-width)]" : "w-[var(--cv-sidebar-width)]",
         )}
       >
         <AppSidebarPanel
@@ -524,7 +524,7 @@ export function AppSidebar({
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[244px] border-sidebar-edge bg-sidebar-bg p-0">
+          <SheetContent side="left" className="w-[var(--cv-sidebar-width)] border-sidebar-edge bg-sidebar-bg p-0">
             <AppSidebarPanel {...basePanelProps} collapsed={false} />
           </SheetContent>
         </Sheet>

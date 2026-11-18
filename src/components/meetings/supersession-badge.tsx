@@ -14,14 +14,14 @@ export function SupersessionBadge({
     return (
       <span className="inline-flex flex-wrap items-center gap-1.5">
         <span
-          className="inline-flex items-center rounded-full bg-[#F1EFE8] px-2 py-0.5 text-[11px] font-medium text-[#444441]"
+          className="inline-flex items-center rounded-full bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-text-primary"
           aria-label="Status: superseded"
         >
           Superseded
         </span>
         <Link
           href={`/meetings/${supersededById}`}
-          className="text-[11px] font-medium text-[#0D2818] underline underline-offset-2"
+          className="text-[11px] font-medium text-text-primary underline underline-offset-2"
         >
           View replacement
         </Link>
@@ -32,14 +32,14 @@ export function SupersessionBadge({
     return (
       <span className="inline-flex flex-wrap items-center gap-1.5">
         <span
-          className="inline-flex items-center rounded-full bg-[#E6F1FB] px-2 py-0.5 text-[11px] font-medium text-[#0C447C]"
+          className="inline-flex items-center rounded-full bg-info-bg px-2 py-0.5 text-[11px] font-medium text-semantic-info"
           aria-label="Status: supersedes prior seal"
         >
           Correction draft
         </span>
         <Link
           href={`/meetings/${supersedesId}`}
-          className="text-[11px] font-medium text-[#0D2818] underline underline-offset-2"
+          className="text-[11px] font-medium text-text-primary underline underline-offset-2"
         >
           View original
         </Link>

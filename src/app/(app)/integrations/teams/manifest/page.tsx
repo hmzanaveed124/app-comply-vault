@@ -75,9 +75,9 @@ export default async function TeamsManifestPage() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
               {teamsConnected ? (
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <CheckCircle2 className="h-5 w-5 text-success-text" />
               ) : (
-                <AlertCircle className="h-5 w-5 text-amber-600" />
+                <AlertCircle className="h-5 w-5 text-warning-text" />
               )}
               <div>
                 <p className="font-medium">

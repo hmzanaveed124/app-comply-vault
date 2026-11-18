@@ -46,7 +46,7 @@ export function MeetingWorkflowProgress({
             aria-label="Flag triage progress"
           >
             <div
-              className={cn("h-full rounded-full bg-[#185FA5] cv-motion-fill")}
+              className={cn("h-full rounded-full bg-semantic-info cv-motion-fill")}
               style={{ width: `${pct}%` }}
             />
           </div>

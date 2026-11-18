@@ -59,24 +59,24 @@ export default async function FirmSupervisionPage({
   return (
     <div className="min-h-0 bg-surface-page px-6 py-6">
       <div className="mx-auto flex max-w-3xl flex-col gap-4">
-        <Link href={backHref} className="text-[12.5px] font-medium text-[#177a4c] hover:underline">
+        <Link href={backHref} className="text-[12.5px] font-medium text-brand hover:underline">
           ← Command Centre
         </Link>
-        <h1 className="text-[22px] font-semibold text-[#141f19]">
+        <h1 className="text-[22px] font-semibold text-text-primary">
           {workspace?.name ?? firm?.name ?? "Firm supervision"}
         </h1>
-        <p className="text-[13px] text-[#5f6b64]">
+        <p className="text-[13px] text-text-secondary">
           Firm-level supervision view. Full drill-down sections land in CV-SI-027.
         </p>
-        <dl className="grid gap-3 rounded-[12px] border border-[#e6e8e6] bg-white p-4 sm:grid-cols-2">
+        <dl className="grid gap-3 rounded-[12px] border border-surface-border bg-surface-card p-4 sm:grid-cols-2">
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">Processed</dt>
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">Processed</dt>
             <dd className="mt-1 text-[20px] font-semibold tabular-nums">
               {summary.counts.totalProcessed}
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">
               Priority findings
             </dt>
             <dd className="mt-1 text-[20px] font-semibold tabular-nums">
@@ -84,7 +84,7 @@ export default async function FirmSupervisionPage({
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">
               Routine samples
             </dt>
             <dd className="mt-1 text-[20px] font-semibold tabular-nums">
@@ -92,7 +92,7 @@ export default async function FirmSupervisionPage({
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.04em] text-[#79837d]">
+            <dt className="text-[11px] uppercase tracking-[0.04em] text-text-secondary">
               Open remediation
             </dt>
             <dd className="mt-1 text-[20px] font-semibold tabular-nums">
@@ -102,7 +102,7 @@ export default async function FirmSupervisionPage({
         </dl>
         <Link
           href={inboxHref}
-          className="text-[13px] font-medium text-[#177a4c] hover:underline"
+          className="text-[13px] font-medium text-brand hover:underline"
         >
           Open CCO Priority Inbox
         </Link>

@@ -13,7 +13,7 @@ type PipelineBarProps = {
 };
 
 const SEGMENTS = [
-  { key: "draft" as const, label: "Draft", color: "#CBD5E1" },
+  { key: "draft" as const, label: "Draft", color: "var(--cv-surface-border)" },
   { key: "review" as const, label: "Review", color: dashboardColors.semanticOrange },
   { key: "flagged" as const, label: "Flagged", color: dashboardColors.semanticDanger },
   { key: "finalized" as const, label: "Done", color: dashboardColors.brand },
