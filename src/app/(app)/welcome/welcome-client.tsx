@@ -90,13 +90,15 @@ export default function WelcomeClient({
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Welcome to Comply Vault</h1>
+        <h1 className="text-3xl font-bold">Plan and usage</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {workspace.billingStatus === "TRIALING"
             ? `Trial workspace for ${workspace.name}`
             : `Workspace: ${workspace.name}`}
         </p>
       </div>
+
+      <Button asChild><a href="/onboarding">Continue workspace setup</a></Button>
 
       {workspace.billingStatus === "TRIALING" ? (
         <Card>
@@ -157,8 +159,8 @@ export default function WelcomeClient({
             <CardDescription>Your subscription is active.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => (window.location.href = "/meetings")}>
-              Go to meetings
+            <Button onClick={() => (window.location.href = "/interaction-log")}>
+              Open interaction log
             </Button>
           </CardContent>
         </Card>

@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 
 type SuccessClientProps = {
   workspaceId: string;
@@ -10,21 +16,7 @@ type SuccessClientProps = {
   onboardingType: string;
 };
 
-const getRedirectTarget = (plan: string | null, onboardingType: string) => {
-  const normalized = onboardingType.toLowerCase();
-  if (normalized === "premium") {
-    return "/app/onboarding/premium";
-  }
-  if (normalized === "standard") {
-    return "/app/onboarding";
-  }
-  if (plan?.toUpperCase() === "TEAM") {
-    return "/app/team";
-  }
-  return "/app/meetings";
-};
-
-export default function SuccessClient({ workspaceId, plan, onboardingType }: SuccessClientProps) {
+export default function SuccessClient({ workspaceId }: SuccessClientProps) {
   const router = useRouter();
   const [message, setMessage] = useState("Confirming your subscription...");
 
@@ -33,14 +25,15 @@ export default function SuccessClient({ workspaceId, plan, onboardingType }: Suc
     const maxAttempts = 12;
     const poll = async () => {
       try {
-        const response = await fetch(`/api/billing/status?workspaceId=${workspaceId}`);
+        const response = await fetch(
+          `/api/billing/status?workspaceId=${workspaceId}`,
+        );
         if (!response.ok) {
           throw new Error("Failed to check billing status");
         }
         const data = await response.json();
         if (data.billingStatus === "ACTIVE") {
-          const target = getRedirectTarget(plan, data.onboardingType ?? onboardingType);
-          router.replace(target);
+          router.replace("/onboarding");
           return;
         }
         setMessage("Finalizing your subscription details...");
@@ -60,7 +53,7 @@ export default function SuccessClient({ workspaceId, plan, onboardingType }: Suc
     return () => {
       attempts = maxAttempts;
     };
-  }, [onboardingType, plan, router, workspaceId]);
+  }, [router, workspaceId]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
@@ -68,7 +61,8 @@ export default function SuccessClient({ workspaceId, plan, onboardingType }: Suc
         <CardHeader>
           <CardTitle>Payment received</CardTitle>
           <CardDescription>
-            We&apos;re activating your workspace. This usually takes a few seconds.
+            We&apos;re activating your workspace. This usually takes a few
+            seconds.
           </CardDescription>
         </CardHeader>
         <CardContent>

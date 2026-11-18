@@ -47,7 +47,7 @@ export default function NewWorkspacePage() {
       
       setSuccess(data.message || "Workspace created successfully! Redirecting...");
       setTimeout(() => {
-        window.location.href = "/welcome";
+        window.location.href = "/onboarding";
       }, 1200);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

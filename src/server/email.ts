@@ -113,8 +113,8 @@ export async function sendWelcomeEmail({
   userName: string;
 }) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const dashboardUrl = `${baseUrl}/dashboard`;
-  const settingsUrl = `${baseUrl}/settings`;
+  const onboardingUrl = `${baseUrl}/onboarding`;
+  const settingsUrl = `${baseUrl}/settings/media-posture`;
   const uploadUrl = `${baseUrl}/upload`;
 
   const emailContent = {
@@ -134,11 +134,11 @@ export async function sendWelcomeEmail({
         <ol style="padding-left: 20px;">
           <li style="margin-bottom: 10px;">
             <strong>Complete Workspace Setup</strong><br>
-            <a href="${settingsUrl}" style="color: #2563eb;">Configure retention settings and legal hold</a>
+            <a href="${settingsUrl}" style="color: #2563eb;">Choose how source recordings are retained</a>
           </li>
           <li style="margin-bottom: 10px;">
-            <strong>Invite Team Members</strong><br>
-            Add your team members and assign roles (Owner/CCO or Member)
+            <strong>Take the Walkthrough</strong><br>
+            Follow the guided setup to see how a meeting becomes a reviewed record
           </li>
           <li style="margin-bottom: 10px;">
             <strong>Upload Your First Meeting</strong><br>
@@ -151,8 +151,8 @@ export async function sendWelcomeEmail({
         </ol>
         
         <div style="margin: 30px 0;">
-          <a href="${dashboardUrl}" style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
-            Go to Dashboard
+          <a href="${onboardingUrl}" style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
+            Start guided setup
           </a>
         </div>
         
@@ -171,11 +171,11 @@ export async function sendWelcomeEmail({
       
       Onboarding Checklist:
       1. Complete Workspace Setup: ${settingsUrl}
-      2. Invite Team Members: Add your team members and assign roles
+      2. Take the walkthrough: ${onboardingUrl}
       3. Upload Your First Meeting: ${uploadUrl}
       4. Review and Finalize: Review the extracted fields and finalize your first record
       
-      Go to Dashboard: ${dashboardUrl}
+      Start guided setup: ${onboardingUrl}
       
       Trial Period: Your 7-day free trial starts today and includes access to core features.
       Support: If you need help, reply to this email or contact support@complyvault.com
@@ -385,7 +385,7 @@ export async function sendWeeklyActivityDigest({
   };
 }): Promise<{ success: boolean; id?: string; error?: string }> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const dashboardUrl = `${baseUrl}/dashboard`;
+  const onboardingUrl = `${baseUrl}/onboarding`;
 
   const emailContent = {
     from: process.env.EMAIL_FROM || "noreply@ria-compliance.com",
@@ -402,7 +402,7 @@ export async function sendWeeklyActivityDigest({
           <li>Draft ready for review: <strong>${stats.draftReady}</strong></li>
           <li>Open flags (all meetings): <strong>${stats.openFlags}</strong></li>
         </ul>
-        <p><a href="${dashboardUrl}">Open dashboard</a></p>
+        <p><a href="${onboardingUrl}">Open dashboard</a></p>
         <p style="color: #999; font-size: 12px; margin-top: 30px;">ComplyVault — compliance documentation for RIAs</p>
       </div>
     `,
@@ -411,7 +411,7 @@ New meetings: ${stats.newMeetings}
 Finalized: ${stats.finalized}
 Draft ready: ${stats.draftReady}
 Open flags: ${stats.openFlags}
-Dashboard: ${dashboardUrl}
+Dashboard: ${onboardingUrl}
 `,
   };
 
