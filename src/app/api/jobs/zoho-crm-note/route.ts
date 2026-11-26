@@ -3,10 +3,13 @@
  */
 
 import { db } from "~/server/db";
-import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
+import { signedJob } from "~/server/signed-job";
 import { z } from "zod";
 import { getValidZohoCrmContext } from "~/server/integrations/zoho/crm-token";
-import { findContactIdByFullName, createContactNote } from "~/server/integrations/zoho/crm-api";
+import {
+  findContactIdByFullName,
+  createContactNote,
+} from "~/server/integrations/zoho/crm-api";
 import { buildZohoCrmNoteContent } from "~/server/integrations/zoho/build-note-content";
 import type { ExtractionData } from "~/server/extraction/types";
 import { env } from "~/env";
@@ -36,7 +39,10 @@ async function handler(request: Request): Promise<Response> {
     where: { id: meetingId, workspaceId },
   });
   if (!meeting || meeting.status !== "DRAFT_READY") {
-    return Response.json({ error: "Meeting not in draft-ready state" }, { status: 400 });
+    return Response.json(
+      { error: "Meeting not in draft-ready state" },
+      { status: 400 },
+    );
   }
   if (meeting.zohoCrmNotePostedAt) {
     return Response.json({ ok: true, skipped: "note_already_posted" });
@@ -51,7 +57,7 @@ async function handler(request: Request): Promise<Response> {
       workspaceId,
       meetingId,
       row?.id ?? null,
-      "Zoho CRM not connected or token failed"
+      "Zoho CRM not connected or token failed",
     );
     return Response.json({ error: "Zoho not available" }, { status: 500 });
   }
@@ -82,7 +88,7 @@ async function handler(request: Request): Promise<Response> {
         workspaceId,
         meetingId,
         zoho.integrationConfigId,
-        reason
+        reason,
       );
       return Response.json({ error: reason }, { status: 422 });
     }
@@ -90,7 +96,9 @@ async function handler(request: Request): Promise<Response> {
   }
 
   const baseUrl = env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? "";
-  const meetUrl = baseUrl ? `${baseUrl}/meetings/${meetingId}` : `/meetings/${meetingId}`;
+  const meetUrl = baseUrl
+    ? `${baseUrl}/meetings/${meetingId}`
+    : `/meetings/${meetingId}`;
 
   const noteContent = buildZohoCrmNoteContent({
     meetUrl,
@@ -104,7 +112,7 @@ async function handler(request: Request): Promise<Response> {
   const title = `ComplyVault — ${meeting.meetingType} (${meeting.meetingDate.toLocaleDateString()})`;
 
   try {
-    await createContactNote({
+    const externalId = await createContactNote({
       apiDomain: zoho.apiDomain,
       accessToken: zoho.accessToken,
       contactId,
@@ -118,7 +126,11 @@ async function handler(request: Request): Promise<Response> {
     });
     await db.integrationConfig.update({
       where: { id: zoho.integrationConfigId },
-      data: { lastSyncAt: new Date(), lastErrorAt: null, lastErrorMessage: null },
+      data: {
+        lastSyncAt: new Date(),
+        lastErrorAt: null,
+        lastErrorMessage: null,
+      },
     });
     await db.integrationSyncLog.create({
       data: {
@@ -127,6 +139,7 @@ async function handler(request: Request): Promise<Response> {
         provider: "ZOHO_CRM",
         action: "zoho_crm_note",
         status: "success",
+        externalId,
         attempts: 1,
         completedAt: new Date(),
       },
@@ -143,7 +156,7 @@ async function logFailure(
   _workspaceId: string,
   meetingId: string,
   integrationConfigId: string | null,
-  errorMessage: string
+  errorMessage: string,
 ): Promise<void> {
   if (integrationConfigId) {
     await db.integrationConfig.update({
@@ -165,13 +178,4 @@ async function logFailure(
   });
 }
 
-export const POST = (() => {
-  const isProduction = process.env.NODE_ENV === "production";
-  const hasSigningKeys = !!(
-    process.env.QSTASH_CURRENT_SIGNING_KEY || process.env.QSTASH_NEXT_SIGNING_KEY
-  );
-  if (isProduction && hasSigningKeys) {
-    return verifySignatureAppRouter(handler);
-  }
-  return handler;
-})();
+export const POST = signedJob(handler);

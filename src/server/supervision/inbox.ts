@@ -127,13 +127,17 @@ export type PriorityInboxEligibilityInput = {
   escalatedAt: Date | null;
   policyMappingCode: string | null;
   meeting: { supervisoryOutcome: string | null } | null;
-  communication: { thread: { supervisoryOutcome: string | null } | null } | null;
+  communication: {
+    thread: { supervisoryOutcome: string | null } | null;
+  } | null;
 };
 
 /**
  * Priority Inbox eligibility. Findings without policy mapping are held, not queued.
  */
-export function isPriorityInboxEligible(row: PriorityInboxEligibilityInput): boolean {
+export function isPriorityInboxEligible(
+  row: PriorityInboxEligibilityInput,
+): boolean {
   const escalated =
     row.cmDisposition === "ESCALATED" ||
     row.escalatedAt !== null ||
@@ -218,7 +222,8 @@ function toFindingDto(
   const tab = classifyInboxTab(row, viewerUserId);
   const { adviserId, adviserName } = adviserFrom(row);
   const channels: Array<"MEETING" | "EMAIL"> = [];
-  if (row.sourceType === "EMAIL" || row.communication?.thread) channels.push("EMAIL");
+  if (row.sourceType === "EMAIL" || row.communication?.thread)
+    channels.push("EMAIL");
   if (row.sourceType === "MEETING" || row.meeting) channels.push("MEETING");
 
   return {
@@ -227,18 +232,21 @@ function toFindingDto(
     firmId: row.workspaceId,
     firmName:
       row.workspace.name ||
-      ADVIZORSTACK_FIRMS.find((firm) => firm.workspaceId === row.workspaceId)?.name ||
+      ADVIZORSTACK_FIRMS.find((firm) => firm.workspaceId === row.workspaceId)
+        ?.name ||
       row.workspaceId,
     adviserId,
     adviserName,
-    clientName: row.meeting?.clientName ?? row.communication?.thread?.subject ?? null,
+    clientName:
+      row.meeting?.clientName ?? row.communication?.thread?.subject ?? null,
     channels: channels.length > 0 ? channels : [row.sourceType],
     primaryControl: row.type,
     policyMappingCode: row.policyMappingCode ?? "",
     escalationReason:
       row.escalationReason?.trim() || "Escalated for human supervisory review.",
     severity: row.severity,
-    materiality: row.materiality ?? (row.severity === "CRITICAL" ? "HIGH" : "MEDIUM"),
+    materiality:
+      row.materiality ?? (row.severity === "CRITICAL" ? "HIGH" : "MEDIUM"),
     confidence:
       row.meeting?.outcomeConfidence ??
       row.communication?.thread?.outcomeConfidence ??
@@ -246,7 +254,9 @@ function toFindingDto(
     dueAt: dueAt(row),
     ownerId: row.assignedToUserId,
     ownerName: ownerName(row),
-    repeatAdviser: Boolean(adviserId && repeatAdviserIds.has(`${adviserId}:${row.type}`)),
+    repeatAdviser: Boolean(
+      adviserId && repeatAdviserIds.has(`${adviserId}:${row.type}`),
+    ),
     evidenceCount: evidenceCount(row),
     status: row.status,
     tab,
@@ -280,7 +290,9 @@ export function countTabs(
       counts[finding.tab] += 1;
     }
   }
-  counts.escalated = findings.filter((finding) => finding.tab !== "closed").length;
+  counts.escalated = findings.filter(
+    (finding) => finding.tab !== "closed",
+  ).length;
   return counts;
 }
 
@@ -294,7 +306,9 @@ export function filterFindingsForTab<T extends { tab: PriorityInboxTab }>(
   return findings.filter((finding) => finding.tab === tab);
 }
 
-function headerFromCounts(counts: SupervisionCounts): PriorityInboxDto["header"] {
+function headerFromCounts(
+  counts: SupervisionCounts,
+): PriorityInboxDto["header"] {
   const findingLabel = counts.priorityFindings === 1 ? "finding" : "findings";
   const interactionLabel =
     counts.totalProcessed === 1 ? "interaction" : "interactions";
@@ -352,6 +366,11 @@ export async function listPriorityInbox(
         },
         {
           OR: [
+            {
+              status: {
+                in: ["OPEN", "IN_REMEDIATION", "PENDING_VERIFICATION"],
+              },
+            },
             { meeting: { meetingDate: dateFilter } },
             { meetingId: null, createdAt: dateFilter },
           ],
@@ -429,7 +448,11 @@ export async function listPriorityInbox(
   );
   const tabCounts = countTabs(allFindings);
   const findings = filterFindingsForTab(allFindings, tab);
-  const portfolio = await getPortfolioSupervisionSummary(db, args.userId, filters);
+  const portfolio = await getPortfolioSupervisionSummary(
+    db,
+    args.userId,
+    filters,
+  );
 
   return {
     tab,
@@ -506,7 +529,12 @@ export async function getPriorityFinding(
   });
 
   if (!row || !isPriorityInboxEligible(row)) return null;
-  return toFindingDto(row, args.userId, { dateFrom: "1970-01-01", dateTo: "2999-12-31" }, new Set());
+  return toFindingDto(
+    row,
+    args.userId,
+    { dateFrom: "1970-01-01", dateTo: "2999-12-31" },
+    new Set(),
+  );
 }
 
 export async function recordFindingView(args: {

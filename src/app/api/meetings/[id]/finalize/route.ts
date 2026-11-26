@@ -27,7 +27,9 @@ export async function POST(
     // Verify user has OWNER_CCO role
     if (session.user.role !== "OWNER_CCO") {
       return Response.json(
-        { error: "Forbidden: Only workspace owners (CCO) can finalize meetings" },
+        {
+          error: "Forbidden: Only workspace owners (CCO) can finalize meetings",
+        },
         { status: 403 },
       );
     }
@@ -97,33 +99,22 @@ export async function POST(
       );
     }
 
-    const openCriticalFlags = await db.flag.findMany({
+    const outstandingFlags = await db.flag.findMany({
       where: {
+        workspaceId,
         meetingId: meeting.id,
-        severity: "CRITICAL",
-        OR: [
-          { status: "PENDING_VERIFICATION" },
-          {
-            status: { in: ["OPEN", "IN_REMEDIATION"] },
-            NOT: { cmDisposition: "NOTED" },
-          },
-        ],
+        status: { in: ["OPEN", "IN_REMEDIATION", "PENDING_VERIFICATION"] },
       },
+      select: { id: true, status: true, type: true },
     });
-
-    if (openCriticalFlags.length > 0 && finalizeReason !== "EXCEPTION_APPROVED") {
+    if (outstandingFlags.length) {
       return Response.json(
         {
           error:
-            "Critical flags must be resolved or explicitly overridden before finalization",
-          flags: openCriticalFlags.map((flag) => ({
-            id: flag.id,
-            type: flag.type,
-            severity: flag.severity,
-            status: flag.status,
-          })),
+            "Outstanding concerns require a documented disposition and completed verification before finalization. A finalize note does not close remediation.",
+          flags: outstandingFlags,
         },
-        { status: 400 },
+        { status: 409 },
       );
     }
 

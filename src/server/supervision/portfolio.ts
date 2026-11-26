@@ -39,7 +39,8 @@ function sumCounts(parts: SupervisionCounts[]): SupervisionCounts {
   return parts.reduce<SupervisionCounts>(
     (acc, part) => ({
       totalProcessed: acc.totalProcessed + part.totalProcessed,
-      clearedOrDeprioritised: acc.clearedOrDeprioritised + part.clearedOrDeprioritised,
+      clearedOrDeprioritised:
+        acc.clearedOrDeprioritised + part.clearedOrDeprioritised,
       routineSamples: acc.routineSamples + part.routineSamples,
       priorityFindings: acc.priorityFindings + part.priorityFindings,
       heldInteractions: acc.heldInteractions + part.heldInteractions,
@@ -49,9 +50,13 @@ function sumCounts(parts: SupervisionCounts[]): SupervisionCounts {
   );
 }
 
-function buildSelectivityStatement(priorityFindings: number, totalProcessed: number): string {
+function buildSelectivityStatement(
+  priorityFindings: number,
+  totalProcessed: number,
+): string {
   const findingLabel = priorityFindings === 1 ? "finding" : "findings";
-  const interactionLabel = totalProcessed === 1 ? "interaction" : "interactions";
+  const interactionLabel =
+    totalProcessed === 1 ? "interaction" : "interactions";
   return `${priorityFindings} ${findingLabel} require review from ${totalProcessed} processed ${interactionLabel}.`;
 }
 
@@ -60,7 +65,7 @@ function emptyFilterOptions(): PortfolioSupervisionSummary["filterOptions"] {
 }
 
 /**
- * Returns AdvizorStack firm workspace IDs the user is allowed to see.
+ * Returns firm workspace IDs with active compliance memberships.
  * Never returns firms outside the caller's memberships.
  */
 export async function listAuthorisedFirmWorkspaceIds(
@@ -71,30 +76,12 @@ export async function listAuthorisedFirmWorkspaceIds(
   const memberships = await db.userWorkspace.findMany({
     where: {
       userId,
+      role: { in: ["OWNER_CCO", "MEMBER"] },
       ...activeUserWorkspaceWhere,
-      workspace: {
-        onboardingType: ADVIZORSTACK_ONBOARDING_TYPE,
-      },
     },
     select: { workspaceId: true },
   });
-
-  let ids = memberships
-    .map((row) => row.workspaceId)
-    .filter((id) => isAdvizorStackFirmWorkspaceId(id));
-
-  // Fallback: known firm IDs the user belongs to (covers older seeds without onboardingType).
-  if (ids.length === 0) {
-    const known = await db.userWorkspace.findMany({
-      where: {
-        userId,
-        workspaceId: { in: ADVIZORSTACK_FIRMS.map((f) => f.workspaceId) },
-        ...activeUserWorkspaceWhere,
-      },
-      select: { workspaceId: true },
-    });
-    ids = known.map((row) => row.workspaceId);
-  }
+  const ids = [...new Set(memberships.map((row) => row.workspaceId))];
 
   if (firmIdFilter) {
     if (!ids.includes(firmIdFilter)) {
@@ -155,7 +142,9 @@ export async function listSupervisionFilterOptions(
 
   return {
     firms,
-    advisers: [...advisersById.values()].sort((a, b) => a.label.localeCompare(b.label)),
+    advisers: [...advisersById.values()].sort((a, b) =>
+      a.label.localeCompare(b.label),
+    ),
   };
 }
 
@@ -187,7 +176,9 @@ async function buildFirmRow(
       ...(filters.channel ? { sourceType: filters.channel } : {}),
       meeting: {
         meetingDate: dateFilter,
-        ...(filters.adviserId ? { advisorCertifiedByUserId: filters.adviserId } : {}),
+        ...(filters.adviserId
+          ? { advisorCertifiedByUserId: filters.adviserId }
+          : {}),
       },
     },
     select: { type: true, createdAt: true },
@@ -207,8 +198,13 @@ async function buildFirmRow(
     }
   }
 
-  const rolloverOpen = openFlags.filter((f) => f.type === "MISSING_DISCLOSURE").length;
-  const firmFilters: SupervisionFilterState = { ...filters, firmId: workspaceId };
+  const rolloverOpen = openFlags.filter(
+    (f) => f.type === "MISSING_DISCLOSURE",
+  ).length;
+  const firmFilters: SupervisionFilterState = {
+    ...filters,
+    firmId: workspaceId,
+  };
 
   return {
     firmId: workspaceId,
@@ -218,7 +214,12 @@ async function buildFirmRow(
     openRemediation: summaryCounts.openRemediation,
     oldestUnresolvedFindingAt: openFlags[0]?.createdAt.toISOString() ?? null,
     topControlConcern,
-    trend: rolloverOpen >= 2 ? "increasing" : summaryCounts.priorityFindings > 0 ? "stable" : "insufficient_data",
+    trend:
+      rolloverOpen >= 2
+        ? "increasing"
+        : summaryCounts.priorityFindings > 0
+          ? "stable"
+          : "insufficient_data",
     coverageStatus: summaryCounts.totalProcessed > 0 ? "covered" : "gap",
     href: supervisionHref(`/firms/${workspaceId}/supervision`, firmFilters),
   };
@@ -240,7 +241,9 @@ async function buildPatterns(
   };
   const meetingMatch = {
     meetingDate: dateFilter,
-    ...(filters.adviserId ? { advisorCertifiedByUserId: filters.adviserId } : {}),
+    ...(filters.adviserId
+      ? { advisorCertifiedByUserId: filters.adviserId }
+      : {}),
   };
 
   const defaultPatternStatuses: FlagStatus[] = [
@@ -356,7 +359,11 @@ export async function getPortfolioSupervisionSummary(
 ): Promise<PortfolioSupervisionSummary> {
   const authorisedIds = await listAuthorisedFirmWorkspaceIds(db, userId);
   const filterOptions = await listSupervisionFilterOptions(db, authorisedIds);
-  const firmIds = await listAuthorisedFirmWorkspaceIds(db, userId, filters.firmId);
+  const firmIds = await listAuthorisedFirmWorkspaceIds(
+    db,
+    userId,
+    filters.firmId,
+  );
 
   if (firmIds.length === 0) {
     return {

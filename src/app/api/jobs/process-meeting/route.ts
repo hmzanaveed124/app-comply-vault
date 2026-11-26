@@ -1,11 +1,15 @@
+import { activeUserWorkspaceWhere } from "~/lib/user-workspace-filters";
 import { db } from "~/server/db";
-import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
+import { signedJob } from "~/server/signed-job";
 import { z } from "zod";
 import { transcribeAudio } from "~/server/transcription";
 import { getSignedFileUrl } from "~/server/storage";
 import { sendDraftReadyEmail } from "~/server/email";
 import { extractFields } from "~/server/extraction";
-import { toExtractionData, validateEvidenceCoverage } from "~/server/extraction/evidence";
+import {
+  toExtractionData,
+  validateEvidenceCoverage,
+} from "~/server/extraction/evidence";
 import { detectMissingDisclosureFlags } from "~/server/flags";
 import { getDisclosureProfileForWorkspace } from "~/server/firm-profile/get-disclosure-profile-for-workspace";
 import { generateSearchableText } from "~/server/search/index";
@@ -23,7 +27,7 @@ const processMeetingSchema = z.object({
 /**
  * QStash webhook handler for processing meetings
  * This endpoint is called by QStash after a job is published
- * 
+ *
  * Flow:
  * 1. Transcribe audio using Deepgram/AssemblyAI
  * 2. Store transcript in database
@@ -32,42 +36,57 @@ const processMeetingSchema = z.object({
 async function handler(request: Request) {
   const startTime = Date.now();
   console.log(`🔔 QStash webhook received at ${new Date().toISOString()}`);
-  console.log(`📋 Request headers:`, Object.fromEntries(request.headers.entries()));
-  
+  console.log(
+    `📋 Request headers:`,
+    Object.fromEntries(request.headers.entries()),
+  );
+
   try {
     // Parse request body with error handling
     let body: any;
     try {
       body = await request.json();
-      console.log(`📦 Request body parsed:`, { 
-        meetingId: body.meetingId, 
+      console.log(`📦 Request body parsed:`, {
+        meetingId: body.meetingId,
         workspaceId: body.workspaceId,
-        fileUrl: body.fileUrl ? body.fileUrl.substring(0, 50) + "..." : "missing"
+        fileUrl: body.fileUrl
+          ? body.fileUrl.substring(0, 50) + "..."
+          : "missing",
       });
     } catch (parseError) {
       console.error("❌ Failed to parse request body:", parseError);
       return Response.json(
-        { error: "Invalid request body", details: parseError instanceof Error ? parseError.message : "Unknown error" },
-        { status: 400 }
+        {
+          error: "Invalid request body",
+          details:
+            parseError instanceof Error ? parseError.message : "Unknown error",
+        },
+        { status: 400 },
       );
     }
-    
+
     // Validate request body
-    let validatedData: { meetingId: string; workspaceId: string; fileUrl: string };
+    let validatedData: {
+      meetingId: string;
+      workspaceId: string;
+      fileUrl: string;
+    };
     try {
       validatedData = processMeetingSchema.parse(body);
-      console.log(`✅ Request validated for meeting ${validatedData.meetingId}`);
+      console.log(
+        `✅ Request validated for meeting ${validatedData.meetingId}`,
+      );
     } catch (validationError) {
       console.error("❌ Request validation failed:", validationError);
       if (validationError instanceof z.ZodError) {
         return Response.json(
           { error: "Validation failed", details: validationError.errors },
-          { status: 400 }
+          { status: 400 },
         );
       }
       throw validationError;
     }
-    
+
     const { meetingId, workspaceId, fileUrl } = validatedData;
 
     // Verify meeting exists and belongs to workspace
@@ -82,20 +101,39 @@ async function handler(request: Request) {
     } catch (dbError) {
       console.error("❌ Database error fetching meeting:", dbError);
       return Response.json(
-        { error: "Database error", details: dbError instanceof Error ? dbError.message : "Unknown error" },
-        { status: 500 }
+        {
+          error: "Database error",
+          details: dbError instanceof Error ? dbError.message : "Unknown error",
+        },
+        { status: 500 },
       );
     }
 
     if (!meeting) {
-      console.error(`❌ Meeting not found: ${meetingId} in workspace ${workspaceId}`);
+      console.error(
+        `❌ Meeting not found: ${meetingId} in workspace ${workspaceId}`,
+      );
       return Response.json(
         { error: "Meeting not found or access denied" },
-        { status: 404 }
+        { status: 404 },
       );
     }
-    
-    console.log(`📄 Meeting found: ${meeting.id}, status: ${meeting.status}, fileUrl: ${meeting.fileUrl ? "exists" : "missing"}`);
+
+    console.log(
+      `📄 Meeting found: ${meeting.id}, status: ${meeting.status}, fileUrl: ${meeting.fileUrl ? "exists" : "missing"}`,
+    );
+
+    if (!["DRAFT", "PROCESSING"].includes(meeting.status)) {
+      return Response.json({
+        success: true,
+        skipped: "record_already_processed_or_certified",
+      });
+    }
+    if (meeting.fileUrl !== fileUrl)
+      return Response.json(
+        { error: "Source media does not match this record" },
+        { status: 409 },
+      );
 
     // Update meeting status to PROCESSING (if not already)
     if (meeting.status !== "PROCESSING") {
@@ -109,14 +147,18 @@ async function handler(request: Request) {
       // Step 1: Get signed URL for audio file
       // fileUrl is stored as S3 key (e.g., "workspaces/{workspaceId}/meetings/{meetingId}/recording.mp4")
       // We need to generate a signed URL for transcription service to access it
-      console.log(`🔗 Generating signed URL for file: ${fileUrl.substring(0, 50)}...`);
+      console.log(
+        `🔗 Generating signed URL for file: ${fileUrl.substring(0, 50)}...`,
+      );
       let audioUrl: string;
       try {
         audioUrl = await getSignedFileUrl(fileUrl, 3600); // 1 hour expiry
         console.log(`✅ Signed URL generated (length: ${audioUrl.length})`);
       } catch (s3Error) {
         console.error("❌ Failed to generate signed URL:", s3Error);
-        throw new Error(`S3 error: ${s3Error instanceof Error ? s3Error.message : "Unknown error"}`);
+        throw new Error(
+          `S3 error: ${s3Error instanceof Error ? s3Error.message : "Unknown error"}`,
+        );
       }
 
       // Step 2: Transcribe audio
@@ -161,27 +203,36 @@ async function handler(request: Request) {
       });
 
       // Step 5: Extract structured fields using LLM
-      console.log(`Extracting fields from transcript for meeting ${meetingId}...`);
-      const extractionResult = await extractFields(transcriptionResult.transcript);
+      console.log(
+        `Extracting fields from transcript for meeting ${meetingId}...`,
+      );
+      const extractionResult = await extractFields(
+        transcriptionResult.transcript,
+      );
 
       // Step 6: Create evidence map and validate coverage
-      const extractionData = toExtractionData(extractionResult, transcriptionResult.transcript);
-      const evidenceValidation = validateEvidenceCoverage(extractionData.evidenceMap);
+      const extractionData = toExtractionData(
+        extractionResult,
+        transcriptionResult.transcript,
+      );
+      const evidenceValidation = validateEvidenceCoverage(
+        extractionData.evidenceMap,
+      );
 
       if (!evidenceValidation.valid) {
         console.warn(
-          `⚠️ Evidence coverage below 90% for meeting ${meetingId}: ${(evidenceValidation.coverage * 100).toFixed(1)}% (${evidenceValidation.validClaims}/${evidenceValidation.totalClaims} valid claims)`
+          `⚠️ Evidence coverage below 90% for meeting ${meetingId}: ${(evidenceValidation.coverage * 100).toFixed(1)}% (${evidenceValidation.validClaims}/${evidenceValidation.totalClaims} valid claims)`,
         );
       } else {
         console.log(
-          `✅ Evidence coverage: ${(evidenceValidation.coverage * 100).toFixed(1)}% (${evidenceValidation.validClaims}/${evidenceValidation.totalClaims} valid claims)`
+          `✅ Evidence coverage: ${(evidenceValidation.coverage * 100).toFixed(1)}% (${evidenceValidation.validClaims}/${evidenceValidation.totalClaims} valid claims)`,
         );
       }
 
       // Step 7: Generate searchable text for indexing
       const searchableText = generateSearchableText(
         transcriptionResult.transcript,
-        extractionData
+        extractionData,
       );
 
       // Step 8: Store extraction data, searchable text, and update status to DRAFT_READY
@@ -199,51 +250,42 @@ async function handler(request: Request) {
       // DISCARD posture this also deletes the source media, gated on a
       // readback of the persisted transcript. Runs only after DRAFT_READY so
       // a QStash retry of a failed extraction never needs the deleted media.
-      const { secureTranscript } = await import("~/server/retention/secure-transcript");
+      const { secureTranscript } =
+        await import("~/server/retention/secure-transcript");
       const secureResult = await secureTranscript({ meetingId, workspaceId });
       if (!secureResult.secured) {
         console.error(
-          `⚠️ Transcript securing failed for meeting ${meetingId}: ${secureResult.reason}. Media retained.`
+          `⚠️ Transcript securing failed for meeting ${meetingId}: ${secureResult.reason}. Media retained.`,
         );
       }
 
       // Step 9: Generate missing disclosure flags (profile-aware)
-      const disclosureProfile = await getDisclosureProfileForWorkspace(workspaceId);
-      const missingDisclosureFlags = detectMissingDisclosureFlags(extractionData, {
-        profile: disclosureProfile,
-      });
-      await db.flag.deleteMany({
-        where: {
-          meetingId,
-          type: "MISSING_DISCLOSURE",
-          resolvedAt: null,
+      const disclosureProfile =
+        await getDisclosureProfileForWorkspace(workspaceId);
+      const missingDisclosureFlags = detectMissingDisclosureFlags(
+        extractionData,
+        {
+          profile: disclosureProfile,
         },
+      );
+      const { persistDisclosureObservations } =
+        await import("~/server/flags/persist-observations");
+      await persistDisclosureObservations({
+        workspaceId: workspaceId,
+        meetingId: meetingId,
+        flags: missingDisclosureFlags,
       });
-      if (missingDisclosureFlags.length > 0) {
-        await db.flag.createMany({
-          data: missingDisclosureFlags.map((flag) => ({
-            workspaceId,
-            meetingId,
-            sourceType: "MEETING",
-            sourceId: meetingId,
-            type: flag.type,
-            severity: flag.severity,
-            status: "OPEN",
-            evidence: flag.evidence as any,
-            createdByType: "SYSTEM",
-          })),
-        });
-      }
 
       // Step 9b (CV-AX-05a): embed meeting transcript segments when hybrid retrieval is on.
       if (isAskHybridRetrievalEnabled()) {
         try {
-          const { embedMeetingEvidence } = await import("~/server/ask/embeddings");
+          const { embedMeetingEvidence } =
+            await import("~/server/ask/embeddings");
           await embedMeetingEvidence({ workspaceId, meetingId });
         } catch (embedErr) {
           console.warn(
             `Meeting embedding skipped for ${meetingId}:`,
-            embedErr instanceof Error ? embedErr.message : "unknown"
+            embedErr instanceof Error ? embedErr.message : "unknown",
           );
         }
       }
@@ -289,12 +331,26 @@ async function handler(request: Request) {
           },
         });
 
-        if (uploadEvent && uploadEvent.userId && uploadEvent.userId !== "system") {
+        if (
+          uploadEvent &&
+          uploadEvent.userId &&
+          uploadEvent.userId !== "system"
+        ) {
           const user = await db.user.findUnique({
             where: { id: uploadEvent.userId },
           });
 
-          if (user?.email) {
+          const uploaderMembership = await db.userWorkspace.findFirst({
+            where: {
+              userId: uploadEvent.userId,
+              workspaceId,
+              ...activeUserWorkspaceWhere,
+            },
+            select: { role: true },
+          });
+          // Compliance reviewers work from the daily batch. Adviser certification
+          // notifications remain individual because they concern record accuracy.
+          if (user?.email && uploaderMembership?.role === "ADVISOR") {
             // Send email asynchronously (don't await - failures shouldn't block workflow)
             sendDraftReadyEmail({
               email: user.email,
@@ -313,15 +369,16 @@ async function handler(request: Request) {
       }
 
       try {
-        const { enqueueZohoCrmNoteIfConnected } = await import(
-          "~/server/integrations/zoho/enqueue-note"
-        );
+        const { enqueueZohoCrmNoteIfConnected } =
+          await import("~/server/integrations/zoho/enqueue-note");
         void enqueueZohoCrmNoteIfConnected(workspaceId, meetingId);
       } catch (zohoErr) {
         console.error("Zoho CRM enqueue after draft ready failed:", zohoErr);
       }
 
-      console.log(`✅ Processing complete for meeting ${meetingId} (transcription + extraction)`);
+      console.log(
+        `✅ Processing complete for meeting ${meetingId} (transcription + extraction)`,
+      );
 
       return Response.json({
         success: true,
@@ -339,9 +396,15 @@ async function handler(request: Request) {
     } catch (processingError) {
       // Handle transcription or extraction errors
       const isTranscriptionError = !meeting.transcript;
-      const errorMessage = processingError instanceof Error ? processingError.message : "Unknown error";
-      
-      console.error(`${isTranscriptionError ? "Transcription" : "Extraction"} failed for meeting ${meetingId}:`, processingError);
+      const errorMessage =
+        processingError instanceof Error
+          ? processingError.message
+          : "Unknown error";
+
+      console.error(
+        `${isTranscriptionError ? "Transcription" : "Extraction"} failed for meeting ${meetingId}:`,
+        processingError,
+      );
 
       // Update meeting status to show error (we'll need to add an ERROR status or store in metadata)
       await db.meeting.update({
@@ -374,7 +437,9 @@ async function handler(request: Request) {
           resourceType: "meeting",
           resourceId: meetingId,
           metadata: {
-            action: isTranscriptionError ? "transcription_failed" : "extraction_failed",
+            action: isTranscriptionError
+              ? "transcription_failed"
+              : "extraction_failed",
             error: errorMessage,
           },
         },
@@ -386,41 +451,50 @@ async function handler(request: Request) {
       return Response.json(
         {
           success: false,
-          error: isTranscriptionError ? "Transcription failed" : "Extraction failed",
+          error: isTranscriptionError
+            ? "Transcription failed"
+            : "Extraction failed",
           message: errorMessage,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
   } catch (error) {
     const elapsed = Date.now() - startTime;
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     const errorStack = error instanceof Error ? error.stack : undefined;
     const errorName = error instanceof Error ? error.name : "UnknownError";
-    
+
     console.error("❌ CRITICAL ERROR in process-meeting handler:", {
       error: errorMessage,
       name: errorName,
       stack: errorStack,
       elapsed: `${elapsed}ms`,
     });
-    
+
     // Handle validation errors separately
     if (error instanceof z.ZodError) {
       console.error("❌ Validation error:", error.errors);
-      return Response.json({ 
-        error: "Validation failed", 
-        details: error.errors 
-      }, { status: 400 });
+      return Response.json(
+        {
+          error: "Validation failed",
+          details: error.errors,
+        },
+        { status: 400 },
+      );
     }
-    
+
     // Try to get meeting context from request body for error logging
     let meetingId: string | undefined;
     let workspaceId: string | undefined;
-    
+
     try {
       // Try to read body from request (may have already been consumed)
-      const bodyText = await request.clone().text().catch(() => "");
+      const bodyText = await request
+        .clone()
+        .text()
+        .catch(() => "");
       if (bodyText) {
         const body = JSON.parse(bodyText);
         meetingId = body.meetingId;
@@ -430,7 +504,7 @@ async function handler(request: Request) {
       // Ignore errors reading body - it may have already been consumed
       console.warn("⚠️ Could not read request body for error logging");
     }
-    
+
     // Log error to audit events if we have meeting context
     if (meetingId && workspaceId) {
       try {
@@ -456,18 +530,20 @@ async function handler(request: Request) {
         console.error("❌ Failed to log error to audit events:", auditError);
       }
     }
-    
+
     // Return detailed error response for debugging
     return Response.json(
-      { 
+      {
         error: "Failed to process meeting",
         message: errorMessage,
         errorName,
         elapsed: `${elapsed}ms`,
         // Only include stack in development
-        ...(process.env.NODE_ENV !== "production" && errorStack ? { stack: errorStack } : {}),
+        ...(process.env.NODE_ENV !== "production" && errorStack
+          ? { stack: errorStack }
+          : {}),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -475,41 +551,4 @@ async function handler(request: Request) {
 // Verify QStash signature in production
 // Note: If signature verification fails, requests will be rejected with 401
 // Make sure QSTASH_CURRENT_SIGNING_KEY and QSTASH_NEXT_SIGNING_KEY are set in production
-export const POST = (() => {
-  const isProduction = process.env.NODE_ENV === "production";
-  const hasSigningKeys = !!(process.env.QSTASH_CURRENT_SIGNING_KEY || process.env.QSTASH_NEXT_SIGNING_KEY);
-  
-  console.log(`🔧 QStash handler setup:`, {
-    isProduction,
-    hasSigningKeys,
-    currentKey: !!process.env.QSTASH_CURRENT_SIGNING_KEY,
-    nextKey: !!process.env.QSTASH_NEXT_SIGNING_KEY,
-  });
-  
-  if (isProduction) {
-    // In production, verify signature
-    if (!hasSigningKeys) {
-      console.warn("⚠️ WARNING: QStash signing keys not set in production. Webhook requests may be rejected.");
-      console.warn("   Set QSTASH_CURRENT_SIGNING_KEY and QSTASH_NEXT_SIGNING_KEY in Vercel environment variables.");
-      console.warn("   Get them from: https://console.upstash.com/qstash");
-      // Still try to use verification - it might work with just the token
-    }
-    
-    try {
-      const verifiedHandler = verifySignatureAppRouter(handler);
-      console.log("✅ QStash signature verification enabled");
-      return verifiedHandler;
-    } catch (error) {
-      console.error("❌ Error setting up QStash signature verification:", error);
-      console.error("   Falling back to handler without verification");
-      // Fall back to handler without verification if setup fails
-      return handler;
-    }
-  }
-  
-  // In development, skip signature verification
-  console.log("🔧 Development mode: QStash signature verification disabled");
-  return handler;
-})();
-
-
+export const POST = signedJob(handler);

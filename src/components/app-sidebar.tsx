@@ -45,7 +45,10 @@ export type AppSidebarProps = {
   reviewQueueCount?: number;
 };
 
-function initials(name: string | null | undefined, email: string | null | undefined): string {
+function initials(
+  name: string | null | undefined,
+  email: string | null | undefined,
+): string {
   const n = (name ?? "").trim();
   if (n.length > 0) {
     const parts = n.split(/\s+/).filter(Boolean);
@@ -113,17 +116,24 @@ function AppSidebarPanel({
   }[] = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
     { href: "/supervision", label: "Supervision", icon: Shield },
-    { href: "/priority-inbox", label: "Priority Inbox", icon: CheckSquare },
+    { href: "/review-session", label: "Daily Review", icon: CheckSquare },
+    { href: "/priority-inbox", label: "Priority escalations", icon: Shield },
     { href: "/interaction-log", label: "Interaction Log", icon: FileText },
     {
       href: "/review",
-      label: "Review Queue",
+      label: "Meeting drafts",
       icon: CheckSquare,
       badge: reviewQueueCount > 0 ? reviewQueueCount : undefined,
     },
     { href: "/upload", label: "Upload", icon: Upload },
     ...(userRole === "OWNER_CCO" || userRole === "MEMBER"
-      ? [{ href: "/compliance-cockpit", label: "Compliance Cockpit", icon: SlidersHorizontal }]
+      ? [
+          {
+            href: "/compliance-cockpit",
+            label: "Review controls",
+            icon: SlidersHorizontal,
+          },
+        ]
       : []),
     ...(userRole === "OWNER_CCO"
       ? [
@@ -133,7 +143,11 @@ function AppSidebarPanel({
       : []),
     ...(isRelease1DemoEnabled()
       ? [
-          { href: "/needs-attention", label: "Needs Attention", icon: CheckSquare },
+          {
+            href: "/needs-attention",
+            label: "Needs Attention",
+            icon: CheckSquare,
+          },
           ...(userRole === "OWNER_CCO"
             ? [
                 {
@@ -250,7 +264,12 @@ function AppSidebarPanel({
         )
       ) : null}
 
-      <nav className={cn("flex-1 space-y-1 pb-4", collapsed ? "px-2 pt-2" : "px-2")}>
+      <nav
+        className={cn(
+          "flex-1 space-y-1 pb-4",
+          collapsed ? "px-2 pt-2" : "px-2",
+        )}
+      >
         {navItems.map((item) => {
           const active = isActive(item.href);
           const Icon = item.icon;
@@ -272,7 +291,9 @@ function AppSidebarPanel({
               <Link href={item.href} onClick={onNavigate}>
                 <Icon className="h-[18px] w-[18px] shrink-0 opacity-90" />
                 {!collapsed ? (
-                  <span className="text-[13px] font-semibold">{item.label}</span>
+                  <span className="text-[13px] font-semibold">
+                    {item.label}
+                  </span>
                 ) : null}
                 {item.badge !== undefined ? (
                   collapsed ? (
@@ -287,7 +308,9 @@ function AppSidebarPanel({
                     <span
                       className={cn(
                         "ml-auto min-w-[22px] rounded-full px-2 py-0.5 text-center text-[11px] font-semibold",
-                        active ? "bg-white/20 text-white" : "bg-semantic-orange text-white",
+                        active
+                          ? "bg-white/20 text-white"
+                          : "bg-semantic-orange text-white",
                       )}
                     >
                       {item.badge > 99 ? "99+" : item.badge}
@@ -330,8 +353,12 @@ function AppSidebarPanel({
                 </div>
               </TooltipTrigger>
               <TooltipContent side="right">
-                <span className="font-semibold">{userName || userEmail || "User"}</span>
-                <span className="ml-1 font-normal opacity-80">· {roleLabel}</span>
+                <span className="font-semibold">
+                  {userName || userEmail || "User"}
+                </span>
+                <span className="ml-1 font-normal opacity-80">
+                  · {roleLabel}
+                </span>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -400,7 +427,8 @@ export function AppSidebar({
   );
 
   const activeWorkspace = useMemo(() => {
-    const dto = workspaces.find((w) => w.id === activeWorkspaceId) ?? workspaces[0];
+    const dto =
+      workspaces.find((w) => w.id === activeWorkspaceId) ?? workspaces[0];
     return dto ? workspaceDtoToWorkspace(dto) : null;
   }, [workspaces, activeWorkspaceId]);
 
@@ -431,7 +459,10 @@ export function AppSidebar({
   }, [loadTeam]);
 
   useEffect(() => {
-    const id = window.setInterval(() => void loadTeam({ silent: true }), 30_000);
+    const id = window.setInterval(
+      () => void loadTeam({ silent: true }),
+      30_000,
+    );
     return () => window.clearInterval(id);
   }, [loadTeam]);
 
@@ -506,7 +537,9 @@ export function AppSidebar({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 hidden flex-col border-r border-sidebar-edge transition-[width] duration-200 ease-out lg:flex",
-          collapsed ? "w-[var(--cv-sidebar-collapsed-width)]" : "w-[var(--cv-sidebar-width)]",
+          collapsed
+            ? "w-[var(--cv-sidebar-collapsed-width)]"
+            : "w-[var(--cv-sidebar-width)]",
         )}
       >
         <AppSidebarPanel
@@ -519,12 +552,19 @@ export function AppSidebar({
       <div className="fixed left-0 top-0 z-50 lg:hidden">
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-14 w-14 rounded-none text-text-primary">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-14 w-14 rounded-none text-text-primary"
+            >
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[var(--cv-sidebar-width)] border-sidebar-edge bg-sidebar-bg p-0">
+          <SheetContent
+            side="left"
+            className="w-[var(--cv-sidebar-width)] border-sidebar-edge bg-sidebar-bg p-0"
+          >
             <AppSidebarPanel {...basePanelProps} collapsed={false} />
           </SheetContent>
         </Sheet>

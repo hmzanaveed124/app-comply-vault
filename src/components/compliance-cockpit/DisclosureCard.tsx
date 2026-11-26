@@ -20,8 +20,13 @@ function statusMeta(status: DisclosureCategoryDto["status"]): {
   switch (status) {
     case "SUPPRESSING":
       return {
-        borderClass: "border-t-[3px] border-t-semantic-success",
-        icon: <CheckCircle2 className="h-3.5 w-3.5 text-semantic-success" aria-hidden />,
+        borderClass: "border-t-[3px] border-t-surface-border",
+        icon: (
+          <CheckCircle2
+            className="h-3.5 w-3.5 text-semantic-success"
+            aria-hidden
+          />
+        ),
         label: "Suppressing",
       };
     case "NEVER_SUPPRESS":
@@ -92,23 +97,23 @@ export function DisclosureCard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="text-[12px] font-medium text-text-primary">{category.displayName}</div>
+          <div className="text-[12px] font-medium text-text-primary">
+            {category.displayName}
+          </div>
           <AdvItemRefLine
             advItemRef={category.advItemRef}
             advPage={category.advPage}
             crdNumber={crdNumber}
           />
         </div>
-        {locked ? (
-          <Lock className="h-4 w-4 shrink-0 text-semantic-danger" aria-hidden="true" />
-        ) : canWrite ? (
+        {canWrite ? (
           <button
             type="button"
-            className="rounded border border-surface-border px-2 py-0.5 text-[10px] font-medium text-brand-dark hover:bg-brand-light"
-            aria-label={`Toggle suppression for ${category.displayName} — currently ${meta.label}`}
+            className="rounded border border-surface-border px-2 py-1 text-xs text-brand-dark"
+            aria-label={`Configure ${category.displayName}`}
             onClick={() => onToggleRequest?.(category.slug)}
           >
-            {category.status === "SUPPRESSING" ? "On" : "Off"}
+            Configure
           </button>
         ) : null}
       </div>
@@ -117,7 +122,11 @@ export function DisclosureCard({
       </p>
       <div className="mt-auto flex items-center gap-1.5 pt-2 text-[10px] text-text-secondary">
         {meta.icon}
-        <span>{meta.label}</span>
+        <span>
+          {category.controlConfig
+            ? "Configured · profile approval required"
+            : "Baseline observation · configure policy"}
+        </span>
       </div>
     </div>
   );
@@ -126,7 +135,7 @@ export function DisclosureCard({
     return (
       <div
         className="cursor-default"
-        title="Regulatory requirement — verbal disclosure required in every client meeting."
+        title="Assess relevant conflicts and evidence under the approved firm policy."
       >
         {card}
       </div>

@@ -24,6 +24,7 @@ type SyncStatus = {
   lastSyncAt: string | null;
   errorMessage: string | null;
   action: string;
+  externalId: string | null;
 };
 
 export function IntegrationSyncPanel({
@@ -39,11 +40,14 @@ export function IntegrationSyncPanel({
   async function handleRetry(provider: string, action: string) {
     setLoading(provider);
     try {
-      const res = await fetch(`/api/meetings/${meetingId}/integration-sync/retry`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider, action }),
-      });
+      const res = await fetch(
+        `/api/meetings/${meetingId}/integration-sync/retry`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provider, action }),
+        },
+      );
       if (!res.ok) throw new Error(await res.text());
       router.refresh();
     } catch (e) {
@@ -58,9 +62,14 @@ export function IntegrationSyncPanel({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Integration Sync Status</CardTitle>
+        <CardTitle>Delivery status</CardTitle>
       </CardHeader>
       <CardContent>
+        <p className="mb-3 text-xs text-muted-foreground">
+          A provider receipt acknowledges delivery; it does not verify the
+          destination’s retention or legal-hold configuration. Pending or legacy
+          success without a receipt is unverified.
+        </p>
         <div className="space-y-2">
           {syncStatuses.map((s) => (
             <div
@@ -73,10 +82,12 @@ export function IntegrationSyncPanel({
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {s.status === "Synced" && s.lastSyncAt
-                    ? `Synced ${new Date(s.lastSyncAt).toLocaleString()}`
+                    ? s.externalId
+                      ? `Delivery acknowledged ${new Date(s.lastSyncAt).toLocaleString()} · Receipt ${s.externalId}`
+                      : "Legacy success — no provider receipt recorded"
                     : s.status === "Failed"
-                      ? s.errorMessage ?? "Failed"
-                      : "Pending"}
+                      ? (s.errorMessage ?? "Failed")
+                      : "Delivery not confirmed"}
                 </p>
               </div>
               {s.status === "Failed" && (

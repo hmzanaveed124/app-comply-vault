@@ -50,10 +50,17 @@ export async function purgeRetainedMedia(args: {
 
   const workspace = await db.workspace.findUnique({
     where: { id: args.workspaceId },
-    select: { mediaPosture: true },
+    select: { mediaPosture: true, legalHold: true },
   });
   if (!workspace) {
     return { success: false, status: 404, error: "Workspace not found" };
+  }
+  if (workspace.legalHold) {
+    return {
+      success: false,
+      status: 409,
+      error: "Legal hold is active. Source media cannot be purged.",
+    };
   }
   if (workspace.mediaPosture !== "DISCARD") {
     return {

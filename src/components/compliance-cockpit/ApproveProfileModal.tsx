@@ -29,9 +29,13 @@ export function ApproveProfileModal({
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const suppressing = categories.filter((c) => c.status === "SUPPRESSING");
-  const active = categories.filter((c) => c.status === "ACTIVE" && !c.neverSuppress);
-  const locked = categories.filter((c) => c.status === "NEVER_SUPPRESS" || c.neverSuppress);
+  const suppressing = categories.filter((c) => c.controlConfig);
+  const active = categories.filter(
+    (c) => c.status === "ACTIVE" && !c.neverSuppress,
+  );
+  const locked = categories.filter(
+    (c) => c.status === "NEVER_SUPPRESS" || c.neverSuppress,
+  );
 
   const handleConfirm = async (): Promise<void> => {
     if (!confirmed) return;
@@ -54,20 +58,31 @@ export function ApproveProfileModal({
         <DialogHeader>
           <DialogTitle>Approve disclosure profile</DialogTitle>
           <DialogDescription>
-            {suppressing.length} suppressed · {active.length} active · {locked.length} locked
+            {suppressing.length} contextual controls configured ·{" "}
+            {categories.length - suppressing.length} baseline categories
           </DialogDescription>
         </DialogHeader>
         {suppressing.length > 0 ? (
           <ul className="space-y-2 text-sm">
             {suppressing.map((c) => (
-              <li key={c.slug} className="rounded border border-surface-border p-2">
+              <li
+                key={c.slug}
+                className="rounded border border-surface-border p-2"
+              >
                 <div className="font-medium">{c.displayName}</div>
-                <div className="text-xs text-text-muted">{c.suppressionEvidence}</div>
+                <div className="text-xs text-text-muted">
+                  {c.controlConfig?.applicability} · Policy:{" "}
+                  {c.controlConfig?.policyBasis} · Effective:{" "}
+                  {c.controlConfig?.effectiveDate}
+                </div>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-text-muted">No categories are currently suppressed.</p>
+          <p className="text-sm text-text-muted">
+            No contextual controls configured. Baseline transcript observations
+            remain available for human review.
+          </p>
         )}
         <label className="flex items-start gap-2 text-sm">
           <input
@@ -77,8 +92,9 @@ export function ApproveProfileModal({
             className="mt-1"
           />
           <span>
-            I confirm this disclosure profile reflects the firm&apos;s current ADV and compliance
-            documentation.
+            I approve these contextual review instructions, their applicability
+            and evidence requirements under the firm&apos;s current policy. This
+            approval does not establish that any client disclosure is adequate.
           </span>
         </label>
         {error ? <p className="text-sm text-semantic-danger">{error}</p> : null}

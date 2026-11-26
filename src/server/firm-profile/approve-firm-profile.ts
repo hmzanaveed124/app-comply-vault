@@ -32,6 +32,7 @@ export async function approveFirmProfile(params: {
       displayName: getCategoryBySlug(c.slug)?.displayName ?? c.slug,
       status: c.status,
       suppressionEvidence: c.suppressionEvidence,
+      controlConfig: c.controlConfig,
     })),
     approvedAt: new Date().toISOString(),
   };
@@ -39,13 +40,18 @@ export async function approveFirmProfile(params: {
   const approvedAt = new Date();
 
   const version = await db.$transaction(async (tx) => {
-    await tx.firmProfile.update({
-      where: { id: profile.id },
+    const approval = await tx.firmProfile.updateMany({
+      where: { id: profile.id, updatedAt: profile.updatedAt },
       data: {
         approvedAt,
         approvedByUserId: params.userId,
       },
     });
+
+    if (approval.count !== 1)
+      throw new ApproveProfileError(
+        "The profile changed during approval. Refresh and review the current controls.",
+      );
 
     const created = await tx.firmProfileVersion.create({
       data: {
@@ -65,7 +71,10 @@ export async function approveFirmProfile(params: {
         action: "FIRM_PROFILE_APPROVED",
         resourceType: "firm_profile",
         resourceId: profile.id,
-        metadata: { versionId: created.id, snapshotCategoryCount: snapshot.categories.length },
+        metadata: {
+          versionId: created.id,
+          snapshotCategoryCount: snapshot.categories.length,
+        },
       },
     });
 

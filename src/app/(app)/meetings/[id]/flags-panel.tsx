@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "~/lib/toast";
 
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -14,7 +15,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "~/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "~/components/ui/drawer";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -83,7 +90,9 @@ export interface FlagItem {
   resolutionNote?: string | null;
 }
 
-const getSeverityVariant = (severity: string): "default" | "secondary" | "destructive" | "outline" => {
+const getSeverityVariant = (
+  severity: string,
+): "default" | "secondary" | "destructive" | "outline" => {
   switch (severity) {
     case "CRITICAL":
       return "destructive";
@@ -94,23 +103,34 @@ const getSeverityVariant = (severity: string): "default" | "secondary" | "destru
   }
 };
 
-function MissingDisclosureCategoryNote({ evidence }: { evidence: Record<string, unknown> }): ReactNode {
+function MissingDisclosureCategoryNote({
+  evidence,
+}: {
+  evidence: Record<string, unknown>;
+}): ReactNode {
   const matched = evidence.matchedCategories as string[] | undefined;
   if (!matched?.length) return null;
 
   const active = (evidence.activeCategories as string[] | undefined) ?? [];
-  const suppressed = (evidence.suppressedCategories as string[] | undefined) ?? [];
-  const primarySlug = active[0] ?? matched.find((s) => {
-    const def = getCategoryBySlug(s);
-    return def && !suppressed.includes(s);
-  }) ?? matched[0];
-  const primaryName = primarySlug ? (getCategoryBySlug(primarySlug)?.displayName ?? primarySlug) : null;
+  const suppressed =
+    (evidence.suppressedCategories as string[] | undefined) ?? [];
+  const primarySlug =
+    active[0] ??
+    matched.find((s) => {
+      const def = getCategoryBySlug(s);
+      return def && !suppressed.includes(s);
+    }) ??
+    matched[0];
+  const primaryName = primarySlug
+    ? (getCategoryBySlug(primarySlug)?.displayName ?? primarySlug)
+    : null;
 
   return (
     <div className="space-y-1 text-xs text-muted-foreground">
       {primaryName ? (
         <div>
-          <span className="font-medium text-foreground">Category:</span> {primaryName}
+          <span className="font-medium text-foreground">Category:</span>{" "}
+          {primaryName}
         </div>
       ) : null}
       {suppressed.map((slug) => {
@@ -125,7 +145,9 @@ function MissingDisclosureCategoryNote({ evidence }: { evidence: Record<string, 
   );
 }
 
-const getStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+const getStatusVariant = (
+  status: string,
+): "default" | "secondary" | "destructive" | "outline" => {
   switch (status) {
     case "OPEN":
       return "secondary";
@@ -148,7 +170,8 @@ const resolutionLabels: Record<string, string> = {
   DISMISSED_WITH_REASON: "Dismissed with reason",
 };
 
-const formatStatusLabel = (status: string) => status.replace(/_/g, " ").toLowerCase();
+const formatStatusLabel = (status: string) =>
+  status.replace(/_/g, " ").toLowerCase();
 
 const formatLocalDateTime = (date: Date) => date.toISOString().slice(0, 16);
 
@@ -173,9 +196,13 @@ export default function FlagsPanel({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [resolutionType, setResolutionType] = useState("ADD_CONTEXT");
   const [rationale, setRationale] = useState("");
-  const [dueDate, setDueDate] = useState(formatLocalDateTime(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)));
+  const [dueDate, setDueDate] = useState(
+    formatLocalDateTime(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)),
+  );
   const [sourceType, setSourceType] = useState("");
-  const [disclosureDate, setDisclosureDate] = useState(formatLocalDateTime(new Date()));
+  const [disclosureDate, setDisclosureDate] = useState(
+    formatLocalDateTime(new Date()),
+  );
   const [ackStatus, setAckStatus] = useState("YES");
   const [followUpMethod, setFollowUpMethod] = useState("");
   const [planNote, setPlanNote] = useState("");
@@ -207,7 +234,14 @@ export default function FlagsPanel({
   }, []);
 
   if (readOnlyCompliance && renderFlagCards) {
-    return <div className="space-y-3">{renderFlagCards({ openRemediation: () => undefined, openAcceptRisk: () => undefined })}</div>;
+    return (
+      <div className="space-y-3">
+        {renderFlagCards({
+          openRemediation: () => undefined,
+          openAcceptRisk: () => undefined,
+        })}
+      </div>
+    );
   }
 
   if (readOnlyCompliance) {
@@ -218,21 +252,34 @@ export default function FlagsPanel({
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground rounded-md bg-muted/50 p-3">
-            Compliance flags — pending review by the compliance team. You can review context here; only
-            compliance staff can resolve or escalate.
+            Compliance flags — pending review by the compliance team. You can
+            review context here; only compliance staff can resolve or escalate.
           </p>
           {flags.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No flags for this meeting.</p>
+            <p className="text-sm text-muted-foreground">
+              No flags for this meeting.
+            </p>
           ) : (
             flags.map((flag) => (
-              <div key={flag.id} className="rounded-md border p-3 space-y-1 opacity-90">
+              <div
+                key={flag.id}
+                className="rounded-md border p-3 space-y-1 opacity-90"
+              >
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant={getSeverityVariant(flag.severity)}>{flag.severity}</Badge>
-                  <Badge variant="outline">{flag.type.replace(/_/g, " ")}</Badge>
-                  <Badge variant={getStatusVariant(flag.status)}>{formatStatusLabel(flag.status)}</Badge>
+                  <Badge variant={getSeverityVariant(flag.severity)}>
+                    {flag.severity}
+                  </Badge>
+                  <Badge variant="outline">
+                    {flag.type.replace(/_/g, " ")}
+                  </Badge>
+                  <Badge variant={getStatusVariant(flag.status)}>
+                    {formatStatusLabel(flag.status)}
+                  </Badge>
                 </div>
                 {flag.evidence?.recommendation?.text ? (
-                  <div className="text-sm text-muted-foreground">{flag.evidence.recommendation.text}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {flag.evidence.recommendation.text}
+                  </div>
                 ) : null}
               </div>
             ))
@@ -251,12 +298,18 @@ export default function FlagsPanel({
     setResolutionType(flag.resolutionRecord?.resolutionType ?? "ADD_CONTEXT");
     setRationale(flag.resolutionRecord?.rationale ?? "");
     setSourceType(flag.resolutionRecord?.metadata?.sourceType ?? "");
-    setDisclosureDate(flag.resolutionRecord?.metadata?.disclosureDate ?? formatLocalDateTime(new Date()));
-    setAckStatus(flag.resolutionRecord?.metadata?.acknowledgementStatus ?? "YES");
+    setDisclosureDate(
+      flag.resolutionRecord?.metadata?.disclosureDate ??
+        formatLocalDateTime(new Date()),
+    );
+    setAckStatus(
+      flag.resolutionRecord?.metadata?.acknowledgementStatus ?? "YES",
+    );
     setFollowUpMethod(flag.resolutionRecord?.metadata?.followUpMethod ?? "");
     setPlanNote(flag.resolutionRecord?.metadata?.planNote ?? "");
     setRequireAcknowledgement(
-      flag.resolutionRecord?.metadata?.requireAcknowledgement ?? flag.severity === "CRITICAL"
+      flag.resolutionRecord?.metadata?.requireAcknowledgement ??
+        flag.severity === "CRITICAL",
     );
     setDrawerOpen(true);
   };
@@ -279,7 +332,7 @@ export default function FlagsPanel({
   const activeTasks = activeFlag?.resolutionRecord?.tasks ?? [];
   const activeEvidence = activeFlag?.resolutionRecord?.evidence ?? [];
   const requiredTasksIncomplete = activeTasks.some(
-    (task) => task.required && task.status !== "COMPLETED"
+    (task) => task.required && task.status !== "COMPLETED",
   );
 
   const evidenceReady = useMemo(() => {
@@ -296,7 +349,8 @@ export default function FlagsPanel({
         activeFlag.resolutionRecord.metadata?.requireAcknowledgement ??
         activeFlag.severity === "CRITICAL";
       return requireAck
-        ? evidenceTypes.has("OUTREACH_PROOF") && evidenceTypes.has("ACKNOWLEDGEMENT")
+        ? evidenceTypes.has("OUTREACH_PROOF") &&
+            evidenceTypes.has("ACKNOWLEDGEMENT")
         : evidenceTypes.has("OUTREACH_PROOF");
     }
     return false;
@@ -306,8 +360,8 @@ export default function FlagsPanel({
     evidenceType === "NOTE"
       ? snippetText.trim().length > 0
       : evidenceType === "TRANSCRIPT_SNIPPET"
-      ? snippetText.trim().length > 0 && snippetStartTime.trim().length > 0
-      : evidenceUrl.trim().length > 0;
+        ? snippetText.trim().length > 0 && snippetStartTime.trim().length > 0
+        : evidenceUrl.trim().length > 0;
 
   const getNextAction = (flag: FlagItem) => {
     if (flag.status === "OPEN") return "Start remediation";
@@ -315,14 +369,19 @@ export default function FlagsPanel({
     if (flag.status === "CLOSED") return "Closed";
     if (flag.status === "CLOSED_ACCEPTED_RISK") return "Closed - accepted risk";
     const tasks = flag.resolutionRecord?.tasks ?? [];
-    const nextTask = tasks.find((task) => task.required && task.status !== "COMPLETED");
+    const nextTask = tasks.find(
+      (task) => task.required && task.status !== "COMPLETED",
+    );
     return nextTask ? nextTask.title : "Submit for verification";
   };
 
   const reviewEvidence = (flag: FlagItem) => {
-    const startTime = flag.evidence?.recommendation?.startTime ?? flag.evidence?.startTime;
+    const startTime =
+      flag.evidence?.recommendation?.startTime ?? flag.evidence?.startTime;
     if (typeof startTime === "number") {
-      const segmentElement = document.querySelector(`[data-timestamp="${Math.floor(startTime)}"]`);
+      const segmentElement = document.querySelector(
+        `[data-timestamp="${Math.floor(startTime)}"]`,
+      );
       if (segmentElement) {
         segmentElement.scrollIntoView({ behavior: "smooth", block: "center" });
         segmentElement.classList.add("bg-warning-bg");
@@ -339,7 +398,7 @@ export default function FlagsPanel({
       return;
     }
     const claimElement = document.querySelector(
-      `[data-claim-field="recommendations"][data-claim-start="${Math.floor(claimKey)}"]`
+      `[data-claim-field="recommendations"][data-claim-start="${Math.floor(claimKey)}"]`,
     );
     if (claimElement) {
       claimElement.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -387,13 +446,24 @@ export default function FlagsPanel({
           resolutionType,
           rationale: rationale.trim(),
           dueDate: new Date(dueDate).toISOString(),
-          sourceType: resolutionType === "DISCLOSED_ELSEWHERE" ? sourceType : undefined,
+          sourceType:
+            resolutionType === "DISCLOSED_ELSEWHERE" ? sourceType : undefined,
           disclosureDate:
-            resolutionType === "DISCLOSED_ELSEWHERE" ? new Date(disclosureDate).toISOString() : undefined,
-          acknowledgementStatus: resolutionType === "DISCLOSED_ELSEWHERE" ? ackStatus : undefined,
-          followUpMethod: resolutionType === "FOLLOW_UP_REQUIRED" ? followUpMethod : undefined,
-          planNote: resolutionType === "FOLLOW_UP_REQUIRED" ? planNote : undefined,
-          requireAcknowledgement: resolutionType === "FOLLOW_UP_REQUIRED" ? requireAcknowledgement : undefined,
+            resolutionType === "DISCLOSED_ELSEWHERE"
+              ? new Date(disclosureDate).toISOString()
+              : undefined,
+          acknowledgementStatus:
+            resolutionType === "DISCLOSED_ELSEWHERE" ? ackStatus : undefined,
+          followUpMethod:
+            resolutionType === "FOLLOW_UP_REQUIRED"
+              ? followUpMethod
+              : undefined,
+          planNote:
+            resolutionType === "FOLLOW_UP_REQUIRED" ? planNote : undefined,
+          requireAcknowledgement:
+            resolutionType === "FOLLOW_UP_REQUIRED"
+              ? requireAcknowledgement
+              : undefined,
           evidence: evidencePayload.map((item) => ({
             type: item.type,
             label: item.label ?? undefined,
@@ -412,6 +482,11 @@ export default function FlagsPanel({
       closeDrawer();
     } catch (error) {
       console.error("Failed to start remediation:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -428,8 +503,8 @@ export default function FlagsPanel({
               snippet: snippetText.trim(),
             }
           : evidenceType === "NOTE"
-          ? { note: snippetText.trim() }
-          : null;
+            ? { note: snippetText.trim() }
+            : null;
 
       const response = await fetch(`/api/flags/${activeFlag.id}/remediation`, {
         method: "POST",
@@ -456,6 +531,11 @@ export default function FlagsPanel({
       router.refresh();
     } catch (error) {
       console.error("Failed to add evidence:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -486,6 +566,11 @@ export default function FlagsPanel({
       setTaskNote("");
     } catch (error) {
       console.error("Failed to complete task:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -508,10 +593,17 @@ export default function FlagsPanel({
       closeDrawer();
     } catch (error) {
       console.error("Failed to submit for verification:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
   };
+
+  const [verificationNote, setVerificationNote] = useState("");
 
   const handleApprove = async () => {
     if (!activeFlag) return;
@@ -520,7 +612,10 @@ export default function FlagsPanel({
       const response = await fetch(`/api/flags/${activeFlag.id}/remediation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "APPROVE" }),
+        body: JSON.stringify({
+          action: "APPROVE",
+          note: verificationNote.trim(),
+        }),
       });
       if (!response.ok) {
         const data = await response.json();
@@ -530,6 +625,11 @@ export default function FlagsPanel({
       closeDrawer();
     } catch (error) {
       console.error("Failed to approve remediation:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -554,6 +654,11 @@ export default function FlagsPanel({
       closeDrawer();
     } catch (error) {
       console.error("Failed to reject remediation:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -583,6 +688,11 @@ export default function FlagsPanel({
       closeDrawer();
     } catch (error) {
       console.error("Failed to accept risk:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The action could not be saved",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -591,7 +701,12 @@ export default function FlagsPanel({
   return (
     <>
       {renderFlagCards ? (
-        <div className="space-y-3">{renderFlagCards({ openRemediation: openDrawer, openAcceptRisk: openOverrideDialog })}</div>
+        <div className="space-y-3">
+          {renderFlagCards({
+            openRemediation: openDrawer,
+            openAcceptRisk: openOverrideDialog,
+          })}
+        </div>
       ) : (
         <Card>
           <CardHeader>
@@ -599,86 +714,118 @@ export default function FlagsPanel({
           </CardHeader>
           <CardContent className="space-y-4">
             {flags.map((flag) => {
-          const nextTask = flag.resolutionRecord?.tasks.find(
-            (task) => task.required && task.status !== "COMPLETED"
-          );
-          return (
-          <div
-            key={flag.id}
-            id={`flag-${flag.id}`}
-            className="rounded-md border p-4 space-y-3"
-          >
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant={getSeverityVariant(flag.severity)}>{flag.severity}</Badge>
-              <Badge variant="outline">{flag.type.replace(/_/g, " ")}</Badge>
-                <Badge variant={getStatusVariant(flag.status)}>{formatStatusLabel(flag.status)}</Badge>
-            </div>
-            {flag.evidence?.recommendation?.text ? (
-              <div className="text-sm">
-                <span className="font-medium">Recommendation:</span> {flag.evidence.recommendation.text}
-              </div>
-            ) : null}
-            {flag.evidence?.recommendation?.snippet ? (
-              <div className="text-xs text-muted-foreground">
-                “{flag.evidence.recommendation.snippet}”
-              </div>
-            ) : null}
-            {flag.type === "MISSING_DISCLOSURE" && flag.evidence?.matchedCategories ? (
-              <MissingDisclosureCategoryNote evidence={flag.evidence} />
-            ) : null}
-              <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
-                <div>
-                  <span className="font-medium text-foreground">Next action:</span>{" "}
-                  {getNextAction(flag)}
-                </div>
-                <div>
-                  <span className="font-medium text-foreground">Owner:</span>{" "}
-                  {nextTask
-                    ? nextTask.ownerId === currentUserId
-                      ? "You"
-                      : nextTask.ownerId.slice(0, 6)
-                    : "—"}
-                </div>
-                <div>
-                  <span className="font-medium text-foreground">Due:</span>{" "}
-                  {nextTask ? new Date(nextTask.dueDate).toLocaleDateString() : "—"}
-                </div>
-              </div>
-              {flag.resolutionRecord ? (
-                <div className="text-xs text-muted-foreground">
-                  Resolution: {resolutionLabels[flag.resolutionRecord.resolutionType] || "In progress"} •{" "}
-                  Evidence: {flag.resolutionRecord.evidence.length} item
-                  {flag.resolutionRecord.evidence.length === 1 ? "" : "s"}
-              </div>
-            ) : null}
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="outline" onClick={() => reviewEvidence(flag)}>
-                Review evidence
-              </Button>
-              <Button size="sm" variant="outline" onClick={() => scrollToClaim(flag)}>
-                View claim
-              </Button>
-              {flag.status === "OPEN" && (
-                  <Button size="sm" onClick={() => openDrawer(flag)}>
-                    Start remediation
-                  </Button>
-                )}
-                {flag.status !== "OPEN" && (
-                  <Button size="sm" variant="secondary" onClick={() => openDrawer(flag)}>
-                    Manage remediation
-                  </Button>
-                )}
-                {userRole === "OWNER_CCO" && flag.status === "OPEN" && (
-                  <Button size="sm" variant="destructive" onClick={() => openOverrideDialog(flag)}>
-                    Accept risk
+              const nextTask = flag.resolutionRecord?.tasks.find(
+                (task) => task.required && task.status !== "COMPLETED",
+              );
+              return (
+                <div
+                  key={flag.id}
+                  id={`flag-${flag.id}`}
+                  className="rounded-md border p-4 space-y-3"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant={getSeverityVariant(flag.severity)}>
+                      {flag.severity}
+                    </Badge>
+                    <Badge variant="outline">
+                      {flag.type.replace(/_/g, " ")}
+                    </Badge>
+                    <Badge variant={getStatusVariant(flag.status)}>
+                      {formatStatusLabel(flag.status)}
+                    </Badge>
+                  </div>
+                  {flag.evidence?.recommendation?.text ? (
+                    <div className="text-sm">
+                      <span className="font-medium">Recommendation:</span>{" "}
+                      {flag.evidence.recommendation.text}
+                    </div>
+                  ) : null}
+                  {flag.evidence?.recommendation?.snippet ? (
+                    <div className="text-xs text-muted-foreground">
+                      “{flag.evidence.recommendation.snippet}”
+                    </div>
+                  ) : null}
+                  {flag.type === "MISSING_DISCLOSURE" &&
+                  flag.evidence?.matchedCategories ? (
+                    <MissingDisclosureCategoryNote evidence={flag.evidence} />
+                  ) : null}
+                  <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+                    <div>
+                      <span className="font-medium text-foreground">
+                        Next action:
+                      </span>{" "}
+                      {getNextAction(flag)}
+                    </div>
+                    <div>
+                      <span className="font-medium text-foreground">
+                        Owner:
+                      </span>{" "}
+                      {nextTask
+                        ? nextTask.ownerId === currentUserId
+                          ? "You"
+                          : nextTask.ownerId.slice(0, 6)
+                        : "—"}
+                    </div>
+                    <div>
+                      <span className="font-medium text-foreground">Due:</span>{" "}
+                      {nextTask
+                        ? new Date(nextTask.dueDate).toLocaleDateString()
+                        : "—"}
+                    </div>
+                  </div>
+                  {flag.resolutionRecord ? (
+                    <div className="text-xs text-muted-foreground">
+                      Resolution:{" "}
+                      {resolutionLabels[flag.resolutionRecord.resolutionType] ||
+                        "In progress"}{" "}
+                      • Evidence: {flag.resolutionRecord.evidence.length} item
+                      {flag.resolutionRecord.evidence.length === 1 ? "" : "s"}
+                    </div>
+                  ) : null}
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => reviewEvidence(flag)}
+                    >
+                      Review evidence
                     </Button>
-              )}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              Created {new Date(flag.createdAt).toLocaleString()}
-            </div>
-          </div>
-          );
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => scrollToClaim(flag)}
+                    >
+                      View claim
+                    </Button>
+                    {flag.status === "OPEN" && (
+                      <Button size="sm" onClick={() => openDrawer(flag)}>
+                        Start remediation
+                      </Button>
+                    )}
+                    {flag.status !== "OPEN" && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => openDrawer(flag)}
+                      >
+                        Manage remediation
+                      </Button>
+                    )}
+                    {userRole === "OWNER_CCO" && flag.status === "OPEN" && (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => openOverrideDialog(flag)}
+                      >
+                        Accept risk
+                      </Button>
+                    )}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Created {new Date(flag.createdAt).toLocaleString()}
+                  </div>
+                </div>
+              );
             })}
           </CardContent>
         </Card>
@@ -688,22 +835,31 @@ export default function FlagsPanel({
         <DrawerContent className="sm:max-w-xl">
           <DrawerHeader>
             <DrawerTitle>
-              {activeFlag?.status === "OPEN" ? "Start remediation" : "Remediation workflow"}
+              {activeFlag?.status === "OPEN"
+                ? "Start remediation"
+                : "Remediation workflow"}
             </DrawerTitle>
           </DrawerHeader>
           <div className="px-4 pb-4 space-y-6 overflow-y-auto max-h-[70vh]">
             {activeFlag?.status === "OPEN" ? (
               <>
-            <div className="space-y-2">
+                <div className="space-y-2">
                   <Label>Resolution type</Label>
-              <Select value={resolutionType} onValueChange={setResolutionType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a resolution" />
-                </SelectTrigger>
-                <SelectContent>
+                  <Select
+                    value={resolutionType}
+                    onValueChange={setResolutionType}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a resolution" />
+                    </SelectTrigger>
+                    <SelectContent>
                       <SelectItem value="ADD_CONTEXT">Add context</SelectItem>
-                      <SelectItem value="DISCLOSED_ELSEWHERE">Disclosed elsewhere</SelectItem>
-                      <SelectItem value="FOLLOW_UP_REQUIRED">Follow-up required</SelectItem>
+                      <SelectItem value="DISCLOSED_ELSEWHERE">
+                        Disclosed elsewhere
+                      </SelectItem>
+                      <SelectItem value="FOLLOW_UP_REQUIRED">
+                        Follow-up required
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -714,7 +870,9 @@ export default function FlagsPanel({
                     onChange={(event) => setRationale(event.target.value)}
                     placeholder="Explain why this remediation path is appropriate"
                   />
-                  <p className="text-xs text-muted-foreground">Minimum 50 characters.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Minimum 50 characters.
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label>Owner due date</Label>
@@ -732,7 +890,9 @@ export default function FlagsPanel({
                       <Label>Snippet start time (seconds)</Label>
                       <Input
                         value={snippetStartTime}
-                        onChange={(event) => setSnippetStartTime(event.target.value)}
+                        onChange={(event) =>
+                          setSnippetStartTime(event.target.value)
+                        }
                         placeholder="Click a transcript segment to auto-fill"
                       />
                     </div>
@@ -748,7 +908,9 @@ export default function FlagsPanel({
                       <Label>Evidence label</Label>
                       <Input
                         value={evidenceLabel}
-                        onChange={(event) => setEvidenceLabel(event.target.value)}
+                        onChange={(event) =>
+                          setEvidenceLabel(event.target.value)
+                        }
                         placeholder="Optional label"
                       />
                     </div>
@@ -771,7 +933,9 @@ export default function FlagsPanel({
                       <Input
                         type="datetime-local"
                         value={disclosureDate}
-                        onChange={(event) => setDisclosureDate(event.target.value)}
+                        onChange={(event) =>
+                          setDisclosureDate(event.target.value)
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -784,10 +948,10 @@ export default function FlagsPanel({
                           <SelectItem value="YES">Acknowledged</SelectItem>
                           <SelectItem value="NO">Not acknowledged</SelectItem>
                           <SelectItem value="UNKNOWN">Unknown</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
                       <Label>Evidence link</Label>
                       <Input
                         value={evidenceUrl}
@@ -805,13 +969,15 @@ export default function FlagsPanel({
                       <Label>Method</Label>
                       <Input
                         value={followUpMethod}
-                        onChange={(event) => setFollowUpMethod(event.target.value)}
+                        onChange={(event) =>
+                          setFollowUpMethod(event.target.value)
+                        }
                         placeholder="Email, call, portal, letter"
                       />
                     </div>
                     <div className="space-y-2">
                       <Label>Plan note</Label>
-              <Textarea
+                      <Textarea
                         value={planNote}
                         onChange={(event) => setPlanNote(event.target.value)}
                         placeholder="Describe the plan and timeline"
@@ -821,7 +987,9 @@ export default function FlagsPanel({
                       <Label>Acknowledgement required</Label>
                       <Select
                         value={requireAcknowledgement ? "YES" : "NO"}
-                        onValueChange={(value) => setRequireAcknowledgement(value === "YES")}
+                        onValueChange={(value) =>
+                          setRequireAcknowledgement(value === "YES")
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select requirement" />
@@ -841,24 +1009,33 @@ export default function FlagsPanel({
               <div className="space-y-4">
                 <div className="rounded-md border p-3 space-y-1">
                   <p className="text-sm font-medium">
-                    {resolutionLabels[activeFlag.resolutionRecord.resolutionType] || "Remediation"}
+                    {resolutionLabels[
+                      activeFlag.resolutionRecord.resolutionType
+                    ] || "Remediation"}
                   </p>
-                  <p className="text-xs text-muted-foreground">{activeFlag.resolutionRecord.rationale}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {activeFlag.resolutionRecord.rationale}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
                   <Label>Tasks</Label>
                   <div className="space-y-2">
                     {activeTasks.length === 0 ? (
-                      <p className="text-xs text-muted-foreground">No tasks yet.</p>
+                      <p className="text-xs text-muted-foreground">
+                        No tasks yet.
+                      </p>
                     ) : (
                       activeTasks.map((task) => (
-                        <div key={task.id} className="flex items-center justify-between gap-2 border rounded-md p-2">
+                        <div
+                          key={task.id}
+                          className="flex items-center justify-between gap-2 border rounded-md p-2"
+                        >
                           <div>
                             <p className="text-sm font-medium">{task.title}</p>
                             <p className="text-xs text-muted-foreground">
-                              Due {new Date(task.dueDate).toLocaleDateString()} •{" "}
-                              {task.status.replace(/_/g, " ").toLowerCase()}
+                              Due {new Date(task.dueDate).toLocaleDateString()}{" "}
+                              • {task.status.replace(/_/g, " ").toLowerCase()}
                             </p>
                           </div>
                           {task.status !== "COMPLETED" && (
@@ -883,37 +1060,59 @@ export default function FlagsPanel({
                   <Label>Evidence</Label>
                   <div className="space-y-2">
                     {activeEvidence.length === 0 ? (
-                      <p className="text-xs text-muted-foreground">No evidence linked yet.</p>
+                      <p className="text-xs text-muted-foreground">
+                        No evidence linked yet.
+                      </p>
                     ) : (
                       activeEvidence.map((item) => (
-                        <div key={item.id} className="text-xs text-muted-foreground border rounded-md p-2">
+                        <div
+                          key={item.id}
+                          className="text-xs text-muted-foreground border rounded-md p-2"
+                        >
                           <div className="font-medium text-foreground">
-                            {item.label || item.type.replace(/_/g, " ").toLowerCase()}
+                            {item.label ||
+                              item.type.replace(/_/g, " ").toLowerCase()}
                           </div>
                           {item.url ? (
-                            <a href={item.url} target="_blank" rel="noreferrer" className="underline">
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="underline"
+                            >
                               {item.url}
                             </a>
                           ) : null}
                         </div>
                       ))
-              )}
-            </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-3 rounded-md border p-3">
                   <p className="text-sm font-medium">Add evidence</p>
                   <div className="space-y-2">
                     <Label>Evidence type</Label>
-                    <Select value={evidenceType} onValueChange={setEvidenceType}>
+                    <Select
+                      value={evidenceType}
+                      onValueChange={setEvidenceType}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select evidence type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="TRANSCRIPT_SNIPPET">Transcript snippet</SelectItem>
-                        <SelectItem value="DOCUMENT_LINK">Document link</SelectItem>
-                        <SelectItem value="OUTREACH_PROOF">Outreach proof</SelectItem>
-                        <SelectItem value="ACKNOWLEDGEMENT">Acknowledgement</SelectItem>
+                        <SelectItem value="TRANSCRIPT_SNIPPET">
+                          Transcript snippet
+                        </SelectItem>
+                        <SelectItem value="DOCUMENT_LINK">
+                          Document link
+                        </SelectItem>
+                        <SelectItem value="OUTREACH_PROOF">
+                          Outreach proof
+                        </SelectItem>
+                        <SelectItem value="ACKNOWLEDGEMENT">
+                          Acknowledgement
+                        </SelectItem>
                         <SelectItem value="NOTE">Note</SelectItem>
                       </SelectContent>
                     </Select>
@@ -936,29 +1135,40 @@ export default function FlagsPanel({
                       />
                     </div>
                   )}
-                  {(evidenceType === "TRANSCRIPT_SNIPPET" || evidenceType === "NOTE") && (
+                  {(evidenceType === "TRANSCRIPT_SNIPPET" ||
+                    evidenceType === "NOTE") && (
                     <>
                       {evidenceType === "TRANSCRIPT_SNIPPET" && (
                         <div className="space-y-2">
                           <Label>Snippet start time (seconds)</Label>
                           <Input
                             value={snippetStartTime}
-                            onChange={(event) => setSnippetStartTime(event.target.value)}
+                            onChange={(event) =>
+                              setSnippetStartTime(event.target.value)
+                            }
                             placeholder="Click a transcript segment to auto-fill"
                           />
                         </div>
                       )}
                       <div className="space-y-2">
-                        <Label>{evidenceType === "NOTE" ? "Note" : "Snippet text"}</Label>
+                        <Label>
+                          {evidenceType === "NOTE" ? "Note" : "Snippet text"}
+                        </Label>
                         <Textarea
                           value={snippetText}
-                          onChange={(event) => setSnippetText(event.target.value)}
+                          onChange={(event) =>
+                            setSnippetText(event.target.value)
+                          }
                           placeholder="Add context for this evidence"
                         />
                       </div>
                     </>
                   )}
-                  <Button size="sm" onClick={handleAddEvidence} disabled={isSaving || !evidenceFormValid}>
+                  <Button
+                    size="sm"
+                    onClick={handleAddEvidence}
+                    disabled={isSaving || !evidenceFormValid}
+                  >
                     Add evidence
                   </Button>
                 </div>
@@ -996,12 +1206,26 @@ export default function FlagsPanel({
                 {isSaving ? "Submitting..." : "Submit for verification"}
               </Button>
             ) : null}
-            {activeFlag?.status === "PENDING_VERIFICATION" && userRole === "OWNER_CCO" ? (
+            {activeFlag?.status === "PENDING_VERIFICATION" &&
+            userRole === "OWNER_CCO" ? (
               <div className="flex flex-col gap-2 sm:flex-row">
-                <Button onClick={handleApprove} disabled={isSaving}>
+                <Textarea
+                  aria-label="Verification rationale"
+                  placeholder="Explain what evidence you verified and why the concern can be closed (minimum 20 characters)"
+                  value={verificationNote}
+                  onChange={(event) => setVerificationNote(event.target.value)}
+                />
+                <Button
+                  onClick={handleApprove}
+                  disabled={isSaving || verificationNote.trim().length < 20}
+                >
                   Approve remediation
                 </Button>
-                <Button variant="destructive" onClick={() => setRejectDialogOpen(true)} disabled={isSaving}>
+                <Button
+                  variant="destructive"
+                  onClick={() => setRejectDialogOpen(true)}
+                  disabled={isSaving}
+                >
                   Reject
                 </Button>
               </div>
@@ -1014,21 +1238,30 @@ export default function FlagsPanel({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Complete task</DialogTitle>
-            <DialogDescription>Add completion notes for the audit trail.</DialogDescription>
+            <DialogDescription>
+              Add completion notes for the audit trail.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
             <Label>Completion note</Label>
             <Textarea
               value={taskNote}
               onChange={(event) => setTaskNote(event.target.value)}
-              placeholder="Optional note"
+              placeholder="Describe what was completed and reference the evidence (minimum 20 characters)"
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setTaskDialogOpen(false)} disabled={isSaving}>
+            <Button
+              variant="outline"
+              onClick={() => setTaskDialogOpen(false)}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
-            <Button onClick={handleCompleteTask} disabled={isSaving}>
+            <Button
+              onClick={handleCompleteTask}
+              disabled={isSaving || taskNote.trim().length < 20}
+            >
               {isSaving ? "Saving..." : "Mark complete"}
             </Button>
           </DialogFooter>
@@ -1039,7 +1272,9 @@ export default function FlagsPanel({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reject remediation</DialogTitle>
-            <DialogDescription>Provide a reason to send back to the assignee.</DialogDescription>
+            <DialogDescription>
+              Provide a reason to send back to the assignee.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
             <Label>Rejection note</Label>
@@ -1050,10 +1285,17 @@ export default function FlagsPanel({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRejectDialogOpen(false)} disabled={isSaving}>
+            <Button
+              variant="outline"
+              onClick={() => setRejectDialogOpen(false)}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
-            <Button onClick={handleReject} disabled={isSaving || rejectNote.trim().length < 10}>
+            <Button
+              onClick={handleReject}
+              disabled={isSaving || rejectNote.trim().length < 10}
+            >
               {isSaving ? "Submitting..." : "Reject"}
             </Button>
           </DialogFooter>
@@ -1064,7 +1306,9 @@ export default function FlagsPanel({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Accept risk</DialogTitle>
-            <DialogDescription>Provide justification and category for audit review.</DialogDescription>
+            <DialogDescription>
+              Provide justification and category for audit review.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
             <Label>Risk category</Label>
@@ -1083,13 +1327,21 @@ export default function FlagsPanel({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOverrideDialogOpen(false)} disabled={isSaving}>
+            <Button
+              variant="outline"
+              onClick={() => setOverrideDialogOpen(false)}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleOverride}
-              disabled={isSaving || overrideReason.trim().length < 20 || overrideCategory.trim().length < 2}
+              disabled={
+                isSaving ||
+                overrideReason.trim().length < 20 ||
+                overrideCategory.trim().length < 2
+              }
             >
               {isSaving ? "Submitting..." : "Accept risk"}
             </Button>

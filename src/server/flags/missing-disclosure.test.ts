@@ -38,7 +38,7 @@ describe("detectMissingDisclosureFlags two-stage pipeline", () => {
     expect(flags.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("skips when all implicated categories are SUPPRESSING", () => {
+  it("retains potential concerns even when a legacy category was suppressed", () => {
     const extraction: ExtractionData = {
       ...baseExtraction,
       recommendations: [
@@ -53,7 +53,11 @@ describe("detectMissingDisclosureFlags two-stage pipeline", () => {
     const flags = detectMissingDisclosureFlags(extraction, {
       profile: profile([["suitability", "SUPPRESSING"]]),
     });
-    expect(flags).toHaveLength(0);
+    expect(flags).toHaveLength(1);
+    expect(flags[0]?.severity).toBe("WARN");
+    expect(flags[0]?.evidence.limitations).toContain(
+      "not a confirmed deficiency",
+    );
   });
 
   it("does not flag when valid nearby disclosure exists", () => {
@@ -97,6 +101,8 @@ describe("detectMissingDisclosureFlags two-stage pipeline", () => {
     });
     expect(flags).toHaveLength(1);
     expect(flags[0]?.evidence.matchedCategories).toBeDefined();
-    expect(flags[0]?.evidence.suppressedCategories).toContain("fees-compensation");
+    expect(flags[0]?.evidence.suppressedCategories).toContain(
+      "fees-compensation",
+    );
   });
 });

@@ -5,11 +5,14 @@
 
 import { requireAppAccess } from "~/server/auth/guards";
 import { db } from "~/server/db";
-import { enqueueIntegrationWrite } from "~/server/integrations/queue";
+import {
+  publishSharePointDepositJob,
+  publishZohoCrmNoteJob,
+} from "~/server/qstash";
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const access = await requireAppAccess();
   if (!access.ok) {
@@ -41,13 +44,30 @@ export async function POST(
     return new Response("Integration not connected", { status: 400 });
   }
 
-  const jobId = await enqueueIntegrationWrite({
-    workspaceId: access.workspaceId,
-    meetingId,
-    provider,
-    action,
-    payload: { meetingId, clientName: meeting.clientName },
-  });
+  if (!["OWNER_CCO", "MEMBER"].includes(access.session.user.role ?? ""))
+    return new Response("Compliance access required", { status: 403 });
+  const payload = { workspaceId: access.workspaceId, meetingId };
+  let jobId: string | null;
+  if (provider === "SHAREPOINT" && action === "sharepoint_upload") {
+    if (meeting.status !== "FINALIZED")
+      return new Response(
+        "Finalize the meeting before depositing its evidence pack",
+        { status: 409 },
+      );
+    jobId = await publishSharePointDepositJob(payload);
+  } else if (provider === "ZOHO_CRM" && action === "zoho_crm_note") {
+    if (meeting.status !== "DRAFT_READY")
+      return new Response(
+        "CRM draft notes can only be posted while the meeting is draft ready",
+        { status: 409 },
+      );
+    jobId = await publishZohoCrmNoteJob(payload);
+  } else {
+    return new Response(
+      "No supported delivery action for this provider. No delivery was attempted.",
+      { status: 422 },
+    );
+  }
 
   if (!jobId) {
     return new Response("Queue not available", { status: 503 });

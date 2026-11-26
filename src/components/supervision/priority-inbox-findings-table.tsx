@@ -129,12 +129,14 @@ export function PriorityInboxFindingsTable({
                   </p>
                   <div className="text-[12px] text-text-secondary">
                     <p>{statusLabel(finding.status)}</p>
-                    <p className="text-text-secondary">{channelLabel(finding.channels)}</p>
+                    <p className="text-text-secondary">
+                      {channelLabel(finding.channels)}
+                    </p>
                   </div>
                   <div className="text-[12.5px] tabular-nums text-text-secondary">
                     <p>{formatDate(finding.dueAt)}</p>
                     <p className="text-text-secondary">
-                      {confidenceLabel(finding.confidence)} · {finding.evidenceCount}
+                      {finding.evidenceCount} evidence items
                     </p>
                   </div>
                 </Link>

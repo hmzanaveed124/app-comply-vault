@@ -1,4 +1,8 @@
-import type { DisclosureCategoryStatus, FirmProfileStatus, FirmProfileVersionType } from "../../generated/prisma";
+import type {
+  DisclosureCategoryStatus,
+  FirmProfileStatus,
+  FirmProfileVersionType,
+} from "../../generated/prisma";
 
 export type FirmProfileDto = {
   id: string;
@@ -26,6 +30,7 @@ export type DisclosureCategoryDto = {
   advItemRef: string | null;
   advPage: number | null;
   description: string;
+  controlConfig?: import("./contextual-control").ContextualControl | null;
 };
 
 export type SuppressionLogEntryDto = {
@@ -68,6 +73,10 @@ export type FirmProfileExportSectionDto = {
   versionReference: string | null;
   versionApprovedAt: string | null;
   approvingCcoName: string | null;
-  suppressedCategories: Array<{ slug: string; displayName: string; evidence: string }>;
+  suppressedCategories: Array<{
+    slug: string;
+    displayName: string;
+    evidence: string;
+  }>;
   statement: string;
 };

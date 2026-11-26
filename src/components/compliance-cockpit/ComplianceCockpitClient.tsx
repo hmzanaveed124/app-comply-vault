@@ -9,6 +9,7 @@ import { FirmMasthead } from "./FirmMasthead";
 import { FirmPostureRing } from "./FirmPostureRing";
 import { DisclosureGrid } from "./DisclosureGrid";
 import { SuppressionLogPanel } from "./SuppressionLogPanel";
+import { ContextualControlEditor } from "./ContextualControlEditor";
 import { SuppressionEvidenceModal } from "./SuppressionEvidenceModal";
 import { ApproveProfileModal } from "./ApproveProfileModal";
 import { FirstRunWizard } from "./FirstRunWizard";
@@ -29,12 +30,18 @@ export function ComplianceCockpitClient(
   const [metrics] = useState(props.metrics);
   const [evidenceSlug, setEvidenceSlug] = useState<string | null>(null);
   const [approveOpen, setApproveOpen] = useState(false);
+  const [controlCategory, setControlCategory] =
+    useState<DisclosureCategoryDto | null>(null);
   const [pendingToggle, setPendingToggle] = useState(false);
 
   const refresh = useCallback(async (): Promise<void> => {
-    const res = await fetch(`/api/workspaces/${props.workspaceId}/firm-profile`);
+    const res = await fetch(
+      `/api/workspaces/${props.workspaceId}/firm-profile`,
+    );
     if (!res.ok) return;
-    const json = (await res.json()) as { data: CockpitBundleDto & { canWrite: boolean } };
+    const json = (await res.json()) as {
+      data: CockpitBundleDto & { canWrite: boolean };
+    };
     setCategories(json.data.categories);
     setProfile(json.data.profile);
     setSuppressionLog(json.data.suppressionLog);
@@ -64,12 +71,8 @@ export function ComplianceCockpitClient(
 
   const handleToggleRequest = (slug: string): void => {
     const cat = categories.find((c) => c.slug === slug);
-    if (!cat || cat.neverSuppress) return;
-    if (cat.status === "SUPPRESSING") {
-      void patchCategory(slug, "ACTIVE");
-      return;
-    }
-    setEvidenceSlug(slug);
+    if (!cat) return;
+    setControlCategory(cat);
   };
 
   const patchCategory = async (
@@ -99,13 +102,20 @@ export function ComplianceCockpitClient(
     const json = (await res.json()) as { data: DisclosureCategoryDto };
     setCategories((prev) => prev.map((c) => (c.slug === slug ? json.data : c)));
     await refresh();
-    toast.success(status === "SUPPRESSING" ? "Suppression activated" : "Suppression deactivated");
+    toast.success(
+      status === "SUPPRESSING"
+        ? "Suppression activated"
+        : "Suppression deactivated",
+    );
   };
 
   const handleApprove = async (): Promise<void> => {
-    const res = await fetch(`/api/workspaces/${props.workspaceId}/firm-profile/approve`, {
-      method: "POST",
-    });
+    const res = await fetch(
+      `/api/workspaces/${props.workspaceId}/firm-profile/approve`,
+      {
+        method: "POST",
+      },
+    );
     if (!res.ok) {
       throw new Error("Approval failed");
     }
@@ -114,10 +124,19 @@ export function ComplianceCockpitClient(
   };
 
   const needsReapproval =
-    profile.needsReapproval || (props.invalidatedApprovalAt != null && !profile.approvedAt);
+    profile.needsReapproval ||
+    (props.invalidatedApprovalAt != null && !profile.approvedAt);
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] flex-col">
+      <div className="border-b border-surface-border bg-surface-card p-4">
+        <h1 className="text-xl font-semibold">Review controls</h1>
+        <p className="text-sm text-text-secondary">
+          Configure contextual review instructions. Legacy suppression is
+          retained as history and does not clear new observations. Document
+          availability alone does not establish adequate disclosure.
+        </p>
+      </div>
       <FirmMasthead
         workspaceName={props.workspaceName}
         profile={profile}
@@ -131,7 +150,8 @@ export function ComplianceCockpitClient(
         <aside className="space-y-4 overflow-y-auto">
           <FirmPostureRing categories={categories} />
           <div className="rounded-lg border border-dashed border-surface-border bg-surface-muted p-3 text-[11px] text-text-secondary">
-            Conflict tracking coming soon — review conflicts in meeting flags for now.
+            Conflict tracking coming soon — review conflicts in meeting flags
+            for now.
           </div>
           {profile.advDocumentUrl ? (
             <a
@@ -164,6 +184,12 @@ export function ComplianceCockpitClient(
         </aside>
       </div>
 
+      <ContextualControlEditor
+        category={controlCategory}
+        workspaceId={props.workspaceId}
+        onClose={() => setControlCategory(null)}
+        onSaved={refresh}
+      />
       <SuppressionEvidenceModal
         open={evidenceSlug != null}
         slug={evidenceSlug}

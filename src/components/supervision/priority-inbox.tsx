@@ -25,7 +25,10 @@ export function PriorityInbox({
       {focusId ? <ScrollToFinding findingId={focusId} /> : null}
       <div>
         <Link
-          href={supervisionHref("/supervision", { ...filters, inboxTab: undefined })}
+          href={supervisionHref("/supervision", {
+            ...filters,
+            inboxTab: undefined,
+          })}
           className="text-[12.5px] font-medium text-brand hover:underline"
         >
           ← Command Centre
@@ -37,15 +40,15 @@ export function PriorityInbox({
           CCO Priority Inbox
         </h1>
         <p className="max-w-3xl text-[14px] leading-snug text-text-secondary">
-          Escalated findings requiring human judgment. ComplyVault has not determined
-          that a violation occurred.
+          Escalated findings requiring human judgment. ComplyVault has not
+          determined that a violation occurred.
         </p>
         <p className="text-[16px] font-semibold text-text-primary">
           {inbox.header.selectivityStatement}
         </p>
         <p className="text-[12.5px] text-text-secondary">
-          {inbox.header.priorityFindings} priority findings · {inbox.header.totalProcessed}{" "}
-          processed interactions
+          {inbox.header.priorityFindings} priority findings ·{" "}
+          {inbox.header.totalProcessed} processed interactions
         </p>
       </header>
 
@@ -55,7 +58,10 @@ export function PriorityInbox({
           return (
             <Link
               key={tab}
-              href={supervisionHref("/priority-inbox", { ...filters, inboxTab: tab })}
+              href={supervisionHref("/priority-inbox", {
+                ...filters,
+                inboxTab: tab,
+              })}
               aria-current={active ? "page" : undefined}
               className={
                 active
@@ -72,17 +78,28 @@ export function PriorityInbox({
       {inbox.findings.length === 0 ? (
         <div className="rounded-[12px] border border-dashed border-surface-border bg-surface-card px-4 py-10 text-center">
           <p className="text-[14px] font-medium text-text-primary">
-            No findings require review in this tab
+            {inbox.header.totalProcessed === 0
+              ? "No processed interactions in this reporting window"
+              : "No priority items in this tab"}
           </p>
           <p className="mt-1 text-[13px] text-text-secondary">
-            Cleared and routine sample interactions stay out of the Priority Inbox until a
-            reviewer manually escalates them.
+            An empty priority queue does not establish review coverage. Open
+            daily review to check ingestion, baseline observations, routine
+            samples and unresolved historical work.
+            <Link
+              href="/review-session"
+              className="ml-1 font-medium text-brand underline"
+            >
+              Open daily review
+            </Link>
           </p>
         </div>
       ) : (
-        <PriorityInboxFindingsTable findings={inbox.findings} focusId={focusId} />
+        <PriorityInboxFindingsTable
+          findings={inbox.findings}
+          focusId={focusId}
+        />
       )}
     </div>
   );
 }
-
