@@ -22,9 +22,16 @@ const h = vi.hoisted(() => {
     meetings: MeetingRow[];
     workspacePosture: "RETAIN" | "DISCARD" | null;
     /** When true, meeting.update silently drops writes — simulates a write that did not land. */
+    legalHold: boolean;
     dropWrites: boolean;
     failDelete: boolean;
-  } = { meetings: [], workspacePosture: null, dropWrites: false, failDelete: false };
+  } = {
+    meetings: [],
+    workspacePosture: null,
+    dropWrites: false,
+    failDelete: false,
+    legalHold: false,
+  };
 
   const auditCreates: Array<Record<string, unknown>> = [];
   const deletedKeys: string[] = [];
@@ -57,7 +64,10 @@ const h = vi.hoisted(() => {
           m.fileUrl !== null,
       ).length;
     },
-    update: async (args: { where: { id: string }; data: Record<string, unknown> }) => {
+    update: async (args: {
+      where: { id: string };
+      data: Record<string, unknown>;
+    }) => {
       if (state.dropWrites) return null;
       const row = state.meetings.find((m) => m.id === args.where.id);
       if (row) Object.assign(row, args.data);
@@ -85,10 +95,22 @@ vi.mock("~/server/db", () => ({
       findUnique: async () =>
         h.state.workspacePosture === null && h.state.meetings.length === 0
           ? null
-          : { mediaPosture: h.state.workspacePosture },
+          : {
+              mediaPosture: h.state.workspacePosture,
+              legalHold: h.state.legalHold,
+            },
     },
     $transaction: async (fn: (tx: unknown) => Promise<unknown>) =>
-      fn({ meeting: h.meetingOps, auditEvent: h.auditEventOps }),
+      fn({
+        meeting: h.meetingOps,
+        auditEvent: h.auditEventOps,
+        $queryRaw: async () => [
+          {
+            mediaPosture: h.state.workspacePosture,
+            legalHold: h.state.legalHold,
+          },
+        ],
+      }),
   },
 }));
 
@@ -129,6 +151,7 @@ beforeEach(() => {
   state.workspacePosture = null;
   state.dropWrites = false;
   state.failDelete = false;
+  state.legalHold = false;
   auditCreates.length = 0;
   deletedKeys.length = 0;
 });
@@ -143,7 +166,9 @@ describe("hashCanonicalTranscript", () => {
 
   it("is independent of segment input order", () => {
     const reversed = [...SEGMENTS].reverse();
-    expect(hashCanonicalTranscript(reversed)).toBe(hashCanonicalTranscript(SEGMENTS));
+    expect(hashCanonicalTranscript(reversed)).toBe(
+      hashCanonicalTranscript(SEGMENTS),
+    );
   });
 });
 
@@ -152,7 +177,10 @@ describe("secureTranscript", () => {
     const meeting = addMeeting();
     state.workspacePosture = "RETAIN";
 
-    const result = await secureTranscript({ meetingId: meeting.id, workspaceId: "ws_1" });
+    const result = await secureTranscript({
+      meetingId: meeting.id,
+      workspaceId: "ws_1",
+    });
 
     expect(result.secured).toBe(true);
     expect(meeting.transcriptSha256).toBe(hashCanonicalTranscript(SEGMENTS));
@@ -164,7 +192,10 @@ describe("secureTranscript", () => {
     const meeting = addMeeting();
     state.workspacePosture = "DISCARD";
 
-    const result = await secureTranscript({ meetingId: meeting.id, workspaceId: "ws_1" });
+    const result = await secureTranscript({
+      meetingId: meeting.id,
+      workspaceId: "ws_1",
+    });
 
     expect(result).toEqual({
       secured: true,
@@ -178,7 +209,8 @@ describe("secureTranscript", () => {
     const discardEvent = auditCreates.find(
       (e) =>
         e.action === "MEDIA_DISCARDED" &&
-        (e.metadata as Record<string, unknown>).action === "media_discarded_by_policy",
+        (e.metadata as Record<string, unknown>).action ===
+          "media_discarded_by_policy",
     );
     expect(discardEvent).toBeDefined();
     const metadata = discardEvent!.metadata as Record<string, unknown>;
@@ -191,23 +223,32 @@ describe("secureTranscript", () => {
     state.workspacePosture = "DISCARD";
     state.dropWrites = true;
 
-    const result = await secureTranscript({ meetingId: meeting.id, workspaceId: "ws_1" });
+    const result = await secureTranscript({
+      meetingId: meeting.id,
+      workspaceId: "ws_1",
+    });
 
     expect(result).toEqual({ secured: false, reason: "readback_mismatch" });
     expect(deletedKeys).toHaveLength(0);
     expect(meeting.fileUrl).not.toBeNull();
     const failEvent = auditCreates.find(
       (e) =>
-        (e.metadata as Record<string, unknown>).action === "media_discard_readback_failed",
+        (e.metadata as Record<string, unknown>).action ===
+        "media_discard_readback_failed",
     );
     expect(failEvent).toBeDefined();
   });
 
   it("refuses to secure a failed or missing transcript", async () => {
-    const meeting = addMeeting({ transcript: { error: true, message: "boom" } });
+    const meeting = addMeeting({
+      transcript: { error: true, message: "boom" },
+    });
     state.workspacePosture = "DISCARD";
 
-    const result = await secureTranscript({ meetingId: meeting.id, workspaceId: "ws_1" });
+    const result = await secureTranscript({
+      meetingId: meeting.id,
+      workspaceId: "ws_1",
+    });
 
     expect(result).toEqual({ secured: false, reason: "no_transcript" });
     expect(deletedKeys).toHaveLength(0);
@@ -218,7 +259,10 @@ describe("secureTranscript", () => {
     state.workspacePosture = "DISCARD";
     state.failDelete = true;
 
-    const result = await secureTranscript({ meetingId: meeting.id, workspaceId: "ws_1" });
+    const result = await secureTranscript({
+      meetingId: meeting.id,
+      workspaceId: "ws_1",
+    });
 
     expect(result).toEqual({
       secured: true,
@@ -228,7 +272,9 @@ describe("secureTranscript", () => {
     expect(meeting.fileUrl).not.toBeNull();
     expect(meeting.mediaDiscardedAt).toBeNull();
     const failEvent = auditCreates.find(
-      (e) => (e.metadata as Record<string, unknown>).action === "media_discard_failed",
+      (e) =>
+        (e.metadata as Record<string, unknown>).action ===
+        "media_discard_failed",
     );
     expect(failEvent).toBeDefined();
   });
@@ -289,7 +335,9 @@ describe("purgeRetainedMedia (RETAIN → DISCARD follow-up)", () => {
     expect(withoutTranscript.fileUrl).not.toBeNull();
 
     const summaryEvent = auditCreates.find(
-      (e) => (e.metadata as Record<string, unknown>).action === "retained_media_purge",
+      (e) =>
+        (e.metadata as Record<string, unknown>).action ===
+        "retained_media_purge",
     );
     expect(summaryEvent).toBeDefined();
     expect(summaryEvent!.userId).toBe("user_cco");
@@ -297,8 +345,36 @@ describe("purgeRetainedMedia (RETAIN → DISCARD follow-up)", () => {
     // Per-meeting deletion is attributed to the CCO who requested the purge.
     const discardEvent = auditCreates.find(
       (e) =>
-        (e.metadata as Record<string, unknown>).action === "media_discarded_by_policy",
+        (e.metadata as Record<string, unknown>).action ===
+        "media_discarded_by_policy",
     );
     expect(discardEvent!.userId).toBe("user_cco");
+  });
+});
+
+describe("legal-hold preservation", () => {
+  it("retains source media under DISCARD when a hold is active", async () => {
+    state.workspacePosture = "DISCARD";
+    state.legalHold = true;
+    const row = addMeeting();
+    const result = await secureTranscript({
+      workspaceId: "ws_1",
+      meetingId: row.id,
+    });
+    expect(result.secured).toBe(true);
+    expect(deletedKeys).toHaveLength(0);
+    expect(row.fileUrl).not.toBeNull();
+  });
+  it("rejects explicit retained-media purge under a hold", async () => {
+    state.workspacePosture = "DISCARD";
+    state.legalHold = true;
+    addMeeting();
+    const result = await purgeRetainedMedia({
+      workspaceId: "ws_1",
+      userId: "cco",
+      actorRole: "OWNER_CCO",
+    });
+    expect(result).toMatchObject({ success: false, status: 409 });
+    expect(deletedKeys).toHaveLength(0);
   });
 });

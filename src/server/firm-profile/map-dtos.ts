@@ -1,5 +1,12 @@
-import type { DisclosureCategory, FirmProfile } from "../../../generated/prisma";
-import { getCategoryBySlug, resolveAdvItemRef } from "~/lib/disclosure-categories";
+import { parseContextualControl } from "~/lib/contextual-control";
+import type {
+  DisclosureCategory,
+  FirmProfile,
+} from "../../../generated/prisma";
+import {
+  getCategoryBySlug,
+  resolveAdvItemRef,
+} from "~/lib/disclosure-categories";
 import type {
   DisclosureCategoryDto,
   FirmProfileDto,
@@ -26,7 +33,9 @@ export function mapFirmProfileDto(
   };
 }
 
-export function mapDisclosureCategoryDto(cat: DisclosureCategory): DisclosureCategoryDto {
+export function mapDisclosureCategoryDto(
+  cat: DisclosureCategory,
+): DisclosureCategoryDto {
   const def = getCategoryBySlug(cat.slug);
   return {
     slug: cat.slug,
@@ -35,24 +44,23 @@ export function mapDisclosureCategoryDto(cat: DisclosureCategory): DisclosureCat
     neverSuppress: def?.neverSuppress ?? false,
     status: cat.status,
     suppressionEvidence: cat.suppressionEvidence,
+    controlConfig: parseContextualControl(cat.controlConfig),
     advItemRef: resolveAdvItemRef(cat.advItemRef, cat.slug),
     advPage: cat.advPage,
     description: def?.description ?? "",
   };
 }
 
-export function mapSuppressionLogDto(
-  entry: {
-    id: string;
-    categorySlug: string;
-    action: "ACTIVATED" | "DEACTIVATED";
-    previousStatus: DisclosureCategory["status"] | null;
-    newStatus: DisclosureCategory["status"];
-    evidenceSnapshot: string | null;
-    createdAt: Date;
-    meetingId: string | null;
-  },
-): SuppressionLogEntryDto {
+export function mapSuppressionLogDto(entry: {
+  id: string;
+  categorySlug: string;
+  action: "ACTIVATED" | "DEACTIVATED";
+  previousStatus: DisclosureCategory["status"] | null;
+  newStatus: DisclosureCategory["status"];
+  evidenceSnapshot: string | null;
+  createdAt: Date;
+  meetingId: string | null;
+}): SuppressionLogEntryDto {
   const def = getCategoryBySlug(entry.categorySlug);
   return {
     id: entry.id,

@@ -6,7 +6,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Badge } from "~/components/ui/badge";
 import { roleLabelForWorkspace } from "~/lib/workspace-display";
@@ -53,7 +59,9 @@ export function WorkspaceSettingsForm({
   currentUserId: string;
 }) {
   const router = useRouter();
-  const [retentionYears, setRetentionYears] = useState(workspace.retentionYears);
+  const [retentionYears, setRetentionYears] = useState(
+    workspace.retentionYears,
+  );
   const [fiscalYearEndMonth, setFiscalYearEndMonth] = useState(
     workspace.fiscalYearEndMonth ?? 12,
   );
@@ -90,7 +98,9 @@ export function WorkspaceSettingsForm({
       const data = await response.json();
       if (!response.ok) {
         throw new Error(
-          typeof data.error === "string" ? data.error : "Failed to update settings",
+          typeof data.error === "string"
+            ? data.error
+            : "Failed to update settings",
         );
       }
 
@@ -110,9 +120,12 @@ export function WorkspaceSettingsForm({
     setIsRemoving(userId);
     setError(null);
     try {
-      const response = await fetch(`/api/workspaces/${workspace.id}/members/${userId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/workspaces/${workspace.id}/members/${userId}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Failed to remove member");
@@ -129,12 +142,12 @@ export function WorkspaceSettingsForm({
     workspace.billingStatus === "PILOT"
       ? "Pilot"
       : workspace.billingStatus === "TRIALING"
-      ? "Trialing"
-      : workspace.billingStatus === "ACTIVE"
-      ? "Active"
-      : workspace.billingStatus === "PAST_DUE"
-      ? "Past Due"
-      : "Canceled";
+        ? "Trialing"
+        : workspace.billingStatus === "ACTIVE"
+          ? "Active"
+          : workspace.billingStatus === "PAST_DUE"
+            ? "Past Due"
+            : "Canceled";
 
   return (
     <div className="space-y-6">
@@ -145,15 +158,17 @@ export function WorkspaceSettingsForm({
         <CardContent>
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <dt className="text-sm font-medium text-muted-foreground">Workspace Name</dt>
+              <dt className="text-sm font-medium text-muted-foreground">
+                Workspace Name
+              </dt>
               <dd className="mt-1 text-sm">{workspace.name}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-muted-foreground">Billing Status</dt>
+              <dt className="text-sm font-medium text-muted-foreground">
+                Billing Status
+              </dt>
               <dd className="mt-1">
-                <Badge variant="secondary">
-                  {billingLabel}
-                </Badge>
+                <Badge variant="secondary">{billingLabel}</Badge>
               </dd>
             </div>
           </dl>
@@ -170,7 +185,9 @@ export function WorkspaceSettingsForm({
         <CardContent>
           <div className="space-y-4">
             <Button asChild>
-              <Link href={`/workspaces/${workspace.id}/invite`}>Invite Team Members</Link>
+              <Link href={`/workspaces/${workspace.id}/invite`}>
+                Invite Team Members
+              </Link>
             </Button>
             <div className="space-y-2">
               {members.map((member) => {
@@ -200,7 +217,9 @@ export function WorkspaceSettingsForm({
                           disabled={isRemoving === member.userId}
                           onClick={() => handleRemoveMember(member.userId)}
                         >
-                          {isRemoving === member.userId ? "Removing..." : "Remove"}
+                          {isRemoving === member.userId
+                            ? "Removing..."
+                            : "Remove"}
                         </Button>
                       )}
                     </div>
@@ -218,25 +237,29 @@ export function WorkspaceSettingsForm({
         <CardHeader>
           <CardTitle>Retention & Legal Hold</CardTitle>
           <CardDescription>
-            Retention is measured from fiscal year end (Rule 204-2). Retention years
-            can be increased but never shortened.
+            Retention is measured from fiscal year end (Rule 204-2). Retention
+            years can be increased but never shortened.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="retentionYears">Retention years (minimum 5)</Label>
+              <Label htmlFor="retentionYears">
+                Retention years (minimum 5)
+              </Label>
               <Input
                 id="retentionYears"
                 type="number"
                 min={workspace.retentionYears}
                 max={25}
                 value={retentionYears}
-                onChange={(e) => setRetentionYears(parseInt(e.target.value, 10))}
+                onChange={(e) =>
+                  setRetentionYears(parseInt(e.target.value, 10))
+                }
               />
               <p className="text-xs text-muted-foreground">
-                Current floor: {workspace.retentionYears} years. Reducing below this
-                value is rejected.
+                Current floor: {workspace.retentionYears} years. Reducing below
+                this value is rejected.
               </p>
             </div>
 
@@ -246,7 +269,9 @@ export function WorkspaceSettingsForm({
                 id="fiscalYearEndMonth"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={fiscalYearEndMonth}
-                onChange={(e) => setFiscalYearEndMonth(parseInt(e.target.value, 10))}
+                onChange={(e) =>
+                  setFiscalYearEndMonth(parseInt(e.target.value, 10))
+                }
               >
                 {MONTH_OPTIONS.map((m) => (
                   <option key={m.value} value={m.value}>
@@ -283,8 +308,9 @@ export function WorkspaceSettingsForm({
                   Legal Hold
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Flag only in Phase 1 — purge enforcement ships with CV-TR-05. When
-                  enabled later, it will prevent deletion after retention expiry.
+                  Blocks source-media disposal and retained-media purge in
+                  ComplyVault. External archive policies and storage lifecycle
+                  rules must also preserve held records.
                 </p>
               </div>
             </div>
@@ -303,7 +329,9 @@ export function WorkspaceSettingsForm({
 
             {success && (
               <Alert>
-                <AlertDescription>Settings updated successfully</AlertDescription>
+                <AlertDescription>
+                  Settings updated successfully
+                </AlertDescription>
               </Alert>
             )}
 
@@ -316,4 +344,3 @@ export function WorkspaceSettingsForm({
     </div>
   );
 }
-

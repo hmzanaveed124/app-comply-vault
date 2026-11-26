@@ -10,19 +10,26 @@ export const runtime = "nodejs";
 
 export async function POST(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   try {
     const access = await requireAppAccess();
     if (!access.ok) {
-      return Response.json({ success: false, error: access.error }, { status: access.status });
+      return Response.json(
+        { success: false, error: access.error },
+        { status: access.status },
+      );
     }
     const { session, workspaceId } = access;
 
     if (!isCcoActor(session.user.role)) {
       return Response.json(
-        { success: false, error: "Only the CCO (workspace owner) can sign off compliance review" },
-        { status: 403 }
+        {
+          success: false,
+          error:
+            "Only the CCO (workspace owner) can sign off compliance review",
+        },
+        { status: 403 },
       );
     }
 
@@ -33,7 +40,10 @@ export async function POST(
     });
 
     if (!meeting) {
-      return Response.json({ success: false, error: "Meeting not found" }, { status: 404 });
+      return Response.json(
+        { success: false, error: "Meeting not found" },
+        { status: 404 },
+      );
     }
 
     if (!meetingAllowsCcoSignOff(meeting.status)) {
@@ -42,17 +52,22 @@ export async function POST(
           success: false,
           error: `Meeting must be CM_REVIEWED. Current: ${meeting.status}`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    if (hasPendingCcoEscalations(meeting.flags)) {
+    if (
+      meeting.flags.some(
+        (flag) => !["CLOSED", "CLOSED_ACCEPTED_RISK"].includes(flag.status),
+      )
+    ) {
       return Response.json(
         {
           success: false,
-          error: "Resolve or accept all escalated flags before CCO sign-off",
+          error:
+            "Complete remediation and verification, or document a no-finding / accepted-risk decision for every concern before CCO sign-off",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -83,10 +98,13 @@ export async function POST(
         },
       });
 
-      const nextVersion = ((await tx.version.findFirst({
-        where: { meetingId: meeting.id },
-        orderBy: { version: "desc" },
-      }))?.version ?? 0) + 1;
+      const nextVersion =
+        ((
+          await tx.version.findFirst({
+            where: { meetingId: meeting.id },
+            orderBy: { version: "desc" },
+          })
+        )?.version ?? 0) + 1;
 
       await tx.version.create({
         data: {
@@ -114,8 +132,11 @@ export async function POST(
   } catch (e) {
     console.error("cco-signoff:", e);
     return Response.json(
-      { success: false, error: e instanceof Error ? e.message : "Unknown error" },
-      { status: 500 }
+      {
+        success: false,
+        error: e instanceof Error ? e.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }

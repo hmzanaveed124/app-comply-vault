@@ -1,3 +1,4 @@
+import { parseContextualControl } from "~/lib/contextual-control";
 import type { DisclosureCategoryStatus } from "../../../generated/prisma";
 import { db } from "~/server/db";
 import type { DisclosureProfileInput } from "~/server/flags/missing-disclosure";
@@ -26,5 +27,20 @@ export async function getDisclosureProfileForWorkspace(
     }
   }
 
-  return { statusBySlug, suppressionEvidenceBySlug };
+  const controls = profile.approvedAt
+    ? profile.disclosureCategories.flatMap((cat) => {
+        const config = parseContextualControl(cat.controlConfig);
+        return config
+          ? [
+              {
+                slug: cat.slug,
+                config,
+                approvedAt: profile.approvedAt!.toISOString(),
+                approvedByUserId: profile.approvedByUserId,
+              },
+            ]
+          : [];
+      })
+    : [];
+  return { statusBySlug, suppressionEvidenceBySlug, controls };
 }

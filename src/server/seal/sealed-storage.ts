@@ -4,7 +4,6 @@
  */
 
 import {
-  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -128,30 +127,12 @@ export async function getSealedObject(packHash: string): Promise<Buffer> {
  * Attempt delete before expiry — must fail under Object Lock.
  * Used by tests / ops probes; never call from product finalize paths.
  */
-export async function tryDeleteSealedObject(packHash: string): Promise<{
-  ok: boolean;
-  error?: string;
-}> {
-  const bucket = env.SEALED_S3_BUCKET_NAME;
-  if (!bucket) {
-    return { ok: false, error: "SEALED_S3_BUCKET_NAME not set" };
-  }
-
-  try {
-    const client = getSealedS3Client();
-    await client.send(
-      new DeleteObjectCommand({
-        Bucket: bucket,
-        Key: sealedObjectKey(packHash),
-      }),
-    );
-    return { ok: true };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "delete failed";
-    console.error("Sealed object delete failed (expected under Object Lock):", {
-      packHashPrefix: packHash.slice(0, 12),
-      message,
-    });
-    return { ok: false, error: message };
-  }
+export async function tryDeleteSealedObject(
+  _packHash: string,
+): Promise<{ ok: boolean; error?: string }> {
+  return {
+    ok: false,
+    error:
+      "Sealed-record deletion probes are disabled in the application. Storage retention must be verified through the authorised storage administration process.",
+  };
 }

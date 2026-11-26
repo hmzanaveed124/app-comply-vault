@@ -6,12 +6,10 @@
  */
 
 import { db } from "~/server/db";
-import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
+import { signedJob } from "~/server/signed-job";
 import { z } from "zod";
 import { buildAuditPackZipForMeeting } from "~/server/export/build-audit-pack-for-meeting";
-import {
-  depositCustodyFooter,
-} from "~/server/export/seal-metadata";
+import { depositCustodyFooter } from "~/server/export/seal-metadata";
 import { getValidAccessTokenForProvider } from "~/server/integrations/token-refresh";
 import { uploadDriveItem } from "~/server/integrations/sharepoint/graph-upload";
 
@@ -77,12 +75,18 @@ async function handler(request: Request): Promise<Response> {
     return Response.json({ ok: true, skipped: "already_deposited" });
   }
   if (!credential || credential.status !== "CONNECTED" || !intConfig) {
-    return Response.json({ error: "SharePoint not connected" }, { status: 400 });
+    return Response.json(
+      { error: "SharePoint not connected" },
+      { status: 400 },
+    );
   }
 
   const cfg = (intConfig.config as SharePointConfig) ?? {};
   const driveId = cfg.driveId;
-  const rootFolder = (cfg.rootFolder ?? "ComplyVault").replace(/^\/+|\/+$/g, "");
+  const rootFolder = (cfg.rootFolder ?? "ComplyVault").replace(
+    /^\/+|\/+$/g,
+    "",
+  );
   if (!driveId) {
     return Response.json(
       { error: "SharePoint drive not configured" },
@@ -212,7 +216,11 @@ async function handler(request: Request): Promise<Response> {
 
     await db.integrationConfig.update({
       where: { id: intConfig.id },
-      data: { lastSyncAt: new Date(), lastErrorAt: null, lastErrorMessage: null },
+      data: {
+        lastSyncAt: new Date(),
+        lastErrorAt: null,
+        lastErrorMessage: null,
+      },
     });
 
     await db.integrationSyncLog.create({
@@ -222,12 +230,17 @@ async function handler(request: Request): Promise<Response> {
         provider: "SHAREPOINT",
         action: "sharepoint_upload",
         status: "success",
+        externalId: zipResult.itemId,
         attempts: 1,
         completedAt: new Date(),
       },
     });
 
-    return Response.json({ ok: true, webUrl: zipResult.webUrl, sealId: seal.id });
+    return Response.json({
+      ok: true,
+      webUrl: zipResult.webUrl,
+      sealId: seal.id,
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "upload failed";
     await db.integrationConfig.update({
@@ -252,13 +265,4 @@ async function handler(request: Request): Promise<Response> {
   }
 }
 
-export const POST = (() => {
-  const isProduction = process.env.NODE_ENV === "production";
-  const hasSigningKeys = !!(
-    process.env.QSTASH_CURRENT_SIGNING_KEY || process.env.QSTASH_NEXT_SIGNING_KEY
-  );
-  if (isProduction && hasSigningKeys) {
-    return verifySignatureAppRouter(handler);
-  }
-  return handler;
-})();
+export const POST = signedJob(handler);

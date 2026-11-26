@@ -1,7 +1,10 @@
 "use client";
 
 import { Lock } from "lucide-react";
-import { NEVER_SUPPRESS_SLUGS, getCategoriesBySection } from "~/lib/disclosure-categories";
+import {
+  NEVER_SUPPRESS_SLUGS,
+  getCategoriesBySection,
+} from "~/lib/disclosure-categories";
 import type { DisclosureCategoryDto } from "~/lib/firm-profile-types";
 import { DisclosureCard } from "./DisclosureCard";
 
@@ -35,7 +38,7 @@ export function DisclosureGrid({
       <div className="flex flex-wrap items-center gap-2 rounded-md bg-semantic-danger px-3 py-2 text-white">
         <Lock className="h-4 w-4 shrink-0" aria-hidden />
         <span className="text-[12px] font-medium">
-          Never-suppress — require verbal disclosure in every meeting
+          Contextual review — assess applicability and supporting evidence
         </span>
         {neverSuppressNames.map((name) => (
           <span

@@ -896,6 +896,7 @@ model IntegrationSyncLog {
   provider           IntegrationProvider
   action             String   // note, upload, envelope, etc.
   status             String   // pending, success, failed
+  externalId         String?  // Provider acknowledgement; never synthesized from a queue id
   attempts           Int      @default(0)
   errorMessage       String?  @db.Text
   createdAt          DateTime @default(now())
@@ -967,6 +968,8 @@ model DisclosureCategory {
   slug                String
   status              DisclosureCategoryStatus @default(ACTIVE)
   suppressionEvidence String?
+  /// Versioned contextual review instructions; changes require profile reapproval.
+  controlConfig       Json?
   advItemRef          String?
   advPage             Int?
   description         String?

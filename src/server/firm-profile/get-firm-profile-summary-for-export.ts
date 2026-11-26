@@ -3,7 +3,7 @@ import type { FirmProfileExportSectionDto } from "~/lib/firm-profile-types";
 import { db } from "~/server/db";
 
 const EXPORT_STATEMENT =
-  "The following disclosure categories are suppressed at the firm level and are not flagged in individual meeting reviews.";
+  "Legacy category exceptions are listed for historical context only. They do not suppress new transcript observations or establish adequate disclosure. Applicable contextual controls and their approval versions are preserved with new observations.";
 
 export async function getFirmProfileSummaryForExport(
   workspaceId: string,
@@ -37,8 +37,12 @@ export async function getFirmProfileSummaryForExport(
     evidence: c.suppressionEvidence ?? "",
   }));
 
-  const lastApproved = profile.versions.find((v) => v.versionType === "APPROVED");
-  const initialSetup = profile.versions.find((v) => v.versionType === "INITIAL_SETUP");
+  const lastApproved = profile.versions.find(
+    (v) => v.versionType === "APPROVED",
+  );
+  const initialSetup = profile.versions.find(
+    (v) => v.versionType === "INITIAL_SETUP",
+  );
 
   let warning: string | null = null;
   let versionReference: string | null = null;
@@ -46,8 +50,7 @@ export async function getFirmProfileSummaryForExport(
   let approvingCcoName: string | null = profile.ccoName;
 
   if (!profile.approvedAt) {
-    warning =
-      "Firm disclosure profile has not been formally approved.";
+    warning = "Firm disclosure profile has not been formally approved.";
     versionReference = initialSetup?.id ?? null;
   } else if (lastApproved) {
     versionReference = lastApproved.id;

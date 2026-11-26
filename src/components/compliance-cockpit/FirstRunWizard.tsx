@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertCircle,
@@ -8,24 +8,24 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
-} from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { Label } from '~/components/ui/label';
-import { DisclosureGrid } from './DisclosureGrid';
-import { FirmConfirmationCard } from './FirmConfirmationCard';
-import { SuppressionEvidenceModal } from './SuppressionEvidenceModal';
-import type { DisclosureCategoryDto } from '~/lib/firm-profile-types';
-import { DISCLOSURE_CATEGORY_CATALOG } from '~/lib/disclosure-categories';
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { DisclosureGrid } from "./DisclosureGrid";
+import { FirmConfirmationCard } from "./FirmConfirmationCard";
+import { SuppressionEvidenceModal } from "./SuppressionEvidenceModal";
+import type { DisclosureCategoryDto } from "~/lib/firm-profile-types";
+import { DISCLOSURE_CATEGORY_CATALOG } from "~/lib/disclosure-categories";
 import {
   hasRequiredFirmIdentity,
   validateStep1Client,
   type Step1FieldErrors,
   type Step1SoftWarnings,
-} from '~/lib/firm-profile-schemas';
-import type { IapdFirmLookupResult } from '~/lib/iapd-types';
-import { useCrdLookup, type IapdLookupStatus } from '~/hooks/useCrdLookup';
+} from "~/lib/firm-profile-schemas";
+import type { IapdFirmLookupResult } from "~/lib/iapd-types";
+import { useCrdLookup, type IapdLookupStatus } from "~/hooks/useCrdLookup";
 
 type FirstRunWizardProps = {
   workspaceId: string;
@@ -46,7 +46,7 @@ function buildDefaultCategories(): DisclosureCategoryDto[] {
     displayName: def.displayName,
     section: def.section,
     neverSuppress: def.neverSuppress,
-    status: def.neverSuppress ? 'NEVER_SUPPRESS' : 'ACTIVE',
+    status: def.neverSuppress ? "NEVER_SUPPRESS" : "ACTIVE",
     suppressionEvidence: null,
     advItemRef: def.advItemRef,
     advPage: null,
@@ -76,13 +76,13 @@ export function FirstRunWizard({
       ? 2
       : 1,
   );
-  const [crdNumber, setCrdNumber] = useState(initialDraft?.crdNumber ?? '');
-  const [ccoName, setCcoName] = useState(initialDraft?.ccoName ?? '');
+  const [crdNumber, setCrdNumber] = useState(initialDraft?.crdNumber ?? "");
+  const [ccoName, setCcoName] = useState(initialDraft?.ccoName ?? "");
   const [advFilingDate, setAdvFilingDate] = useState(
-    initialDraft?.advFilingDate?.slice(0, 10) ?? '',
+    initialDraft?.advFilingDate?.slice(0, 10) ?? "",
   );
-  const [aumUsd, setAumUsd] = useState(initialDraft?.aumUsd ?? '');
-  const [advDocumentUrl] = useState(initialDraft?.advDocumentUrl ?? '');
+  const [aumUsd, setAumUsd] = useState(initialDraft?.aumUsd ?? "");
+  const [advDocumentUrl] = useState(initialDraft?.advDocumentUrl ?? "");
   const [riskFlags, setRiskFlags] = useState<string[]>(
     initialDraft?.riskFlags ?? [],
   );
@@ -92,13 +92,13 @@ export function FirstRunWizard({
   const [neverSuppressAck, setNeverSuppressAck] = useState(false);
   const [evidenceSlug, setEvidenceSlug] = useState<string | null>(null);
   const [pendingToggles, setPendingToggles] = useState<
-    Array<{ slug: string; status: 'SUPPRESSING'; suppressionEvidence: string }>
+    Array<{ slug: string; status: "SUPPRESSING"; suppressionEvidence: string }>
   >([]);
   const [fieldErrors, setFieldErrors] = useState<Step1FieldErrors>({});
   const [, setSoftWarnings] = useState<Step1SoftWarnings>({});
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [iapdLookup, setIapdLookup] = useState<IapdLookupStatus>('idle');
+  const [iapdLookup, setIapdLookup] = useState<IapdLookupStatus>("idle");
   const [iapdFirm, setIapdFirm] = useState<IapdFirmLookupResult | null>(null);
 
   const { lookup, error: crdLookupError } = useCrdLookup({
@@ -110,9 +110,9 @@ export function FirstRunWizard({
     setIapdLookup,
   });
 
-  const isLookupLoading = iapdLookup === 'loading';
-  const isLookupFound = iapdLookup === 'found' && iapdFirm != null;
-  const isLookupResolved = iapdLookup === 'not_found' || iapdLookup === 'error';
+  const isLookupLoading = iapdLookup === "loading";
+  const isLookupFound = iapdLookup === "found" && iapdFirm != null;
+  const isLookupResolved = iapdLookup === "not_found" || iapdLookup === "error";
   const ccoFromIapd = Boolean(iapdFirm?.ccoName);
 
   const saveStep1 = async (): Promise<void> => {
@@ -131,10 +131,10 @@ export function FirstRunWizard({
     setSaving(true);
     setError(null);
     const res = await fetch(`/api/workspaces/${workspaceId}/firm-profile`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        status: 'DRAFT',
+        status: "DRAFT",
         crdNumber: crdNumber.trim(),
         ccoName: ccoName.trim(),
         advFilingDate: advFilingDate
@@ -149,7 +149,7 @@ export function FirstRunWizard({
     setSaving(false);
     if (!res.ok) {
       const data = (await res.json()) as { error?: string };
-      setError(data.error ?? 'Could not save firm details.');
+      setError(data.error ?? "Could not save firm details.");
       return;
     }
     setStep(2);
@@ -158,11 +158,11 @@ export function FirstRunWizard({
   const handleToggleRequest = (slug: string): void => {
     const cat = categories.find((c) => c.slug === slug);
     if (!cat || cat.neverSuppress) return;
-    if (cat.status === 'SUPPRESSING') {
+    if (cat.status === "SUPPRESSING") {
       setCategories((prev) =>
         prev.map((c) =>
           c.slug === slug
-            ? { ...c, status: 'ACTIVE', suppressionEvidence: null }
+            ? { ...c, status: "ACTIVE", suppressionEvidence: null }
             : c,
         ),
       );
@@ -177,7 +177,7 @@ export function FirstRunWizard({
     setCategories((prev) =>
       prev.map((c) =>
         c.slug === evidenceSlug
-          ? { ...c, status: 'SUPPRESSING', suppressionEvidence: evidence }
+          ? { ...c, status: "SUPPRESSING", suppressionEvidence: evidence }
           : c,
       ),
     );
@@ -185,7 +185,7 @@ export function FirstRunWizard({
       ...prev.filter((t) => t.slug !== evidenceSlug),
       {
         slug: evidenceSlug,
-        status: 'SUPPRESSING',
+        status: "SUPPRESSING",
         suppressionEvidence: evidence,
       },
     ]);
@@ -194,14 +194,14 @@ export function FirstRunWizard({
 
   const completeWizard = async (): Promise<void> => {
     if (!neverSuppressAck) {
-      setError('Please acknowledge never-suppress requirements.');
+      setError("Please acknowledge never-suppress requirements.");
       return;
     }
     setSaving(true);
     setError(null);
     const res = await fetch(`/api/workspaces/${workspaceId}/firm-profile`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         neverSuppressAcknowledged: true,
         categoryToggles: pendingToggles,
@@ -210,7 +210,7 @@ export function FirstRunWizard({
     setSaving(false);
     if (!res.ok) {
       const data = (await res.json()) as { error?: string };
-      setError(data.error ?? 'Could not complete setup.');
+      setError(data.error ?? "Could not complete setup.");
       return;
     }
     onComplete();
@@ -270,12 +270,12 @@ export function FirstRunWizard({
                       crdNumber: undefined,
                     }));
                   }
-                  setIapdLookup('idle');
+                  setIapdLookup("idle");
                   setIapdFirm(null);
                 }}
                 onBlur={() => void lookup(crdNumber)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     e.preventDefault();
                     void lookup(crdNumber);
                   }
@@ -297,7 +297,7 @@ export function FirstRunWizard({
             </div>
             <p id="crd-help" className="mt-2 text-[12px] text-text-muted">
               Your firm&apos;s Central Registration Depository number (4–7
-              digits).{' '}
+              digits).{" "}
               <a
                 href="https://adviserinfo.sec.gov/"
                 target="_blank"
@@ -355,7 +355,7 @@ export function FirstRunWizard({
               <FirmConfirmationCard
                 firm={iapdFirm}
                 ccoName={ccoName}
-                ccoSource={ccoFromIapd ? 'iapd' : 'manual'}
+                ccoSource={ccoFromIapd ? "iapd" : "manual"}
                 ccoError={fieldErrors.ccoName}
                 onCcoNameChange={(value) => {
                   setCcoName(value);
@@ -379,8 +379,8 @@ export function FirstRunWizard({
                 />
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-medium text-warning-text">
-                    {iapdLookup === 'not_found'
-                      ? 'No matching firm found in SEC IAPD'
+                    {iapdLookup === "not_found"
+                      ? "No matching firm found in SEC IAPD"
                       : "Couldn't reach SEC IAPD"}
                   </h3>
                   <p className="mt-0.5 text-[12px] text-warning-text">
@@ -458,7 +458,7 @@ export function FirstRunWizard({
           <div className="mt-6 flex items-center justify-end gap-3">
             {!isLookupFound && !showManualFallback ? (
               <p className="mr-auto text-[12px] text-text-muted">
-                Don&apos;t have a CRD on hand? Look it up on{' '}
+                Don&apos;t have a CRD on hand? Look it up on{" "}
                 <a
                   href="https://adviserinfo.sec.gov/"
                   target="_blank"
@@ -484,10 +484,10 @@ export function FirstRunWizard({
                 <ArrowRight className="h-4 w-4" aria-hidden />
               )}
               {isLookupFound
-                ? 'Yes, set up this firm'
+                ? "Yes, set up this firm"
                 : showManualFallback
-                  ? 'Continue with manual entry'
-                  : 'Continue'}
+                  ? "Continue with manual entry"
+                  : "Continue"}
             </Button>
           </div>
         </div>
@@ -501,12 +501,13 @@ export function FirstRunWizard({
         Review disclosure categories
       </h1>
       <p className="mb-4 text-sm text-text-secondary">
-        Step 2 — Toggle suppressible items as needed.
+        Step 2 — Review the baseline categories. Configure contextual
+        instructions after setup, then approve the firm profile.
       </p>
       <DisclosureGrid
         categories={categories}
         crdNumber={crdNumber.trim() || null}
-        canWrite
+        canWrite={false}
         onToggleRequest={handleToggleRequest}
       />
       <label className="mt-6 flex items-start gap-2 text-sm">
@@ -518,7 +519,8 @@ export function FirstRunWizard({
         />
         <span>
           I understand Conflicts of Interest, Insurance Comp., and Disciplinary
-          History require verbal disclosure in every client meeting.
+          History must be assessed when relevant under your firm policy; verbal
+          repetition in every meeting is not assumed.
         </span>
       </label>
       {error ? (

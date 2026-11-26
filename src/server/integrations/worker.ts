@@ -3,12 +3,14 @@
  * Processes BullMQ jobs; when adapters exist, dispatches to them
  */
 
+import { adapters } from "./index";
+import type { IntegrationAdapter } from "./types";
 import { db } from "~/server/db";
 import { createIntegrationWorker, type IntegrationJobPayload } from "./queue";
 import type { IntegrationProvider } from "../../../generated/prisma";
 
 export async function processIntegrationJob(
-  job: import("bullmq").Job<IntegrationJobPayload>
+  job: import("bullmq").Job<IntegrationJobPayload>,
 ): Promise<void> {
   const { workspaceId, meetingId, provider, action, payload } = job.data;
 
@@ -28,13 +30,32 @@ export async function processIntegrationJob(
   });
 
   try {
-    // Adapters will be registered when built (Zoom, Redtail, etc.)
-    // For now, no adapters exist — job "succeeds" as no-op
-    // When adapter exists: await adapters[provider].sync({ workspaceId, meetingId, payload });
+    const adapter = (Object.values(adapters) as IntegrationAdapter[]).find(
+      (a) => a.provider === provider,
+    );
+    if (!adapter)
+      throw new Error(
+        `No outbound adapter is registered for ${provider}. Delivery was not attempted.`,
+      );
+    const meeting = await db.meeting.findFirst({
+      where: { id: meetingId, workspaceId },
+      select: { id: true },
+    });
+    if (!meeting) throw new Error("Meeting is not available in this workspace");
+    const result = await adapter.sync({ workspaceId, meetingId, payload });
+    if (!result.success || !result.externalId)
+      throw new Error(
+        result.error ??
+          "Provider did not acknowledge delivery with an external record ID",
+      );
 
     await db.integrationSyncLog.update({
       where: { id: logEntry.id },
-      data: { status: "success", completedAt: new Date() },
+      data: {
+        status: "success",
+        externalId: result.externalId,
+        completedAt: new Date(),
+      },
     });
 
     if (config) {
@@ -48,7 +69,8 @@ export async function processIntegrationJob(
       });
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     await db.integrationSyncLog.update({
       where: { id: logEntry.id },
       data: {
@@ -71,6 +93,8 @@ export async function processIntegrationJob(
   }
 }
 
-export function startIntegrationWorker(): ReturnType<typeof createIntegrationWorker> {
+export function startIntegrationWorker(): ReturnType<
+  typeof createIntegrationWorker
+> {
   return createIntegrationWorker(processIntegrationJob);
 }

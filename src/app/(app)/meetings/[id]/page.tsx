@@ -19,7 +19,11 @@ import {
   validateEvidenceCoverage,
 } from "~/server/extraction/evidence";
 import TranscriptEditor from "./transcript-editor";
-import { isAdvisorActor, isComplianceActor, flagIsCmTriaged } from "~/lib/meeting-workflow";
+import {
+  isAdvisorActor,
+  isComplianceActor,
+  flagIsCmTriaged,
+} from "~/lib/meeting-workflow";
 import { MeetingHeaderCard } from "~/components/meetings/meeting-header-card";
 import { MeetingWorkflowProgress } from "~/components/meetings/meeting-workflow-progress";
 import { ReviewActionBar } from "~/components/meetings/review-action-bar";
@@ -28,11 +32,17 @@ import { MeetingTranscriptSection } from "~/components/meetings/meeting-transcri
 import MeetingFlagsWorkspace from "./meeting-flags-workspace";
 import { buildMeetingSyncToken } from "~/lib/meeting-sync-token";
 import { MeetingStaleBanner } from "~/components/meetings/meeting-stale-banner";
-import { SignOffSummary, buildSignOffRowsFromMeeting } from "~/components/meetings/sign-off-summary";
+import {
+  SignOffSummary,
+  buildSignOffRowsFromMeeting,
+} from "~/components/meetings/sign-off-summary";
 import { MeetingAuditTrail } from "~/components/meetings/meeting-audit-trail";
 import { ExportCard } from "~/components/meetings/export-card";
 import { buildMeetingAuditTrailEntries } from "~/lib/meeting-audit-trail";
-import { parseCmReviewSummary, computeCmReviewSummaryFromFlags } from "~/lib/cm-review-summary";
+import {
+  parseCmReviewSummary,
+  computeCmReviewSummaryFromFlags,
+} from "~/lib/cm-review-summary";
 import { redirectPathForMissingWorkspace } from "~/server/workspace/no-workspace-redirect";
 import { SupersedeMeetingButton } from "~/components/meetings/supersede-meeting-button";
 import { isSupersessionMutationBlocked } from "~/server/meetings/supersession-guards";
@@ -49,7 +59,10 @@ export default async function MeetingDetailPage({
       redirect("/auth/signin");
     }
     redirect(
-      await redirectPathForMissingWorkspace(session.user.id, session.user.email),
+      await redirectPathForMissingWorkspace(
+        session.user.id,
+        session.user.email,
+      ),
     );
   }
 
@@ -75,55 +88,64 @@ export default async function MeetingDetailPage({
   // Parse extraction data if available
   const extraction = meeting.extraction as ExtractionData | null | undefined;
 
-  const [flags, syncLogs, configs, zohoCrmCredential, auditEventsRaw] = await Promise.all([
-    db.flag.findMany({
-      where: { meetingId: meeting.id },
-      orderBy: { createdAt: "desc" },
-      include: {
-        resolutionRecord: {
-          include: {
-            tasks: true,
-            evidence: true,
-            verifications: true,
+  const [flags, syncLogs, configs, zohoCrmCredential, auditEventsRaw] =
+    await Promise.all([
+      db.flag.findMany({
+        where: { meetingId: meeting.id },
+        orderBy: { createdAt: "desc" },
+        include: {
+          resolutionRecord: {
+            include: {
+              tasks: true,
+              evidence: true,
+              verifications: true,
+            },
           },
         },
-      },
-    }),
-    db.integrationSyncLog.findMany({
-      where: { meetingId: meeting.id },
-      orderBy: { createdAt: "desc" },
-    }),
-    db.integrationConfig.findMany({
-      where: { workspaceId: session.user.workspaceId },
-      select: { provider: true },
-    }),
-    db.integrationCredential.findUnique({
-      where: {
-        workspaceId_provider: { workspaceId: session.user.workspaceId, provider: "ZOHO_CRM" },
-      },
-    }),
-    db.auditEvent.findMany({
-      where: {
-        workspaceId: session.user.workspaceId,
-        OR: [{ meetingId: meeting.id }, { resourceType: "meeting", resourceId: meeting.id }],
-        action: { not: "VIEW" },
-      },
-      orderBy: { timestamp: "desc" },
-      take: 100,
-      select: {
-        id: true,
-        action: true,
-        userId: true,
-        timestamp: true,
-        metadata: true,
-        resourceType: true,
-        resourceId: true,
-      },
-    }),
-  ]);
+      }),
+      db.integrationSyncLog.findMany({
+        where: { meetingId: meeting.id },
+        orderBy: { createdAt: "desc" },
+      }),
+      db.integrationConfig.findMany({
+        where: { workspaceId: session.user.workspaceId },
+        select: { provider: true },
+      }),
+      db.integrationCredential.findUnique({
+        where: {
+          workspaceId_provider: {
+            workspaceId: session.user.workspaceId,
+            provider: "ZOHO_CRM",
+          },
+        },
+      }),
+      db.auditEvent.findMany({
+        where: {
+          workspaceId: session.user.workspaceId,
+          OR: [
+            { meetingId: meeting.id },
+            { resourceType: "meeting", resourceId: meeting.id },
+          ],
+          action: { not: "VIEW" },
+        },
+        orderBy: { timestamp: "desc" },
+        take: 100,
+        select: {
+          id: true,
+          action: true,
+          userId: true,
+          timestamp: true,
+          metadata: true,
+          resourceType: true,
+          resourceId: true,
+        },
+      }),
+    ]);
 
   const auditUserIds = [
-    ...new Set(auditEventsRaw.map((e) => e.userId).filter((id) => id !== "system")),
+    ...new Set(
+      auditEventsRaw.map((e) => e.userId).filter((id) => id !== "system"),
+    ),
   ];
   const auditUsers =
     auditUserIds.length > 0
@@ -136,7 +158,11 @@ export default async function MeetingDetailPage({
     auditUsers.map((u) => [u.id, u.name ?? u.email ?? "Team member"]),
   );
   const flagTypeById = new Map(flags.map((f) => [f.id, f.type]));
-  const auditTrailEntries = buildMeetingAuditTrailEntries(auditEventsRaw, auditUserNameMap, flagTypeById);
+  const auditTrailEntries = buildMeetingAuditTrailEntries(
+    auditEventsRaw,
+    auditUserNameMap,
+    flagTypeById,
+  );
 
   const cmSummaryParsed = parseCmReviewSummary(meeting.cmReviewSummary);
   const cmSummaryForSignOff =
@@ -145,33 +171,59 @@ export default async function MeetingDetailPage({
 
   const signOffRows = buildSignOffRowsFromMeeting({
     workspaceName: meeting.workspace.name,
-    advisorName: meeting.advisorCertifiedByUser?.name ?? meeting.advisorCertifiedByUser?.email ?? null,
+    advisorName:
+      meeting.advisorCertifiedByUser?.name ??
+      meeting.advisorCertifiedByUser?.email ??
+      null,
     advisorCertifiedAt: meeting.advisorCertifiedAt,
-    cmName: meeting.cmReviewedByUser?.name ?? meeting.cmReviewedByUser?.email ?? null,
+    cmName:
+      meeting.cmReviewedByUser?.name ?? meeting.cmReviewedByUser?.email ?? null,
     cmReviewedAt: meeting.cmReviewedAt,
     cmReviewSummary: cmSummaryForSignOff,
-    ccoName: meeting.ccoSignedOffByUser?.name ?? meeting.ccoSignedOffByUser?.email ?? null,
+    ccoName:
+      meeting.ccoSignedOffByUser?.name ??
+      meeting.ccoSignedOffByUser?.email ??
+      null,
     ccoSignedOffAt: meeting.ccoSignedOffAt,
   });
 
   const syncStatuses = configs.flatMap((c) => {
     const logs = syncLogs.filter((l) => l.provider === c.provider);
     if (logs.length === 0) {
-      return [{ provider: c.provider, action: "sync", status: "Pending" as const, lastSyncAt: null, errorMessage: null }];
+      return [
+        {
+          provider: c.provider,
+          action: "sync",
+          status: "Pending" as const,
+          lastSyncAt: null,
+          errorMessage: null,
+          externalId: null,
+        },
+      ];
     }
-    return logs.map((l) => ({
+    const latestByAction = [
+      ...new Map([...logs].reverse().map((log) => [log.action, log])).values(),
+    ];
+    return latestByAction.map((l) => ({
       provider: c.provider,
       action: l.action,
-      status: (l.status === "success" ? "Synced" : l.status === "failed" ? "Failed" : "Pending") as "Synced" | "Pending" | "Failed",
+      status: (l.status === "success"
+        ? "Synced"
+        : l.status === "failed"
+          ? "Failed"
+          : "Pending") as "Synced" | "Pending" | "Failed",
       lastSyncAt: l.completedAt?.toISOString() ?? null,
       errorMessage: l.errorMessage,
+      externalId: l.externalId,
     }));
   });
 
   const isFlagOpen = (status: string) =>
     status !== "CLOSED" && status !== "CLOSED_ACCEPTED_RISK";
   const openFlags = flags.filter((flag) => isFlagOpen(flag.status));
-  const openCriticalFlags = openFlags.filter((flag) => flag.severity === "CRITICAL");
+  const openCriticalFlags = openFlags.filter(
+    (flag) => flag.severity === "CRITICAL",
+  );
   const openWarningFlags = openFlags.filter((flag) => flag.severity === "WARN");
   const evidenceMap = asEvidenceMapItems(extraction?.evidenceMap);
   const evidenceStats =
@@ -180,17 +232,16 @@ export default async function MeetingDetailPage({
 
   // Parse transcript if available
   const transcript = meeting.transcript as
-    | { segments: TranscriptSegment[] }
-    | null
-    | undefined;
+    { segments: TranscriptSegment[] } | null | undefined;
 
   // Ensure segments are properly serialized (plain objects only)
-  const transcriptSegments = transcript?.segments?.map((seg) => ({
-    startTime: seg.startTime,
-    endTime: seg.endTime,
-    speaker: seg.speaker,
-    text: seg.text,
-  })) ?? [];
+  const transcriptSegments =
+    transcript?.segments?.map((seg) => ({
+      startTime: seg.startTime,
+      endTime: seg.endTime,
+      speaker: seg.speaker,
+      text: seg.text,
+    })) ?? [];
 
   // Log view event
   if (session.user.id) {
@@ -209,21 +260,31 @@ export default async function MeetingDetailPage({
     });
   }
 
-  const topicCount = Array.isArray((extraction as { topics?: unknown[] } | null)?.topics)
+  const topicCount = Array.isArray(
+    (extraction as { topics?: unknown[] } | null)?.topics,
+  )
     ? (extraction as { topics: unknown[] }).topics.length
     : 0;
-  const recommendationCount = Array.isArray((extraction as { recommendations?: unknown[] } | null)?.recommendations)
+  const recommendationCount = Array.isArray(
+    (extraction as { recommendations?: unknown[] } | null)?.recommendations,
+  )
     ? (extraction as { recommendations: unknown[] }).recommendations.length
     : 0;
 
   const flagsAwaitingTriage = flags.filter(
-    (f) => !flagIsCmTriaged({ status: f.status, cmDisposition: f.cmDisposition }),
+    (f) =>
+      !flagIsCmTriaged({ status: f.status, cmDisposition: f.cmDisposition }),
   ).length;
 
   const advisorTranscriptExpanded =
-    (meeting.status === "DRAFT_READY" || meeting.status === "DRAFT") && session.user.role === "ADVISOR";
+    (meeting.status === "DRAFT_READY" || meeting.status === "DRAFT") &&
+    session.user.role === "ADVISOR";
 
-  const initialSyncToken = buildMeetingSyncToken(meeting.status, meeting.updatedAt, flags);
+  const initialSyncToken = buildMeetingSyncToken(
+    meeting.status,
+    meeting.updatedAt,
+    flags,
+  );
 
   const chainMutationBlocked = isSupersessionMutationBlocked(meeting);
   const flagsReadOnly =
@@ -249,7 +310,8 @@ export default async function MeetingDetailPage({
           rationale: flag.resolutionRecord.rationale,
           metadata: flag.resolutionRecord.metadata,
           submittedForVerificationAt:
-            flag.resolutionRecord.submittedForVerificationAt?.toISOString() ?? null,
+            flag.resolutionRecord.submittedForVerificationAt?.toISOString() ??
+            null,
           closedAt: flag.resolutionRecord.closedAt?.toISOString() ?? null,
           overrideReason: flag.resolutionRecord.overrideReason,
           overrideCategory: flag.resolutionRecord.overrideCategory,
@@ -271,13 +333,15 @@ export default async function MeetingDetailPage({
             metadata: item.metadata,
             createdAt: item.createdAt.toISOString(),
           })),
-          verifications: flag.resolutionRecord.verifications.map((verification) => ({
-            id: verification.id,
-            reviewerId: verification.reviewerId,
-            decision: verification.decision,
-            note: verification.note,
-            decidedAt: verification.decidedAt.toISOString(),
-          })),
+          verifications: flag.resolutionRecord.verifications.map(
+            (verification) => ({
+              id: verification.id,
+              reviewerId: verification.reviewerId,
+              decision: verification.decision,
+              note: verification.note,
+              decidedAt: verification.decidedAt.toISOString(),
+            }),
+          ),
         }
       : null,
   }));
@@ -311,19 +375,23 @@ export default async function MeetingDetailPage({
           supersedesId={meeting.supersedesId}
         />
 
-        {meeting.supersedeReason && (meeting.supersededById || meeting.supersedesId) ? (
+        {meeting.supersedeReason &&
+        (meeting.supersededById || meeting.supersedesId) ? (
           <div className="rounded-xl border border-surface-muted bg-surface-muted px-5 py-4 text-[13px] text-text-primary">
             <p className="font-medium text-text-primary">Supersession reason</p>
-            <p className="mt-1 whitespace-pre-wrap">{meeting.supersedeReason}</p>
+            <p className="mt-1 whitespace-pre-wrap">
+              {meeting.supersedeReason}
+            </p>
           </div>
         ) : null}
 
-        {meeting.status === "ADVISOR_CERTIFIED" && isComplianceActor(session.user.role) && (
-          <div className="rounded-xl border border-info-bg bg-info-bg/35 px-5 py-4 text-[13px] text-semantic-info">
-            Awaiting compliance review — {flagsAwaitingTriage} flag{flagsAwaitingTriage === 1 ? "" : "s"}{" "}
-            require triage
-          </div>
-        )}
+        {meeting.status === "ADVISOR_CERTIFIED" &&
+          isComplianceActor(session.user.role) && (
+            <div className="rounded-xl border border-info-bg bg-info-bg/35 px-5 py-4 text-[13px] text-semantic-info">
+              Awaiting compliance review — {flagsAwaitingTriage} flag
+              {flagsAwaitingTriage === 1 ? "" : "s"} require triage
+            </div>
+          )}
 
         {meeting.mediaDiscardedAt && (
           <div className="rounded-xl border border-input bg-muted/40 px-5 py-4 text-[13px] text-muted-foreground">
@@ -345,10 +413,15 @@ export default async function MeetingDetailPage({
           meetingStatus={meeting.status}
           userRole={session.user.role}
           advisorName={
-            meeting.advisorCertifiedByUser?.name ?? meeting.advisorCertifiedByUser?.email ?? null
+            meeting.advisorCertifiedByUser?.name ??
+            meeting.advisorCertifiedByUser?.email ??
+            null
           }
           advisorCertifiedAt={meeting.advisorCertifiedAt?.toISOString() ?? null}
-          flags={flags.map((f) => ({ status: f.status, cmDisposition: f.cmDisposition }))}
+          flags={flags.map((f) => ({
+            status: f.status,
+            cmDisposition: f.cmDisposition,
+          }))}
         />
 
         <section className="space-y-3">
@@ -361,26 +434,30 @@ export default async function MeetingDetailPage({
             readOnlyCompliance={flagsReadOnly}
           />
           {!chainMutationBlocked ? (
-          <ReviewActionBar
-            meetingId={meeting.id}
-            clientName={meeting.clientName}
-            meetingStatus={meeting.status}
-            userRole={session.user.role}
-            flags={flags.map((f) => ({
-              id: f.id,
-              status: f.status,
-              cmDisposition: f.cmDisposition,
-            }))}
-            evidenceCoverage={evidenceStats?.coverage ?? null}
-            editedClaimsCount={editedClaimsCount}
-            openCriticalFlagsCount={openCriticalFlags.length}
-            openWarningFlagsCount={openWarningFlags.length}
-          />
+            <ReviewActionBar
+              meetingId={meeting.id}
+              clientName={meeting.clientName}
+              meetingStatus={meeting.status}
+              userRole={session.user.role}
+              flags={flags.map((f) => ({
+                id: f.id,
+                status: f.status,
+                cmDisposition: f.cmDisposition,
+              }))}
+              evidenceCoverage={evidenceStats?.coverage ?? null}
+              editedClaimsCount={editedClaimsCount}
+              openCriticalFlagsCount={openCriticalFlags.length}
+              openWarningFlagsCount={openWarningFlags.length}
+            />
           ) : null}
         </section>
 
         {!chainMutationBlocked ? (
-          <CcoRevertPanel meetingId={meeting.id} meetingStatus={meeting.status} userRole={session.user.role} />
+          <CcoRevertPanel
+            meetingId={meeting.id}
+            meetingStatus={meeting.status}
+            userRole={session.user.role}
+          />
         ) : null}
 
         {meeting.status === "FINALIZED" &&
@@ -410,7 +487,8 @@ export default async function MeetingDetailPage({
                 />
                 {meeting.zohoCrmNotePostedAt && (
                   <p className="text-xs text-muted-foreground">
-                    CRM note created {meeting.zohoCrmNotePostedAt.toLocaleString()}.
+                    CRM note created{" "}
+                    {meeting.zohoCrmNotePostedAt.toLocaleString()}.
                   </p>
                 )}
               </CardContent>
@@ -437,10 +515,15 @@ export default async function MeetingDetailPage({
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <TranscriptViewer segments={transcriptSegments} />
-                    {(meeting.status === "DRAFT_READY" || meeting.status === "DRAFT") &&
+                    {(meeting.status === "DRAFT_READY" ||
+                      meeting.status === "DRAFT") &&
                       isAdvisorActor(session.user.role) &&
                       transcriptSegments.length > 0 && (
-                        <TranscriptEditor meetingId={meeting.id} segments={transcriptSegments} canEdit />
+                        <TranscriptEditor
+                          meetingId={meeting.id}
+                          segments={transcriptSegments}
+                          canEdit
+                        />
                       )}
                   </CardContent>
                 </Card>
@@ -465,7 +548,8 @@ export default async function MeetingDetailPage({
                         meetingId={meeting.id}
                         extraction={extraction}
                         isReadOnly={
-                          session.user.role === "ADVISOR" || meeting.status === "CCO_SIGNED_OFF"
+                          session.user.role === "ADVISOR" ||
+                          meeting.status === "CCO_SIGNED_OFF"
                         }
                         transcript={transcript}
                         flags={flags.map((flag) => ({
@@ -477,13 +561,20 @@ export default async function MeetingDetailPage({
                         }))}
                       />
                     )}
-                    {meeting.status !== "FINALIZED" && !chainMutationBlocked && (
-                      <ReprocessButton
-                        meetingId={meeting.id}
-                        hasTranscript={!!(transcript && transcript.segments && transcript.segments.length > 0)}
-                        hasExtraction={!!extraction}
-                      />
-                    )}
+                    {meeting.status !== "FINALIZED" &&
+                      !chainMutationBlocked && (
+                        <ReprocessButton
+                          meetingId={meeting.id}
+                          hasTranscript={
+                            !!(
+                              transcript &&
+                              transcript.segments &&
+                              transcript.segments.length > 0
+                            )
+                          }
+                          hasExtraction={!!extraction}
+                        />
+                      )}
                   </CardContent>
                 </Card>
               </>
@@ -519,7 +610,8 @@ export default async function MeetingDetailPage({
                         meetingId={meeting.id}
                         extraction={extraction}
                         isReadOnly={
-                          session.user.role === "ADVISOR" || meeting.status === "CCO_SIGNED_OFF"
+                          session.user.role === "ADVISOR" ||
+                          meeting.status === "CCO_SIGNED_OFF"
                         }
                         transcript={transcript}
                         flags={flags.map((flag) => ({
@@ -531,13 +623,20 @@ export default async function MeetingDetailPage({
                         }))}
                       />
                     )}
-                    {meeting.status !== "FINALIZED" && !chainMutationBlocked && (
-                      <ReprocessButton
-                        meetingId={meeting.id}
-                        hasTranscript={!!(transcript && transcript.segments && transcript.segments.length > 0)}
-                        hasExtraction={!!extraction}
-                      />
-                    )}
+                    {meeting.status !== "FINALIZED" &&
+                      !chainMutationBlocked && (
+                        <ReprocessButton
+                          meetingId={meeting.id}
+                          hasTranscript={
+                            !!(
+                              transcript &&
+                              transcript.segments &&
+                              transcript.segments.length > 0
+                            )
+                          }
+                          hasExtraction={!!extraction}
+                        />
+                      )}
                   </CardContent>
                 </Card>
               </div>
@@ -565,10 +664,13 @@ export default async function MeetingDetailPage({
 
         {signOffRows.length > 0 ? <SignOffSummary rows={signOffRows} /> : null}
 
-        {(meeting.status === "CCO_SIGNED_OFF" || meeting.status === "FINALIZED") && (
+        {(meeting.status === "CCO_SIGNED_OFF" ||
+          meeting.status === "FINALIZED") && (
           <ExportCard
             meetingId={meeting.id}
-            meetingStatus={meeting.status === "FINALIZED" ? "FINALIZED" : "CCO_SIGNED_OFF"}
+            meetingStatus={
+              meeting.status === "FINALIZED" ? "FINALIZED" : "CCO_SIGNED_OFF"
+            }
             hasExtraction={!!extraction}
           />
         )}
@@ -629,7 +731,6 @@ export default async function MeetingDetailPage({
             syncStatuses={syncStatuses}
           />
         )}
-
       </div>
     </div>
   );

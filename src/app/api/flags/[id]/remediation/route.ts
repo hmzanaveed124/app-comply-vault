@@ -1,25 +1,58 @@
+import { remediationReadinessError } from "~/server/flags/closure-evidence";
 import { Prisma } from "../../../../../../generated/prisma";
+import { activeUserWorkspaceWhere } from "~/lib/user-workspace-filters";
 import { auth } from "~/server/auth";
 import { db } from "~/server/db";
 import { z } from "zod";
 
-const evidenceSchema = z.object({
-  type: z.enum([
-    "TRANSCRIPT_SNIPPET",
-    "DOCUMENT_LINK",
-    "OUTREACH_PROOF",
-    "ACKNOWLEDGEMENT",
-    "NOTE",
-  ]),
-  label: z.string().optional(),
-  url: z.string().url().optional(),
-  metadata: z.record(z.any()).optional(),
-});
+const evidenceSchema = z
+  .object({
+    type: z.enum([
+      "TRANSCRIPT_SNIPPET",
+      "DOCUMENT_LINK",
+      "OUTREACH_PROOF",
+      "ACKNOWLEDGEMENT",
+      "NOTE",
+    ]),
+    label: z.string().optional(),
+    url: z.string().url().optional(),
+    metadata: z.record(z.any()).optional(),
+  })
+  .superRefine((value, ctx) => {
+    const snippet = value.metadata as
+      | {
+          startTime?: unknown;
+          text?: unknown;
+          snippet?: unknown;
+          note?: unknown;
+        }
+      | undefined;
+    const valid =
+      value.type === "TRANSCRIPT_SNIPPET"
+        ? typeof snippet?.startTime === "number" &&
+          snippet.startTime >= 0 &&
+          typeof (snippet.text ?? snippet.snippet) === "string" &&
+          String(snippet.text ?? snippet.snippet).trim().length > 0
+        : value.type === "NOTE"
+          ? typeof snippet?.note === "string" &&
+            snippet.note.trim().length >= 10
+          : !!value.url && /^https?:\/\//.test(value.url);
+    if (!valid)
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Evidence needs a retrievable HTTP(S) link or a timestamped transcript quotation.",
+      });
+  });
 
 const remediationSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("START_REMEDIATION"),
-    resolutionType: z.enum(["ADD_CONTEXT", "DISCLOSED_ELSEWHERE", "FOLLOW_UP_REQUIRED"]),
+    resolutionType: z.enum([
+      "ADD_CONTEXT",
+      "DISCLOSED_ELSEWHERE",
+      "FOLLOW_UP_REQUIRED",
+    ]),
     rationale: z.string().min(50, "Rationale must be at least 50 characters"),
     dueDate: z.string().datetime(),
     sourceType: z.string().optional(),
@@ -37,14 +70,23 @@ const remediationSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("COMPLETE_TASK"),
     taskId: z.string().min(1),
-    completionNote: z.string().optional(),
+    completionNote: z
+      .string()
+      .trim()
+      .min(
+        20,
+        "Describe the completed action and supporting evidence (minimum 20 characters)",
+      ),
   }),
   z.object({
     action: z.literal("SUBMIT_FOR_VERIFICATION"),
   }),
   z.object({
     action: z.literal("APPROVE"),
-    note: z.string().optional(),
+    note: z
+      .string()
+      .trim()
+      .min(20, "Verification rationale is required (minimum 20 characters)"),
   }),
   z.object({
     action: z.literal("REJECT"),
@@ -52,7 +94,9 @@ const remediationSchema = z.discriminatedUnion("action", [
   }),
   z.object({
     action: z.literal("OVERRIDE"),
-    reason: z.string().min(20, "Override reason must be at least 20 characters"),
+    reason: z
+      .string()
+      .min(20, "Override reason must be at least 20 characters"),
     category: z.string().min(2, "Override category is required"),
   }),
 ]);
@@ -64,7 +108,7 @@ const buildEvidenceRequirementError = (message: string) =>
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await auth();
@@ -72,6 +116,20 @@ export async function POST(
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const membership = await db.userWorkspace.findFirst({
+      where: {
+        userId: session.user.id,
+        workspaceId: session.user.workspaceId,
+        ...activeUserWorkspaceWhere,
+      },
+      select: { role: true },
+    });
+    if (!membership)
+      return Response.json(
+        { error: "Active membership required" },
+        { status: 403 },
+      );
+    session.user.role = membership.role;
     const { id } = await params;
     const body = await request.json();
     const payload = remediationSchema.parse(body);
@@ -88,6 +146,7 @@ export async function POST(
         workspaceId: session.user.workspaceId,
       },
       include: {
+        meeting: { select: { status: true } },
         resolutionRecord: {
           include: {
             tasks: true,
@@ -102,17 +161,51 @@ export async function POST(
       return Response.json({ error: "Flag not found" }, { status: 404 });
     }
 
+    if (flag.meeting?.status === "FINALIZED") {
+      return Response.json(
+        {
+          error:
+            "Finalized evidence cannot be changed. Create a superseding record.",
+        },
+        { status: 409 },
+      );
+    }
+    if (!["OWNER_CCO", "MEMBER", "ADVISOR"].includes(session.user.role ?? "")) {
+      return Response.json(
+        { error: "Review access required" },
+        { status: 403 },
+      );
+    }
+    if (["CLOSED", "CLOSED_ACCEPTED_RISK"].includes(flag.status)) {
+      return Response.json(
+        {
+          error:
+            "Closed records are preserved. Use a superseding review to record a correction.",
+        },
+        { status: 409 },
+      );
+    }
+    if (
+      session.user.role === "ADVISOR" &&
+      !["COMPLETE_TASK", "ADD_EVIDENCE"].includes(payload.action)
+    ) {
+      return Response.json(
+        { error: "Only compliance reviewers may make disposition decisions" },
+        { status: 403 },
+      );
+    }
+
     if (payload.action === "START_REMEDIATION") {
       if (flag.status !== "OPEN") {
         return Response.json(
           { error: "Remediation can only be started for open flags" },
-          { status: 400 }
+          { status: 400 },
         );
       }
       if (flag.resolutionRecord) {
         return Response.json(
           { error: "Remediation already started for this flag" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -122,38 +215,58 @@ export async function POST(
       }
 
       const evidence = payload.evidence ?? [];
+      const requireAcknowledgement =
+        payload.resolutionType === "FOLLOW_UP_REQUIRED"
+          ? (payload.requireAcknowledgement ?? flag.severity === "CRITICAL")
+          : payload.resolutionType === "DISCLOSED_ELSEWHERE" &&
+            payload.acknowledgementStatus !== "YES";
       const metadata: Record<string, unknown> = {
         sourceType: payload.sourceType,
         disclosureDate: payload.disclosureDate,
         acknowledgementStatus: payload.acknowledgementStatus,
         followUpMethod: payload.followUpMethod,
         planNote: payload.planNote,
-        requireAcknowledgement: payload.requireAcknowledgement ?? false,
+        requireAcknowledgement,
       };
 
       if (payload.resolutionType === "ADD_CONTEXT") {
         const hasTranscriptEvidence = evidence.some(
           (item) =>
             item.type === "TRANSCRIPT_SNIPPET" &&
-            typeof (item.metadata as { startTime?: number } | undefined)?.startTime === "number"
+            typeof (item.metadata as { startTime?: number } | undefined)
+              ?.startTime === "number",
         );
         if (!hasTranscriptEvidence) {
-          return buildEvidenceRequirementError("Transcript evidence is required for Add context.");
+          return buildEvidenceRequirementError(
+            "Transcript evidence is required for Add context.",
+          );
         }
       }
 
       if (payload.resolutionType === "DISCLOSED_ELSEWHERE") {
-        if (!payload.sourceType || !payload.disclosureDate || !payload.acknowledgementStatus) {
+        if (
+          !payload.sourceType ||
+          !payload.disclosureDate ||
+          !payload.acknowledgementStatus
+        ) {
           return Response.json(
-            { error: "Source type, disclosure date, and acknowledgement status are required." },
-            { status: 400 }
+            {
+              error:
+                "Source type, disclosure date, and acknowledgement status are required.",
+            },
+            { status: 400 },
           );
         }
         const hasDocumentEvidence = evidence.some(
-          (item) => item.type === "DOCUMENT_LINK" && typeof item.url === "string" && item.url.trim()
+          (item) =>
+            item.type === "DOCUMENT_LINK" &&
+            typeof item.url === "string" &&
+            item.url.trim(),
         );
         if (!hasDocumentEvidence) {
-          return buildEvidenceRequirementError("Disclosure evidence link is required.");
+          return buildEvidenceRequirementError(
+            "Disclosure evidence link is required.",
+          );
         }
       }
 
@@ -161,13 +274,13 @@ export async function POST(
         if (!payload.followUpMethod || !payload.planNote?.trim()) {
           return Response.json(
             { error: "Follow-up method and plan note are required." },
-            { status: 400 }
+            { status: 400 },
           );
         }
         if (payload.planNote.trim().length < 50) {
           return Response.json(
             { error: "Plan note must be at least 50 characters." },
-            { status: 400 }
+            { status: 400 },
           );
         }
       }
@@ -212,7 +325,7 @@ export async function POST(
           dueDate,
           required: true,
         });
-        const requireAck = payload.requireAcknowledgement ?? flag.severity === "CRITICAL";
+        const requireAck = requireAcknowledgement;
         if (requireAck) {
           tasks.push({
             title: "Collect acknowledgement",
@@ -241,7 +354,8 @@ export async function POST(
                 type: item.type,
                 label: item.label?.trim() || null,
                 url: item.url,
-                metadata: (item.metadata ?? Prisma.JsonNull) as Prisma.InputJsonValue,
+                metadata: (item.metadata ??
+                  Prisma.JsonNull) as Prisma.InputJsonValue,
                 createdByUserId: session.user.id,
               })),
             },
@@ -301,7 +415,10 @@ export async function POST(
     if (payload.action === "ADD_EVIDENCE") {
       const resolutionRecord = flag.resolutionRecord;
       if (!resolutionRecord) {
-        return Response.json({ error: "Remediation has not started" }, { status: 400 });
+        return Response.json(
+          { error: "Remediation has not started" },
+          { status: 400 },
+        );
       }
 
       const createdEvidence = await db.$transaction(async (tx) => {
@@ -311,7 +428,8 @@ export async function POST(
             type: payload.evidence.type,
             label: payload.evidence.label?.trim() || null,
             url: payload.evidence.url,
-            metadata: (payload.evidence.metadata ?? Prisma.JsonNull) as Prisma.InputJsonValue,
+            metadata: (payload.evidence.metadata ??
+              Prisma.JsonNull) as Prisma.InputJsonValue,
             createdByUserId: session.user.id,
           },
         });
@@ -341,14 +459,25 @@ export async function POST(
     if (payload.action === "COMPLETE_TASK") {
       const resolutionRecord = flag.resolutionRecord;
       if (!resolutionRecord) {
-        return Response.json({ error: "Remediation has not started" }, { status: 400 });
+        return Response.json(
+          { error: "Remediation has not started" },
+          { status: 400 },
+        );
       }
 
-      const task = resolutionRecord.tasks.find((item) => item.id === payload.taskId);
+      const task = resolutionRecord.tasks.find(
+        (item) => item.id === payload.taskId,
+      );
       if (!task) {
         return Response.json({ error: "Task not found" }, { status: 404 });
       }
 
+      if (session.user.role === "ADVISOR" && task.ownerId !== session.user.id) {
+        return Response.json(
+          { error: "You may only complete your own tasks" },
+          { status: 403 },
+        );
+      }
       const updatedTask = await db.$transaction(async (tx) => {
         const updated = await tx.actionItem.update({
           where: { id: task.id },
@@ -383,87 +512,29 @@ export async function POST(
 
     if (payload.action === "SUBMIT_FOR_VERIFICATION") {
       if (!flag.resolutionRecord) {
-        return Response.json({ error: "Remediation has not started" }, { status: 400 });
-      }
-
-      const requiredTasksIncomplete = flag.resolutionRecord.tasks.some(
-        (task) => task.required && task.status !== "COMPLETED"
-      );
-      if (requiredTasksIncomplete) {
         return Response.json(
-          { error: "All required tasks must be completed before submission." },
-          { status: 400 }
+          { error: "Remediation has not started" },
+          { status: 400 },
         );
       }
 
-      const evidence = flag.resolutionRecord.evidence;
-      const hasTranscriptEvidence = evidence.some((item) => item.type === "TRANSCRIPT_SNIPPET");
-      const hasDocumentEvidence = evidence.some((item) => item.type === "DOCUMENT_LINK");
-      const hasOutreachEvidence = evidence.some((item) => item.type === "OUTREACH_PROOF");
-      const hasAckEvidence = evidence.some((item) => item.type === "ACKNOWLEDGEMENT");
-
-      if (flag.resolutionRecord.resolutionType === "ADD_CONTEXT" && !hasTranscriptEvidence) {
-        return buildEvidenceRequirementError("Transcript evidence is required before submission.");
+      const readinessError = remediationReadinessError(flag.resolutionRecord);
+      if (readinessError) return buildEvidenceRequirementError(readinessError);
+      if (flag.status !== "IN_REMEDIATION") {
+        return Response.json(
+          { error: "Only remediation in progress can be submitted" },
+          { status: 409 },
+        );
       }
-      if (flag.resolutionRecord.resolutionType === "DISCLOSED_ELSEWHERE" && !hasDocumentEvidence) {
-        return buildEvidenceRequirementError("Disclosure evidence is required before submission.");
-      }
-      if (flag.resolutionRecord.resolutionType === "FOLLOW_UP_REQUIRED" && !hasOutreachEvidence) {
-        return buildEvidenceRequirementError("Outreach evidence is required before submission.");
-      }
-
-      const requireAck =
-        (flag.resolutionRecord.metadata as Record<string, unknown> | null)?.requireAcknowledgement ??
-        (flag.severity === "CRITICAL");
-      if (requireAck && !hasAckEvidence) {
-        return buildEvidenceRequirementError("Acknowledgement evidence is required before submission.");
-      }
-
-      const isCritical = flag.severity === "CRITICAL";
-
       const result = await db.$transaction(async (tx) => {
-        const updatedRecord = await tx.resolutionRecord.update({
+        await tx.resolutionRecord.update({
           where: { id: flag.resolutionRecord!.id },
-          data: {
-            submittedForVerificationAt: new Date(),
-          },
+          data: { submittedForVerificationAt: new Date() },
         });
-
-        let updatedFlag;
-        if (isCritical) {
-          updatedFlag = await tx.flag.update({
-            where: { id: flag.id },
-            data: {
-              status: "PENDING_VERIFICATION",
-            },
-          });
-        } else {
-          updatedFlag = await tx.flag.update({
-            where: { id: flag.id },
-            data: {
-              status: "CLOSED",
-              resolvedAt: new Date(),
-              resolvedByUserId: session.user.id,
-            },
-          });
-
-          await tx.resolutionRecord.update({
-            where: { id: updatedRecord.id },
-            data: {
-              closedAt: new Date(),
-              closedByUserId: session.user.id,
-            },
-          });
-
-          await tx.verification.create({
-            data: {
-              resolutionId: updatedRecord.id,
-              reviewerId: session.user.id,
-              decision: "APPROVED",
-              note: payload.action === "SUBMIT_FOR_VERIFICATION" ? "Auto-approved (non-critical)" : null,
-            },
-          });
-        }
+        const updatedFlag = await tx.flag.update({
+          where: { id: flag.id },
+          data: { status: "PENDING_VERIFICATION" },
+        });
 
         await tx.auditEvent.create({
           data: {
@@ -474,7 +545,7 @@ export async function POST(
             resourceId: flag.id,
             meetingId: flag.meetingId,
             metadata: {
-              status: isCritical ? "PENDING_VERIFICATION" : "CLOSED",
+              status: "PENDING_VERIFICATION",
               ...requestMetadata,
             },
           },
@@ -488,12 +559,20 @@ export async function POST(
 
     if (payload.action === "APPROVE") {
       if (session.user.role !== "OWNER_CCO") {
-        return Response.json({ error: "Only CCO can approve remediation" }, { status: 403 });
+        return Response.json(
+          { error: "Only CCO can approve remediation" },
+          { status: 403 },
+        );
       }
       if (!flag.resolutionRecord || flag.status !== "PENDING_VERIFICATION") {
-        return Response.json({ error: "Flag is not pending verification" }, { status: 400 });
+        return Response.json(
+          { error: "Flag is not pending verification" },
+          { status: 400 },
+        );
       }
 
+      const readinessError = remediationReadinessError(flag.resolutionRecord);
+      if (readinessError) return buildEvidenceRequirementError(readinessError);
       const updatedFlag = await db.$transaction(async (tx) => {
         await tx.verification.create({
           data: {
@@ -544,12 +623,29 @@ export async function POST(
 
     if (payload.action === "REJECT") {
       if (session.user.role !== "OWNER_CCO") {
-        return Response.json({ error: "Only CCO can reject remediation" }, { status: 403 });
+        return Response.json(
+          { error: "Only CCO can reject remediation" },
+          { status: 403 },
+        );
       }
       if (!flag.resolutionRecord || flag.status !== "PENDING_VERIFICATION") {
-        return Response.json({ error: "Flag is not pending verification" }, { status: 400 });
+        return Response.json(
+          { error: "Flag is not pending verification" },
+          { status: 400 },
+        );
       }
 
+      const rr = flag.resolutionRecord;
+      if (
+        rr.tasks.some((task) => task.required && task.status !== "COMPLETED") ||
+        !rr.evidence.some(
+          (item) => item.type !== "NOTE" && (item.url || item.metadata),
+        )
+      ) {
+        return buildEvidenceRequirementError(
+          "Completed required tasks and supporting evidence are required before approval.",
+        );
+      }
       const updatedFlag = await db.$transaction(async (tx) => {
         await tx.verification.create({
           data: {
@@ -590,7 +686,10 @@ export async function POST(
 
     if (payload.action === "OVERRIDE") {
       if (session.user.role !== "OWNER_CCO") {
-        return Response.json({ error: "Only CCO can override flags" }, { status: 403 });
+        return Response.json(
+          { error: "Only CCO can override flags" },
+          { status: 403 },
+        );
       }
 
       const updatedFlag = await db.$transaction(async (tx) => {
@@ -603,7 +702,9 @@ export async function POST(
               flagId: flag.id,
               resolutionType: "OVERRIDE_APPROVED",
               rationale: payload.reason.trim(),
-              metadata: { overrideCategory: payload.category.trim() } as Prisma.InputJsonValue,
+              metadata: {
+                overrideCategory: payload.category.trim(),
+              } as Prisma.InputJsonValue,
               createdByUserId: session.user.id,
             },
           });
@@ -671,16 +772,19 @@ export async function POST(
 
     return Response.json({ error: "Unsupported action" }, { status: 400 });
   } catch (error) {
-    console.error("Error in flag remediation:", error);
     if (error instanceof z.ZodError) {
       return Response.json(
         { error: "Invalid request body", details: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
+    console.error("Error in flag remediation:", error);
     return Response.json(
-      { error: error instanceof Error ? error.message : "An unknown error occurred" },
-      { status: 500 }
+      {
+        error:
+          error instanceof Error ? error.message : "An unknown error occurred",
+      },
+      { status: 500 },
     );
   }
 }

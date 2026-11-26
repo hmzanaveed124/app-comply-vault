@@ -24,13 +24,17 @@ function extractSegments(transcript: unknown): TranscriptSegment[] | null {
   if (!transcript || typeof transcript !== "object") return null;
   const value = transcript as { error?: unknown; segments?: unknown };
   if (value.error) return null;
-  if (!Array.isArray(value.segments) || value.segments.length === 0) return null;
+  if (!Array.isArray(value.segments) || value.segments.length === 0)
+    return null;
   return value.segments as TranscriptSegment[];
 }
 
 export type SecureTranscriptResult =
   | { secured: true; transcriptSha256: string; mediaDiscarded: boolean }
-  | { secured: false; reason: "meeting_not_found" | "no_transcript" | "readback_mismatch" };
+  | {
+      secured: false;
+      reason: "meeting_not_found" | "no_transcript" | "readback_mismatch";
+    };
 
 /**
  * Persist the canonical transcript hash for a meeting, then — only under
@@ -66,10 +70,19 @@ export async function secureTranscript(args: {
   // recompute, and require an exact match before any delete.
   const readback = await db.meeting.findFirst({
     where: { id: meetingId, workspaceId },
-    select: { id: true, transcript: true, transcriptSha256: true, fileUrl: true },
+    select: {
+      id: true,
+      transcript: true,
+      transcriptSha256: true,
+      fileUrl: true,
+    },
   });
-  const readbackSegments = readback ? extractSegments(readback.transcript) : null;
-  const recomputed = readbackSegments ? hashCanonicalTranscript(readbackSegments) : null;
+  const readbackSegments = readback
+    ? extractSegments(readback.transcript)
+    : null;
+  const recomputed = readbackSegments
+    ? hashCanonicalTranscript(readbackSegments)
+    : null;
 
   if (
     !readback ||
@@ -97,10 +110,14 @@ export async function secureTranscript(args: {
 
   const workspace = await db.workspace.findUnique({
     where: { id: workspaceId },
-    select: { mediaPosture: true },
+    select: { mediaPosture: true, legalHold: true },
   });
 
-  if (workspace?.mediaPosture !== "DISCARD" || !readback.fileUrl) {
+  if (
+    workspace?.legalHold ||
+    workspace?.mediaPosture !== "DISCARD" ||
+    !readback.fileUrl
+  ) {
     return { secured: true, transcriptSha256, mediaDiscarded: false };
   }
 
@@ -130,56 +147,73 @@ export async function discardMediaObject(args: {
   actorUserId?: string;
   context: "post_transcription" | "retained_media_purge";
 }): Promise<boolean> {
-  const { deleteFile } = await import("~/server/storage");
-  const discardedAt = new Date();
-
-  try {
-    await deleteFile(args.fileUrl);
-  } catch (error) {
-    console.error(`Media discard failed for meeting ${args.meetingId}:`, error);
-    await db.auditEvent.create({
-      data: {
-        workspaceId: args.workspaceId,
-        userId: args.actorUserId ?? "system",
-        action: "MEDIA_DISCARDED",
-        resourceType: "meeting",
-        resourceId: args.meetingId,
-        meetingId: args.meetingId,
-        metadata: {
-          action: "media_discard_failed",
-          objectUri: args.fileUrl,
-          error: error instanceof Error ? error.message : "Unknown error",
-          note: "Storage delete failed. Media retained; retry required.",
+  // Serialize deletion against changes to legalHold on the same workspace row.
+  // A hold committed before this lock is acquired always prevents disposal.
+  return db.$transaction(
+    async (tx) => {
+      const rows = await tx.$queryRaw<
+        Array<{ legalHold: boolean; mediaPosture: string | null }>
+      >`
+      SELECT "legalHold", "mediaPosture" FROM "Workspace" WHERE id = ${args.workspaceId} FOR UPDATE
+    `;
+      const workspace = rows[0];
+      const meeting = await tx.meeting.findFirst({
+        where: { id: args.meetingId, workspaceId: args.workspaceId },
+        select: { fileUrl: true },
+      });
+      if (
+        !workspace ||
+        workspace.legalHold ||
+        workspace.mediaPosture !== "DISCARD" ||
+        meeting?.fileUrl !== args.fileUrl
+      )
+        return false;
+      const { deleteFile } = await import("~/server/storage");
+      const discardedAt = new Date();
+      try {
+        await deleteFile(args.fileUrl);
+      } catch (error) {
+        await tx.auditEvent.create({
+          data: {
+            workspaceId: args.workspaceId,
+            userId: args.actorUserId ?? "system",
+            action: "MEDIA_DISCARDED",
+            resourceType: "meeting",
+            resourceId: args.meetingId,
+            meetingId: args.meetingId,
+            metadata: {
+              action: "media_discard_failed",
+              objectUri: args.fileUrl,
+              error: error instanceof Error ? error.message : "Unknown error",
+              note: "Storage deletion failed; media remains pending disposal.",
+            },
+          },
+        });
+        return false;
+      }
+      await tx.meeting.update({
+        where: { id: args.meetingId },
+        data: { fileUrl: null, mediaDiscardedAt: discardedAt },
+      });
+      await tx.auditEvent.create({
+        data: {
+          workspaceId: args.workspaceId,
+          userId: args.actorUserId ?? "system",
+          action: "MEDIA_DISCARDED",
+          resourceType: "meeting",
+          resourceId: args.meetingId,
+          meetingId: args.meetingId,
+          metadata: {
+            action: "media_discarded_by_policy",
+            context: args.context,
+            objectUri: args.fileUrl,
+            transcriptSha256: args.transcriptSha256,
+            discardedAt: discardedAt.toISOString(),
+          },
         },
-      },
-    });
-    return false;
-  }
-
-  await db.$transaction(async (tx) => {
-    await tx.meeting.update({
-      where: { id: args.meetingId },
-      data: { fileUrl: null, mediaDiscardedAt: discardedAt },
-    });
-
-    await tx.auditEvent.create({
-      data: {
-        workspaceId: args.workspaceId,
-        userId: args.actorUserId ?? "system",
-        action: "MEDIA_DISCARDED",
-        resourceType: "meeting",
-        resourceId: args.meetingId,
-        meetingId: args.meetingId,
-        metadata: {
-          action: "media_discarded_by_policy",
-          context: args.context,
-          objectUri: args.fileUrl,
-          transcriptSha256: args.transcriptSha256,
-          discardedAt: discardedAt.toISOString(),
-        },
-      },
-    });
-  });
-
-  return true;
+      });
+      return true;
+    },
+    { timeout: 30000 },
+  );
 }
